@@ -160,7 +160,7 @@ namespace PgSATest {
             uint_max occurrencesCount = 0;
             for(int i = 0; i < testKmersCount; i++) {
                 occurrencesCount += pgsaIndex->countOccurrences(testkmers[i]);
-                cout << testkmers[i] << ": " << occurrencesCount << "\n";
+//                cout << testkmers[i] << ": " << occurrencesCount << "\n";
             }
 
             times.push_back(clock_millis());
@@ -388,7 +388,7 @@ namespace PgSATest {
         cout << "Q  k  resCount       time med  time/occ med   time min  time/occ min   [nsec]\n\n";
 
         if (!byPosition) {
-/*        
+        
             q1Test(repeat, times, res);
             printResult("Q1 (In which reads does f occur?)", occurrencesCount, times, res);
 
@@ -397,10 +397,10 @@ namespace PgSATest {
 
             q3Test(repeat, times, res);
             printResult("Q3 (What are the occurrence positions of f?)", occurrencesCount, times, res);
-*/
+
             q4Test(repeat, times, res);
             printResult("Q4 (What is the number of occurrences of f?)", occurrencesCount, times, res);
-/*
+
     //        q4TestImpl(repeat, times, res);
     //        printResult("Q4I (No virtual calls) (What is the number of occurrences of f?)", occurrencesCount, times, res);
 
@@ -412,7 +412,7 @@ namespace PgSATest {
 
             q7Test(repeat, times, res);
             printResult("Q7 (What are the occurrence positions of f in the reads where it occurs only once?)", occurrencesCount, times, res);
-*/
+
 
         } else {
         
