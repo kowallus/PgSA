@@ -242,21 +242,18 @@ namespace PgSAIndex {
                         range.start = mIdx + 1;
                         lIdx = mIdx + 1;
                         
-                        lcp = ((lcp_l = cmpRes - 1) <= lcp_r)?lcp_l:lcp_r;
-                        lcp_beg = lcp_l;
+                        lcp = ((lcp_beg = lcp_l = cmpRes - 1) <= lcp_r)?lcp_l:lcp_r;
                     } else if (cmpRes < 0) {
                         range.end = mIdx;
                         rIdx = mIdx - 1;
                         
-                        lcp = ((lcp_r = -cmpRes - 1) <= lcp_l)?lcp_r:lcp_l;
-                        lcp_end = lcp_r;
+                        lcp = ((lcp_end = lcp_r = -cmpRes - 1) <= lcp_l)?lcp_r:lcp_l;
                     } else {
                         if(range.start < mIdx)
                             range.start = mIdx + 1;
                         rIdx = mIdx;
                         
-                        lcp_r = kmerLength;
-                        lcp_beg = lcp_r;
+                        lcp_beg = lcp_r = kmerLength;
                     }
                 }
 
