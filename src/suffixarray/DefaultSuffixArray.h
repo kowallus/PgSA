@@ -190,11 +190,11 @@ namespace PgSAIndex {
             
             typedef int int_kmers_comp;
             
-            inline int_kmers_comp kmerSAComp(const char* kmerPtr, const uint_read_len& kmerLength, const uint_pg_len& suffixIdx) {
-                kmerPtr += lookupTableKeyPrefixLength;
-                const char* suffixPtr = getSuffixByAddress(saPosIdx2Address(suffixIdx)) + lookupTableKeyPrefixLength;
-                
-                uint_read_len i = lookupTableKeyPrefixLength;
+            inline int_kmers_comp kmerSAComp(const char* kmerPtr, const uint_read_len& kmerLength, const uint_pg_len& suffixIdx, const uint_read_len& lcp) {
+                kmerPtr += lcp;
+                const char* suffixPtr = getSuffixByAddress(saPosIdx2Address(suffixIdx)) + lcp;
+
+                uint_read_len i = lcp;
 
                 while (kmerLength - i >= 2) {
                     int cmp = bswap_16(*(uint16_t*)kmerPtr) - bswap_16(*(uint16_t*)suffixPtr);
@@ -223,38 +223,63 @@ namespace PgSAIndex {
                 uint_pg_len mIdx;
                 int_kmers_comp cmpRes;
 
+                uint_read_len lcp = lookupTableKeyPrefixLength;
+                
+                uint_read_len lcp_l = lcp;
+                uint_read_len lcp_r = lcp;
+                uint_read_len lcp_beg = lcp;
+                uint_read_len lcp_end = lcp;
+                
                 // lower_bound search
                 uint_pg_len lIdx = range.start;
                 uint_pg_len rIdx = range.end;
 
                 while (lIdx < rIdx) {
                     mIdx = (lIdx + rIdx) / 2;
-                    cmpRes = kmerSAComp(kmerPtr, kmerLength, mIdx);
+                    cmpRes = kmerSAComp(kmerPtr, kmerLength, mIdx, lcp);
+              
                     if (cmpRes > 0) {
                         range.start = mIdx + 1;
                         lIdx = mIdx + 1;
+                        
+                        if ((lcp_l = cmpRes - 1) <= lcp_r)
+                            lcp = lcp_l;
+                        else if (lcp_r > lcp) 
+                            lcp = lcp_r;
+                        lcp_beg = lcp_l;
                     } else if (cmpRes < 0) {
                         range.end = mIdx;
                         rIdx = mIdx - 1;
+                        
+                        if ((lcp_r = -cmpRes - 1) <= lcp_l)                            
+                            lcp = lcp_r;
+                        else if (lcp_l > lcp)
+                            lcp = lcp_l;
+                        lcp_end = lcp_r;
                     } else {
                         if(range.start < mIdx)
                             range.start = mIdx + 1;
                         rIdx = mIdx;
+                        
+                        lcp_r = kmerLength;
+                        lcp_beg = lcp_r;
                     }
                 }
 
                 if (lIdx == rIdx && lIdx == range.start) {
                     // start might be smaller then kmer
-                    cmpRes = kmerSAComp(kmerPtr, kmerLength, lIdx);
-                    if (cmpRes > 0) 
+                    cmpRes = kmerSAComp(kmerPtr, kmerLength, lIdx, lcp);
+                    
+                    if (cmpRes > 0) {
                         range.start = ++lIdx;
-                    else if (cmpRes < 0) {
+                        lcp_beg = lcp_l;
+                    } else if (cmpRes < 0) {
                         range.end = lIdx;
-                        rIdx = lIdx - 1;
+                        lcp_end = lcp_l;
                     } else {
                         if(range.start < lIdx)
                             range.start = lIdx + 1;
-                        rIdx = lIdx;
+                        lcp_beg = lcp_l;
                     } 
                 }
                 
@@ -263,16 +288,31 @@ namespace PgSAIndex {
                 // upper_bound search
                 lIdx = range.start;
                 rIdx = range.end;
-
+                lcp_l = lcp_beg;
+                lcp_r = lcp_end;
+                lcp = lcp_l < lcp_r?lcp_l:lcp_r;
+                
                 while (lIdx < rIdx) {
                     mIdx = (lIdx + rIdx) / 2;
-                    cmpRes = kmerSAComp(kmerPtr, kmerLength, mIdx);
-                    if (cmpRes > 0)
+                    cmpRes = kmerSAComp(kmerPtr, kmerLength, mIdx, lcp);
+                    
+                    if (cmpRes > 0) {
                         lIdx = mIdx + 1;
-                    else if (cmpRes < 0)
-                        rIdx = mIdx;
-                    else
+                      
+                        if ((lcp_l = cmpRes - 1) <= lcp_r)
+                            lcp = lcp_l;
+                        else if (lcp_r > lcp) 
+                            lcp = lcp_r;
+                    } else if (cmpRes < 0) {
+                        if ((lcp_r = -cmpRes - 1) <= lcp_l)
+                            lcp = lcp_r;
+                        else if (lcp_l > lcp) 
+                            lcp = lcp_l;
+                    } else {
                         lIdx = mIdx + 1;
+                        
+                        lcp_l = kmerLength;
+                    }
                 }
 
                 range = {start, lIdx};
