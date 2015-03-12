@@ -7,6 +7,8 @@
 #include "../pseudogenome/DefaultPseudoGenome.h"
 #include "iterator/OccurrencesIteratorInterface.h"
 
+#include <byteswap.h>
+
 using namespace PgSAHelpers;
 
 namespace PgSAIndex {
@@ -193,14 +195,27 @@ namespace PgSAIndex {
                 const char* suffixPtr = getSuffixByAddress(saPosIdx2Address(suffixIdx)) + lookupTableKeyPrefixLength;
                 
                 uint_read_len i = lookupTableKeyPrefixLength;
-                while (i++ < kmerLength) {
-                    if (*kmerPtr > *suffixPtr)
-                        return 1;
-                    if (*kmerPtr++ < *suffixPtr++)
-                        return -1;
+
+                while (kmerLength - i >= 2) {
+                    int cmp = bswap_16(*(uint16_t*)kmerPtr) - bswap_16(*(uint16_t*)suffixPtr);
+                    if (cmp != 0)
+                        break;
+                    kmerPtr += 2;
+                    suffixPtr += 2;
+                    i += 2;
+                }
+
+                while (i < kmerLength) {
+                    i++;
+                    int cmp = *kmerPtr++ - *suffixPtr++;
+                    if (cmp > 0)
+                        return i;
+                    if (cmp < 0)
+                        return -i;
                 }
 
                 return 0;
+                
             }
             
             inline void kmerRangeBSearch(const char* kmerPtr, const uint_read_len& kmerLength, SARange<uint_pg_len>& range) { 
