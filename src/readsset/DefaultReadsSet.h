@@ -65,52 +65,6 @@ namespace PgSAReadsSet {
     };
 
     //typedef DefaultReadsSet<ConcatenatedReadsSourceIterator<uint_read_len_max>> ConcatenatedReadsSet;
-
-    template<class ReadsSourceIterator>
-    DefaultReadsSet::DefaultReadsSet(ReadsSourceIterator* readsIterator) {
-
-        bool symbolOccured[UCHAR_MAX] = {0};
-
-        while (readsIterator->moveNext()) {
-
-            properties->readsCount++;
-
-            // analize read length
-            uint_read_len_max length = readsIterator->getReadLength();
-            if (properties->maxReadLength == 0)
-                properties->maxReadLength = length;
-            else if (properties->maxReadLength != length) {
-                properties->constantReadLength = false;
-                if (properties->maxReadLength < length)
-                    properties->maxReadLength = length;
-            }
-
-            properties->allReadsLength += length;
-
-            //analize symbols
-            string read(readsIterator->getRead());
-
-            for (uint_read_len_max i = 0; i < length; i++) {
-                read[i] = toupper(read[i]);
-                if (!symbolOccured[(unsigned char) read[i]]) {
-                    symbolOccured[(unsigned char) read[i]] = true;
-                    properties->symbolsCount++;
-                }
-            }
-
-            reads.push_back(read);
-        }
-
-        // order symbols
-
-        for (uint_symbols_cnt i = 0, j = 0; i < properties->symbolsCount; j++)
-            if (symbolOccured[(unsigned char) j])
-                properties->symbolsList[(unsigned char) (i++)] = j;
-
-        properties->generateSymbolOrder();
-
-    };
-
 }
 
 #endif // DEFAULTREADSSET_H_INCLUDED

@@ -119,6 +119,17 @@ namespace PgSAIndex {
                 return true;                
             };
             
+            // index may not be exact
+            inline uint_pg_len findSAIndex(const char* kmer, const uint_read_len& kmerLength) { 
+            
+                if (kmerLength >= this->keyPrefixLength) {
+                    uint_max idx = pgSuffixToLookupTableIdx(kmer);
+                    return lookup[idx];
+                }
+                
+                return lookup[pgSuffixToLookupTableIdx(kmer, kmerLength, 0)];
+            };
+            
             uint_max getLookupTableLengthWithGuard() {
                 return powuint(symbolsCount, this->getKeyPrefixLength()) + 1;
             };

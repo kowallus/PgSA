@@ -24,10 +24,10 @@ void testSearch() {
     PgSAIndexStandard* pgsaIndex = PgSAIndexFactory::getPgSAIndexStandard(idxPrefix + ".pgsa", idxPrefix + ".pgc", false);
 
     vector<StandardOccurrence> q3res_pgsa;
-    pgsaIndex->reportOccurrences("CTGGCCTCTCTCTTAT", q3res_pgsa);
-    std::cout << "|Q3(CTGGCCTCTCTCTTAT)| = " << q3res_pgsa.size() << std::endl;
+    pgsaIndex->reportOccurrences("TGCACCTGCGGTGGCCGATAAAGCCGAC", q3res_pgsa);
+    std::cout << "|Q3(TGCACCTGCGGTGGCCGATAAAGCCGAC)| = " << q3res_pgsa.size() << std::endl;
     
-    //CTGGCCTCTCTCTTAT GTGTGGATGGCGCTCT TCGCTGTAACGGTGAA
+    //TGCACCTGCGGTGGCCGATAAAGCCGAC 
 
     
     delete pgsaIndex;

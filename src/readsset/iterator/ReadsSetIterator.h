@@ -15,7 +15,7 @@ namespace PgSAReadsSet {
     {
         public:
 
-            virtual ~ReadsSourceIteratorTemplate() {};
+            virtual ~ReadsSourceIteratorTemplate();
 
             virtual bool moveNextVirtual() = 0;
             virtual string getReadVirtual() = 0;
@@ -32,34 +32,19 @@ namespace PgSAReadsSet {
 
         public:
 
-            ConcatenatedReadsSourceIterator(std::istream* source) {
-                this->source = source;
-            }
+            ConcatenatedReadsSourceIterator(std::istream* source);
 
-            ~ConcatenatedReadsSourceIterator() {};
+            ~ConcatenatedReadsSourceIterator();
 
-            bool moveNext() {
-                if (!std::getline(*source, line))
-                    return false;
+            bool moveNext();
 
-                for(length = 0; length < line.length(); length++)
-                    if (!isalpha(line[length]))
-                        break;
+            string getRead();
 
-                return true;
-            };
+            uint_read_len getReadLength();
 
-            string getRead() {
-                return line.substr(0, length);
-            };
-
-            uint_read_len getReadLength() {
-                return length;
-            };
-
-            bool moveNextVirtual() { return moveNext(); };
-            string getReadVirtual() { return getRead(); };
-            uint_read_len getReadLengthVirtual() { return getReadLength(); };
+            bool moveNextVirtual();
+            string getReadVirtual();
+            uint_read_len getReadLengthVirtual();
 
     };
     
@@ -75,45 +60,21 @@ namespace PgSAReadsSet {
             
         public:
 
-            FASTAReadsSourceIterator(std::istream* source) {
-                this->source = source;
-            }
+            FASTAReadsSourceIterator(std::istream* source);
             
-            FASTAReadsSourceIterator(std::istream* source, std::istream* pairSource) {
-                this->source = source;
-                this->pairSource = pairSource;
-            }
+            FASTAReadsSourceIterator(std::istream* source, std::istream* pairSource);
 
-            ~FASTAReadsSourceIterator() {};
+            ~FASTAReadsSourceIterator();
 
-            bool moveNext() {
-                std::istream* src = source;
-                if (pair && pairSource)
-                    src = pairSource;
-                pair = !pair;
-                do {
-                    if (!std::getline(*src, line))
-                        return false;
-                } while (line.find('>') == 0);
+            bool moveNext();
 
-                for(length = 0; length < line.length(); length++)
-                    if (!isalpha(line[length]))
-                        break;
+            string getRead();
 
-                return true;
-            };
+            uint_read_len getReadLength();
 
-            string getRead() {
-                return line.substr(0, length);
-            };
-
-            uint_read_len getReadLength() {
-                return length;
-            };
-
-            bool moveNextVirtual() { return moveNext(); };
-            string getReadVirtual() { return getRead(); };
-            uint_read_len getReadLengthVirtual() { return getReadLength(); };
+            bool moveNextVirtual();
+            string getReadVirtual();
+            uint_read_len getReadLengthVirtual();
     };
     
     template < typename uint_read_len >
@@ -128,44 +89,19 @@ namespace PgSAReadsSet {
             
         public:
             
-            FASTQReadsSourceIterator(std::istream* source, std::istream* pairSource = std::string()) {
-                this->source = source;
-                this->pairSource = pairSource;
-            }
+            FASTQReadsSourceIterator(std::istream* source, std::istream* pairSource = std::string());
 
-            ~FASTQReadsSourceIterator() {};
+            ~FASTQReadsSourceIterator();
 
-            bool moveNext() {
-                std::istream* src = source;
-                if (pair && pairSource)
-                    src = pairSource;
-                pair = !pair;
-                
-                string someinfo;
-                if (!std::getline(*src, someinfo))
-                    return false;
-                std::getline(*src, line);
-                std::getline(*src, someinfo);
-                std::getline(*src, someinfo);
+            bool moveNext();
 
-                for(length = 0; length < line.length(); length++)
-                    if (!isalpha(line[length]))
-                        break;
+            string getRead();
 
-                return true;
-            };
+            uint_read_len getReadLength();
 
-            string getRead() {
-                return line.substr(0, length);
-            };
-
-            uint_read_len getReadLength() {
-                return length;
-            };
-
-            bool moveNextVirtual() { return moveNext(); };
-            string getReadVirtual() { return getRead(); };
-            uint_read_len getReadLengthVirtual() { return getReadLength(); };
+            bool moveNextVirtual();
+            string getReadVirtual();
+            uint_read_len getReadLengthVirtual();
     };
 }
 

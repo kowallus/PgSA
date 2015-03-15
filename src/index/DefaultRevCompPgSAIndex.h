@@ -67,6 +67,7 @@ namespace PgSAIndex {
 
             api_uint_reads_cnt countReads(api_uint_reads_cnt orgIdx, api_uint_read_len pos, api_uint_read_len k) {
 //                throw std::runtime_error("not implemented");
+                return 0;
             }
             
             // Q3 - What are the occurrence positions of kmer?
@@ -112,6 +113,7 @@ namespace PgSAIndex {
 
             uint_max countOccurrences(api_uint_reads_cnt orgIdx, api_uint_read_len pos, api_uint_read_len k) {
 //                throw std::runtime_error("not implemented");
+                return 0;
             }
             
             // Q5 - In which reads does kmer occur only once?
@@ -143,6 +145,7 @@ namespace PgSAIndex {
             
             api_uint_reads_cnt countSingleOccurrences(api_uint_reads_cnt orgIdx, api_uint_read_len pos, api_uint_read_len k) {
 //                throw std::runtime_error("not implemented");
+                return 0;
             }
 
             // Q7 - What are the occurrence positions of kmer in the reads where it occurs only once?

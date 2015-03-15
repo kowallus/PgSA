@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
     int opt; // current option
     int repeat = 11;
     int testKmersNumber = 100000;
-    vector<int> kLengths = {11, 16, 22};
+    vector<unsigned short> kLengths = {11, 16, 22};
     bool bFlag = false; // boost memory usage for standard PgSA
     bool vFlag = false; // use non-default implementaion for standard PgSA
     bool sFlag = false; // scramble reads (for uncorrecly concatenated pair-ended data)

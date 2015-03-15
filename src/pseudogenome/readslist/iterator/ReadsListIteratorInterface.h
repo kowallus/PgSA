@@ -9,6 +9,9 @@
 #define	READSLISTITERATORINTERFACE_H
 
 #include "../../../pgsaconfig.h"
+#include "../../../helper.h"
+
+using namespace std;
 
 namespace PgSAIndex {
 

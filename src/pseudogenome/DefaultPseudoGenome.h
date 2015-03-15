@@ -26,84 +26,46 @@ namespace PgSAIndex {
             
         public:
 
-            DefaultPseudoGenome(uint_pg_len pgLength, ReadsSetProperties* properties)
-            : PseudoGenomeBase(pgLength, properties) {
-                this->sequence = new char_pg[(this->getLengthWithGuard()) * sizeof(char_pg)];
-            }
-
-            DefaultPseudoGenome(uint_pg_len pgLength, std::istream& src)
-            : PseudoGenomeBase(pgLength, src) {
-
-                uint_pg_len arraySize;
-                src >> arraySize;
-                src.get(); // '/n'
-
-                if (arraySize != getLengthWithGuard())
-                    cout << "WARNING: wrong size of pseudogenome.";
-                
-                sequence = (char_pg*) PgSAHelpers::readArray(src, getLengthWithGuard() * sizeof(char_pg));
-                src.get(); // '/n'
-                this->readsList = new ReadsListClass(maxReadLength(), src);
-            }
-
-            ~DefaultPseudoGenome() {
-                delete[]sequence;
-                delete(readsList);
-            }
-
-            static DefaultPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>* castBase(PseudoGenomeBase* base) {
-                // TODO: validate
-                return static_cast<DefaultPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>*>(base);
-            }
-
-            string getTypeID() { return PGTYPE_DEFAULT; };
-
-            void write(std::ostream& dest) {
-                this->getReadsSetProperties()->write(dest);
-                dest << getLengthWithGuard() << "\n";
-                PgSAHelpers::writeArray(dest, sequence, getLengthWithGuard() * sizeof(char_pg));
-                dest << "\n";
-                this->readsList->write(dest);
-            }
+            DefaultPseudoGenome(uint_pg_len pgLength, ReadsSetProperties* properties);
+            DefaultPseudoGenome(uint_pg_len pgLength, std::istream& src);
+            ~DefaultPseudoGenome();
             
-            CountQueriesCacheBase* getCountQueriesCacheBase() {
-                return countQueriesCache;
-            }
+            static DefaultPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>* castBase(PseudoGenomeBase* base);
+
+            string getTypeID();;
+
+            void write(std::ostream& dest);
             
-            inline ReadsListInterface<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>* getReadsList() { return readsList; }
-
-//            inline uint_pg_len getLength() { return this->length; };
-
-            uint_pg_len getLengthWithGuard() { return this->length + this->properties->maxReadLength; };
+            CountQueriesCacheBase* getCountQueriesCacheBase();
             
-            inline char getSymbol(uint_pg_len pos) { return sequence[pos]; };
+            ReadsListInterface<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>* getReadsList();
+//            uint_pg_len getLength() { return this->length; };
 
-            inline const char_pg* getSuffix(const uint_pg_len pos) { return sequence + pos; };
+            uint_pg_len getLengthWithGuard();
             
-            inline const char_pg* getSuffix(const uint_reads_cnt readsListIdx, const uint_read_len offset) { return getSuffix(this->readsList->getReadPosition(readsListIdx) + offset); };
+            char getSymbol(uint_pg_len pos);
 
-            inline const char_pg* getSuffixPtrByPosition(const uint_reads_cnt originalIdx, const uint_read_len pos) {
-                return sequence + this->readsList->getReadPosition(this->readsList->getReadsListIndexOfOriginalIndex(originalIdx)) + pos;
-            }
+            const char_pg* getSuffix(const uint_pg_len pos);
             
-            inline uint_read_len maxReadLength() { return this->properties->maxReadLength; };
+            const char_pg* getSuffix(const uint_reads_cnt readsListIdx, const uint_read_len offset);
 
-            inline uint_reads_cnt readsCount() { return this->properties->readsCount; };
-
-            inline bool isReadLengthConstant() { return this->properties->constantReadLength; };
-
-            const string getRead(const uint_reads_cnt originalIdx) {
-                uint_pg_len pos = this->readsList->getReadPosition(this->readsList->getReadsListIndexOfOriginalIndex(originalIdx));
-                return string(sequence + pos, readLength(originalIdx));
-            };
+            const char_pg* getSuffixPtrByPosition(const uint_reads_cnt originalIdx, const uint_read_len pos);
             
-            uint_read_len readLength(const uint_reads_cnt originalIdx) { return this->readsList->getReadLength(this->readsList->getReadsListIndexOfOriginalIndex(originalIdx)); };
+            uint_read_len maxReadLength();
 
-            uint_read_len maxReadLengthVirtual() { return maxReadLength(); };
-            uint_reads_cnt readsCountVirtual() { return readsCount(); };
-            bool isReadLengthConstantVirtual() { return isReadLengthConstant(); };
-            const string getReadVirtual(uint_reads_cnt i) { return getRead(i); };
-            uint_read_len readLengthVirtual(uint_reads_cnt i) { return readLength(i); };
+            uint_reads_cnt readsCount();
+
+            bool isReadLengthConstant();
+
+            const string getRead(const uint_reads_cnt originalIdx);
+            
+            uint_read_len readLength(const uint_reads_cnt originalIdx);
+
+            uint_read_len maxReadLengthVirtual();
+            uint_reads_cnt readsCountVirtual();
+            bool isReadLengthConstantVirtual();
+            const string getReadVirtual(uint_reads_cnt i);
+            uint_read_len readLengthVirtual(uint_reads_cnt i);
 
     };
 
@@ -119,44 +81,15 @@ namespace PgSAIndex {
 
         public:
 
-            GeneratedPseudoGenome(uint_pg_len sequenceLength, ReadsSetProperties* properties)
-            : DefaultPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, GeneratedReadsListClass >(sequenceLength, properties)
-            {
-                this->pos = 0;
+            GeneratedPseudoGenome(uint_pg_len sequenceLength, ReadsSetProperties* properties);
 
-                this->genReadsList = new GeneratedReadsListClass (this->properties->maxReadLength, this->properties->readsCount, this->length);
+            ~GeneratedPseudoGenome();
 
-                this->readsList = genReadsList;
-            }
+            void append(const string& read, uint_read_len length, uint_read_len overlap, uint_reads_cnt orgIdx);
 
-            ~GeneratedPseudoGenome() { }
-
-            void append(const string& read, uint_read_len length, uint_read_len overlap, uint_reads_cnt orgIdx) {
-
-                genReadsList->add(pos, length, orgIdx);
-
-                uint_read_len len = length - overlap;
-                if (len > 0) {
-                    strncpy(this->sequence + pos, read.data(), len);
-                    pos += len;
-                }
-            }
-
-            void validate() {
-
-                if (pos != this->length)
-                    cout << "WARNING: Generated " << pos << " pseudogenome instead of " << this->length << "\n";
-
-                genReadsList->validate();
-
-                // adding guard
-                for(uint_pg_len i = pos; i < this->getLengthWithGuard(); i++)
-                    this->sequence[i] = this->properties->symbolsList[this->properties->symbolsCount - 1];
-            }
+            void validate();
             
-            void setCountQueriesCache(CountQueriesCacheBase* cqcb) {
-                this->countQueriesCache = cqcb;
-            }
+            void setCountQueriesCache(CountQueriesCacheBase* cqcb);
             
     };
 

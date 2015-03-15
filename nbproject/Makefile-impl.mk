@@ -31,7 +31,7 @@ DEFAULTCONF=Debug
 CONF=${DEFAULTCONF}
 
 # All Configurations
-ALLCONFS=Debug Release Release-PgSAgen Release-PgSAtest 
+ALLCONFS=Debug Release Release-PgSAgen Release-PgSAtest Debug-PgSAtest Debug-PgSAgen 
 
 
 # build

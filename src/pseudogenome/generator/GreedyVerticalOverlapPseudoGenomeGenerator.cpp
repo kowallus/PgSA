@@ -9,7 +9,8 @@ using namespace PgSAHelpers;
 namespace PgSAIndex {
 
     template<typename uint_read_len, typename uint_reads_cnt>
-    GreedyVerticalOverlapGeneratorTemplate<uint_read_len, uint_reads_cnt>::GreedyVerticalOverlapGeneratorTemplate(DefaultReadsSet* orgReadsSet) {
+    GreedyVerticalOverlapGeneratorTemplate<uint_read_len, uint_reads_cnt>::GreedyVerticalOverlapGeneratorTemplate(DefaultReadsSet* orgReadsSet)
+    {
         if (!orgReadsSet->isReadLengthConstant())
             cout << "Unsupported: variable length reads :(";
 
@@ -19,68 +20,52 @@ namespace PgSAIndex {
 
     template<typename uint_read_len, typename uint_reads_cnt>
     GreedyVerticalOverlapGeneratorTemplate<uint_read_len, uint_reads_cnt>::~GreedyVerticalOverlapGeneratorTemplate() {
-         delete(orgReadsSet);
+         delete(this->orgReadsSet);
+    }
+    
+        template<typename uint_read_len, typename uint_reads_cnt>
+    string GreedyVerticalOverlapGeneratorTemplate<uint_read_len, uint_reads_cnt>::getRead(uint_reads_cnt incIdx) {
+        return orgReadsSet->getRead(incIdx - 1);
     }
     
     template<typename uint_read_len, typename uint_reads_cnt>
-    void GreedyVerticalOverlapGeneratorTemplate<uint_read_len, uint_reads_cnt>::init() {   
-        prevRead = (uint_reads_cnt*) calloc(readsTotal() + 1, sizeof(uint_reads_cnt));
-        nextRead = (uint_reads_cnt*) calloc(readsTotal() + 1, sizeof(uint_reads_cnt));
-        overlap = (uint_read_len*) calloc(readsTotal() + 1, sizeof(uint_read_len));
-        headRead = (uint_reads_cnt*) calloc(readsTotal() + 1, sizeof(uint_reads_cnt));
-        readsLeft = readsTotal();
+    uint_read_len GreedyVerticalOverlapGeneratorTemplate<uint_read_len, uint_reads_cnt>::readLength(uint_reads_cnt incIdx) {
+        return orgReadsSet->readLength(incIdx - 1);
     }
+
+    template<typename uint_read_len, typename uint_reads_cnt>
+    uint_reads_cnt GreedyVerticalOverlapGeneratorTemplate<uint_read_len, uint_reads_cnt>::readsTotal() {
+        return orgReadsSet->readsCount();
+    }  
+    template<typename uint_read_len, typename uint_reads_cnt>
+    ReadsSetProperties* GreedyVerticalOverlapGeneratorTemplate<uint_read_len, uint_reads_cnt>::getReadsSetProperties() {
+        return orgReadsSet->getReadsSetProperties();
+    }
+
     
     template<typename uint_read_len, typename uint_reads_cnt>
-    void GreedyVerticalOverlapGeneratorTemplate<uint_read_len, uint_reads_cnt>::dispose() {   
-        free(prevRead);
-        free(nextRead);
-        free(overlap);
-        free(headRead);
-    }
+    void GreedyVerticalOverlapGeneratorTemplate<uint_read_len, uint_reads_cnt>::findOverlappingReads() {
 
-    template<typename uint_read_len, typename uint_reads_cnt>
-    PseudoGenomeBase* GreedyVerticalOverlapGeneratorTemplate<uint_read_len, uint_reads_cnt>::generatePseudoGenomeBase() {
-
-        clock_checkpoint();
-      
-        init();  
         populateReadsSet();
         
         cout << "Start overlapping.\n";
         
-        overlapMultisetVertical(orgReadsSet->maxReadLength(), 1);
+        overlapMultisetVertical(this->orgReadsSet->maxReadLength(), 1);
 
         readsSet.clear();
 
-        cout << "Overlapping done in " << clock_millis() << " msec\n\n";
-        
-        pseudoGenomeLength = countPseudoGenomeLength();
-        quick_stats();
-
-        PseudoGenomeBase* pgb = 0;
-        
-        if (isPseudoGenomeLengthStandardVirtual())
-            pgb = assemblePseudoGenomeTemplate<uint_pg_len_std>();
-        else if (isPseudoGenomeLengthMaximalVirtual())
-            pgb = assemblePseudoGenomeTemplate<uint_pg_len_max>();
-        else
-            cout << "Unsupported: pseudo genome length :(";
-        
-        dispose();
-        
-        return pgb;
+        cout << "Overlapping done in " << clock_millis() << " msec\n\n";     
     }
 
     template<typename uint_read_len, typename uint_reads_cnt>
     void GreedyVerticalOverlapGeneratorTemplate<uint_read_len, uint_reads_cnt>::populateReadsSet() {
         typename std::multiset<ReadWithIdx>::iterator it;
         uint_reads_cnt i = 0;
-        while (readsSet.empty() && ++i <= readsTotal())
-            if (!hasPredecessor(i))
+        while (readsSet.empty() && ++i <= this->readsTotal())
+            if (!this->hasPredecessor(i))
                 it = readsSet.insert({i, getRead(i).c_str()});
         while (++i <= readsTotal())
-            if (!hasPredecessor(i))
+            if (!this->hasPredecessor(i))
                 it = readsSet.insert(it, {i, getRead(i).c_str()});
 
         cout << "Put " << readsSet.size() << " reads in multiset.\n";
@@ -96,10 +81,10 @@ namespace PgSAIndex {
         while(it != readsSet.end()
                 && (prefixReadIdx = (*it).incIdx)
                 && (match = (readsSufPreCmp(suffix, (*it).read) == 0))
-                && ((suffixIdx == prefixReadIdx) || isHeadOf(suffixIdx, prefixReadIdx)))
+                && ((suffixIdx == prefixReadIdx) || this->isHeadOf(suffixIdx, prefixReadIdx)))
             it++;
         if (match && (it != readsSet.end())) {
-            setReadSuccessor(suffixIdx, prefixReadIdx, overlap);
+            this->setReadSuccessor(suffixIdx, prefixReadIdx, overlap);
 
             readsSet.erase(it);
             return prefixReadIdx;
@@ -111,80 +96,20 @@ namespace PgSAIndex {
     void GreedyVerticalOverlapGeneratorTemplate<uint_read_len, uint_reads_cnt>::overlapMultisetVertical(uint_read_len maxOverlap, uint_read_len overlapLimit) {
 
         for (uint_read_len j = maxOverlap; j >= overlapLimit; j--) {
-            if (!readsLeft)
+            if (!this->readsLeft)
                 break;
 
             // find biggest overlap
             for (uint_reads_cnt i = 1; i <= readsTotal(); i++) {
-                if (hasSuccessor(i))
+                if (this->hasSuccessor(i))
                     continue;
                 matchInReadsSet(i, j);
             }
-//            cout << readsLeft << " reads left after " << (uint_read_len_max) j << " overlap\n";
+            cout << this->readsLeft << " reads left after " << (uint_read_len_max) j << " overlap\n";
         }
 
-//        cout << readsLeft << " reads left after " << (uint_read_len_max) overlapLimit << " overlap\n";
-        cout << countComponents() << " pseudo-genome components\n";
-    }
-
-    template<typename uint_read_len, typename uint_reads_cnt>
-    void GreedyVerticalOverlapGeneratorTemplate<uint_read_len, uint_reads_cnt>::setReadSuccessor(uint_reads_cnt curIdx, uint_reads_cnt nextIdx, uint_read_len overlapLenght) {
-        nextRead[curIdx] = nextIdx;
-        overlap[curIdx] = overlapLenght;
-        if (headRead[nextIdx] == 0)
-            headRead[curIdx] = nextIdx;
-        else
-            headRead[curIdx] = headRead[nextIdx];
-        prevRead[nextIdx] = curIdx;
-        readsLeft--;
-    }
-
-    template<typename uint_read_len, typename uint_reads_cnt>
-    uint_reads_cnt GreedyVerticalOverlapGeneratorTemplate<uint_read_len, uint_reads_cnt>::getHead(uint_reads_cnt idx) {
-        if (headRead[idx] == 0)
-            return idx;
-
-        uint_reads_cnt headIdx = idx;
-        while(headRead[headIdx] != 0)
-            headIdx = headRead[headIdx];
-        headRead[idx] = headIdx;
-        return headIdx;
-    }
-
-    template<typename uint_read_len, typename uint_reads_cnt>
-    uint_pg_len_max GreedyVerticalOverlapGeneratorTemplate<uint_read_len, uint_reads_cnt>::countPseudoGenomeLength() {
-        uint_pg_len_max len = 0;
-        for(uint_reads_cnt i = 1; i <= readsTotal(); i++)
-            if (overlap[i] < readLength(i))
-                len += (readLength(i) - overlap[i]);
-
-        return len;
-    }
-
-    template<typename uint_read_len, typename uint_reads_cnt>
-    uint_reads_cnt GreedyVerticalOverlapGeneratorTemplate<uint_read_len, uint_reads_cnt>::countComponents() {
-        uint_reads_cnt count = 0;
-        for(uint_reads_cnt i = 1; i <= readsTotal(); i++)
-            if (!hasPredecessor(i) && hasSuccessor(i))
-                count++;
-        return count;
-    }
-
-    template<typename uint_read_len, typename uint_reads_cnt>
-    uint_reads_cnt GreedyVerticalOverlapGeneratorTemplate<uint_read_len, uint_reads_cnt>::countSingles() {
-        uint_reads_cnt count = 0;
-        for(uint_reads_cnt i = 1; i <= readsTotal(); i++)
-            if (!hasPredecessor(i) && !hasSuccessor(i))
-                count++;
-        return count;
-    }
-
-    template<typename uint_read_len, typename uint_reads_cnt>
-    void GreedyVerticalOverlapGeneratorTemplate<uint_read_len, uint_reads_cnt>::quick_stats() {
-
-        cout << pseudoGenomeLength << " bytes after overlapping\n";
-        cout << countComponents() << " pseudo-genome components\n";
-        cout << countSingles() << " single reads\n";
+//        cout << this->readsLeft << " reads left after " << (uint_read_len_max) overlapLimit << " overlap\n";
+        cout << this->countComponents() << " pseudo-genome components\n";
     }
 
 // HELPERS
@@ -236,4 +161,7 @@ namespace PgSAIndex {
         
         return generatorBase;
     }
+    
+    
+    
 }

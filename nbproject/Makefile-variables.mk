@@ -7,13 +7,13 @@ CND_BASEDIR=`pwd`
 CND_BUILDDIR=build
 CND_DISTDIR=dist
 # Debug configuration
-CND_PLATFORM_Debug=GNU-Linux-x86
-CND_ARTIFACT_DIR_Debug=dist/Debug/GNU-Linux-x86
-CND_ARTIFACT_NAME_Debug=libPgSA.so
-CND_ARTIFACT_PATH_Debug=dist/Debug/GNU-Linux-x86/libPgSA.so
-CND_PACKAGE_DIR_Debug=dist/Debug/GNU-Linux-x86/package
-CND_PACKAGE_NAME_Debug=libPgSA.so.tar
-CND_PACKAGE_PATH_Debug=dist/Debug/GNU-Linux-x86/package/libPgSA.so.tar
+CND_PLATFORM_Debug=Cygwin_4.x-Windows
+CND_ARTIFACT_DIR_Debug=build/Debug/Cygwin_4.x-Windows/tests/TestFiles
+CND_ARTIFACT_NAME_Debug=f2
+CND_ARTIFACT_PATH_Debug=build/Debug/Cygwin_4.x-Windows/tests/TestFiles/f2
+CND_PACKAGE_DIR_Debug=dist/Debug/Cygwin_4.x-Windows/package
+CND_PACKAGE_NAME_Debug=libPgSA.dll.tar
+CND_PACKAGE_PATH_Debug=dist/Debug/Cygwin_4.x-Windows/package/libPgSA.dll.tar
 # Release configuration
 CND_PLATFORM_Release=GNU-Linux-x86
 CND_ARTIFACT_DIR_Release=dist/Release/GNU-Linux-x86
@@ -23,21 +23,37 @@ CND_PACKAGE_DIR_Release=dist/Release/GNU-Linux-x86/package
 CND_PACKAGE_NAME_Release=libPgSA.so.tar
 CND_PACKAGE_PATH_Release=dist/Release/GNU-Linux-x86/package/libPgSA.so.tar
 # Release-PgSAgen configuration
-CND_PLATFORM_Release-PgSAgen=GNU-Linux-x86
-CND_ARTIFACT_DIR_Release-PgSAgen=dist/Release-PgSAgen/GNU-Linux-x86
-CND_ARTIFACT_NAME_Release-PgSAgen=PgSAgen
-CND_ARTIFACT_PATH_Release-PgSAgen=dist/Release-PgSAgen/GNU-Linux-x86/PgSAgen
-CND_PACKAGE_DIR_Release-PgSAgen=dist/Release-PgSAgen/GNU-Linux-x86/package
+CND_PLATFORM_Release-PgSAgen=Cygwin_4.x-Windows
+CND_ARTIFACT_DIR_Release-PgSAgen=build/Release-PgSAgen/Cygwin_4.x-Windows/tests/TestFiles
+CND_ARTIFACT_NAME_Release-PgSAgen=f2
+CND_ARTIFACT_PATH_Release-PgSAgen=build/Release-PgSAgen/Cygwin_4.x-Windows/tests/TestFiles/f2
+CND_PACKAGE_DIR_Release-PgSAgen=dist/Release-PgSAgen/Cygwin_4.x-Windows/package
 CND_PACKAGE_NAME_Release-PgSAgen=pgsa.tar
-CND_PACKAGE_PATH_Release-PgSAgen=dist/Release-PgSAgen/GNU-Linux-x86/package/pgsa.tar
+CND_PACKAGE_PATH_Release-PgSAgen=dist/Release-PgSAgen/Cygwin_4.x-Windows/package/pgsa.tar
 # Release-PgSAtest configuration
-CND_PLATFORM_Release-PgSAtest=GNU-Linux-x86
-CND_ARTIFACT_DIR_Release-PgSAtest=dist/Release-PgSAtest/GNU-Linux-x86
-CND_ARTIFACT_NAME_Release-PgSAtest=PgSAtest
-CND_ARTIFACT_PATH_Release-PgSAtest=dist/Release-PgSAtest/GNU-Linux-x86/PgSAtest
-CND_PACKAGE_DIR_Release-PgSAtest=dist/Release-PgSAtest/GNU-Linux-x86/package
+CND_PLATFORM_Release-PgSAtest=Cygwin_4.x-Windows
+CND_ARTIFACT_DIR_Release-PgSAtest=build/Release-PgSAtest/Cygwin_4.x-Windows/tests/TestFiles
+CND_ARTIFACT_NAME_Release-PgSAtest=f2
+CND_ARTIFACT_PATH_Release-PgSAtest=build/Release-PgSAtest/Cygwin_4.x-Windows/tests/TestFiles/f2
+CND_PACKAGE_DIR_Release-PgSAtest=dist/Release-PgSAtest/Cygwin_4.x-Windows/package
 CND_PACKAGE_NAME_Release-PgSAtest=pgsa.tar
-CND_PACKAGE_PATH_Release-PgSAtest=dist/Release-PgSAtest/GNU-Linux-x86/package/pgsa.tar
+CND_PACKAGE_PATH_Release-PgSAtest=dist/Release-PgSAtest/Cygwin_4.x-Windows/package/pgsa.tar
+# Debug-PgSAtest configuration
+CND_PLATFORM_Debug-PgSAtest=Cygwin_4.x-Windows
+CND_ARTIFACT_DIR_Debug-PgSAtest=build/Debug-PgSAtest/Cygwin_4.x-Windows/tests/TestFiles
+CND_ARTIFACT_NAME_Debug-PgSAtest=f2
+CND_ARTIFACT_PATH_Debug-PgSAtest=build/Debug-PgSAtest/Cygwin_4.x-Windows/tests/TestFiles/f2
+CND_PACKAGE_DIR_Debug-PgSAtest=dist/Debug-PgSAtest/Cygwin_4.x-Windows/package
+CND_PACKAGE_NAME_Debug-PgSAtest=pgsa.tar
+CND_PACKAGE_PATH_Debug-PgSAtest=dist/Debug-PgSAtest/Cygwin_4.x-Windows/package/pgsa.tar
+# Debug-PgSAgen configuration
+CND_PLATFORM_Debug-PgSAgen=Cygwin_4.x-Windows
+CND_ARTIFACT_DIR_Debug-PgSAgen=build/Debug-PgSAgen/Cygwin_4.x-Windows/tests/TestFiles
+CND_ARTIFACT_NAME_Debug-PgSAgen=f2
+CND_ARTIFACT_PATH_Debug-PgSAgen=build/Debug-PgSAgen/Cygwin_4.x-Windows/tests/TestFiles/f2
+CND_PACKAGE_DIR_Debug-PgSAgen=dist/Debug-PgSAgen/Cygwin_4.x-Windows/package
+CND_PACKAGE_NAME_Debug-PgSAgen=pgsa.tar
+CND_PACKAGE_PATH_Debug-PgSAgen=dist/Debug-PgSAgen/Cygwin_4.x-Windows/package/pgsa.tar
 #
 # include compiler specific variables
 #

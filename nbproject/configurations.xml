@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configurationDescriptor version="90">
+<configurationDescriptor version="95">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <logicalFolder name="src" displayName="Header Files (src)" projectFiles="true">
       <logicalFolder name="src" displayName="src" projectFiles="true">
@@ -20,7 +20,8 @@
         <logicalFolder name="pseudogenome"
                        displayName="pseudogenome"
                        projectFiles="true">
-          <logicalFolder name="generator" displayName="generator" projectFiles="true">
+          <logicalFolder name="f1" displayName="generator" projectFiles="true">
+            <itemPath>src/pseudogenome/generator/AbstractOverlapPseudoGenomeGenerator.h</itemPath>
             <itemPath>src/pseudogenome/generator/GreedyVerticalOverlapPseudoGenomeGenerator.h</itemPath>
             <itemPath>src/pseudogenome/generator/PackedPseudoGenomeGenerator.h</itemPath>
             <itemPath>src/pseudogenome/generator/PseudoGenomeGeneratorBase.h</itemPath>
@@ -95,21 +96,38 @@
                    projectFiles="true">
       <logicalFolder name="src" displayName="src" projectFiles="true">
         <logicalFolder name="index" displayName="index" projectFiles="true">
+          <logicalFolder name="f1" displayName="cache" projectFiles="true">
+            <logicalFolder name="f1" displayName="persistence" projectFiles="true">
+              <itemPath>src/index/cache/persistence/CountQueriesCachePersistence.cpp</itemPath>
+            </logicalFolder>
+          </logicalFolder>
+          <itemPath>src/index/PgSAIndexFactory.cpp</itemPath>
         </logicalFolder>
         <logicalFolder name="pseudogenome"
                        displayName="pseudogenome"
                        projectFiles="true">
           <logicalFolder name="generator" displayName="generator" projectFiles="true">
+            <itemPath>src/pseudogenome/generator/AbstractOverlapPseudoGenomeGenerator.cpp</itemPath>
             <itemPath>src/pseudogenome/generator/GreedyVerticalOverlapPseudoGenomeGenerator.cpp</itemPath>
           </logicalFolder>
+          <logicalFolder name="f1" displayName="packing" projectFiles="true">
+            <itemPath>src/pseudogenome/packing/SymbolsPackingFacility.cpp</itemPath>
+          </logicalFolder>
           <logicalFolder name="persistence" displayName="persistence" projectFiles="true">
+            <itemPath>src/pseudogenome/persistence/PseudoGenomePersistence.cpp</itemPath>
           </logicalFolder>
           <logicalFolder name="readslist" displayName="readslist" projectFiles="true">
+            <itemPath>src/pseudogenome/readslist/ListOfConstantLengthReads.cpp</itemPath>
           </logicalFolder>
+          <itemPath>src/pseudogenome/DefaultPseudoGenome.cpp</itemPath>
+          <itemPath>src/pseudogenome/MultiPackedPseudoGenome.cpp</itemPath>
+          <itemPath>src/pseudogenome/PackedPseudoGenome.cpp</itemPath>
         </logicalFolder>
         <logicalFolder name="readsset" displayName="readsset" projectFiles="true">
           <logicalFolder name="iterator" displayName="iterator" projectFiles="true">
+            <itemPath>src/readsset/iterator/ReadsSetIterator.cpp</itemPath>
           </logicalFolder>
+          <itemPath>src/readsset/DefaultReadsSet.cpp</itemPath>
         </logicalFolder>
         <logicalFolder name="suffixarray" displayName="suffixarray" projectFiles="true">
           <logicalFolder name="generator" displayName="generator" projectFiles="true">
@@ -117,9 +135,13 @@
           <logicalFolder name="lookuptable" displayName="lookuptable" projectFiles="true">
           </logicalFolder>
           <logicalFolder name="persistence" displayName="persistence" projectFiles="true">
+            <itemPath>src/suffixarray/persistence/SuffixArrayPersistence.cpp</itemPath>
           </logicalFolder>
+          <itemPath>src/suffixarray/DefaultSuffixArray.cpp</itemPath>
         </logicalFolder>
         <logicalFolder name="test" displayName="test" projectFiles="true">
+          <itemPath>src/test/PgSAtests.cpp</itemPath>
+          <itemPath>src/test/testdata.cpp</itemPath>
         </logicalFolder>
         <itemPath>src/PgSAgen.cpp</itemPath>
         <itemPath>src/PgSAtest.cpp</itemPath>
@@ -137,8 +159,11 @@
                      kind="TEST">
         <itemPath>src/tests/PgSAgen-fasta-human.cpp</itemPath>
       </logicalFolder>
-      <logicalFolder name="f2" displayName="gkbug" projectFiles="true" kind="TEST">
-        <itemPath>src/tests/gkbugdump.cpp</itemPath>
+      <logicalFolder name="f3"
+                     displayName="pgsa-bsearch"
+                     projectFiles="true"
+                     kind="TEST">
+        <itemPath>src/tests/PgSASearchTest.cpp</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
@@ -155,19 +180,30 @@
   <confs>
     <conf name="Debug" type="2">
       <toolsSet>
-        <compilerSet>GNU|GNU</compilerSet>
+        <compilerSet>default</compilerSet>
         <dependencyChecking>true</dependencyChecking>
         <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
       <compileType>
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </cTool>
         <ccTool>
           <stripSymbols>true</stripSymbols>
           <standard>8</standard>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
           <commandLine>-pipe</commandLine>
         </ccTool>
         <fortranCompilerTool>
           <developmentMode>0</developmentMode>
         </fortranCompilerTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f2</output>
+        </linkerTool>
       </compileType>
       <folder path="TestFiles/f1">
         <cTool>
@@ -184,7 +220,7 @@
           <output>${TESTDIR}/TestFiles/f1</output>
         </linkerTool>
       </folder>
-      <folder path="TestFiles/f2">
+      <folder path="TestFiles/f3">
         <cTool>
           <incDir>
             <pElem>.</pElem>
@@ -196,7 +232,7 @@
           </incDir>
         </ccTool>
         <linkerTool>
-          <output>${TESTDIR}/TestFiles/f2</output>
+          <output>${TESTDIR}/TestFiles/f3</output>
         </linkerTool>
       </folder>
       <item path="src/helper.cpp" ex="false" tool="1" flavor2="0">
@@ -209,6 +245,8 @@
             ex="false"
             tool="3"
             flavor2="0">
+      </item>
+      <item path="src/index/PgSAIndexFactory.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/index/PgSAIndexFactory.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -229,6 +267,11 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="src/index/cache/persistence/CountQueriesCachePersistence.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
       <item path="src/index/cache/persistence/CountQueriesCachePersistence.h"
             ex="false"
             tool="3"
@@ -238,14 +281,29 @@
       </item>
       <item path="src/pgsaconfig.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="src/pseudogenome/DefaultPseudoGenome.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
       <item path="src/pseudogenome/DefaultPseudoGenome.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
+      <item path="src/pseudogenome/MultiPackedPseudoGenome.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
       <item path="src/pseudogenome/MultiPackedPseudoGenome.h"
             ex="false"
             tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/PackedPseudoGenome.cpp"
+            ex="false"
+            tool="1"
             flavor2="0">
       </item>
       <item path="src/pseudogenome/PackedPseudoGenome.h"
@@ -264,6 +322,16 @@
             flavor2="0">
       </item>
       <item path="src/pseudogenome/PseudoGenomeInterface.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/generator/AbstractOverlapPseudoGenomeGenerator.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/generator/AbstractOverlapPseudoGenomeGenerator.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -288,14 +356,29 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="src/pseudogenome/packing/SymbolsPackingFacility.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
       <item path="src/pseudogenome/packing/SymbolsPackingFacility.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
+      <item path="src/pseudogenome/persistence/PseudoGenomePersistence.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
       <item path="src/pseudogenome/persistence/PseudoGenomePersistence.h"
             ex="false"
             tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/readslist/ListOfConstantLengthReads.cpp"
+            ex="false"
+            tool="1"
             flavor2="0">
       </item>
       <item path="src/pseudogenome/readslist/ListOfConstantLengthReads.h"
@@ -318,11 +401,18 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="src/readsset/DefaultReadsSet.cpp" ex="false" tool="1" flavor2="0">
+      </item>
       <item path="src/readsset/DefaultReadsSet.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/readsset/ReadsSetBase.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/readsset/ReadsSetInterface.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/readsset/iterator/ReadsSetIterator.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
       </item>
       <item path="src/readsset/iterator/ReadsSetIterator.h"
             ex="false"
@@ -337,6 +427,11 @@
       <item path="src/suffixarray/BoostedSuffixArrayFactory.h"
             ex="false"
             tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/suffixarray/DefaultSuffixArray.cpp"
+            ex="false"
+            tool="1"
             flavor2="0">
       </item>
       <item path="src/suffixarray/DefaultSuffixArray.h"
@@ -391,6 +486,11 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="src/suffixarray/persistence/SuffixArrayPersistence.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
       <item path="src/suffixarray/persistence/SuffixArrayPersistence.h"
             ex="false"
             tool="3"
@@ -398,26 +498,36 @@
       </item>
       <item path="src/test/PgSATests.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="src/test/PgSAtests.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/test/testdata.cpp" ex="false" tool="1" flavor2="0">
+      </item>
       <item path="src/test/testdata.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="src/tests/PgSAgen-fasta-human.cpp" ex="false" tool="1" flavor2="0">
+      <item path="src/tests/PgSASearchTest.cpp" ex="false" tool="1" flavor2="0">
       </item>
-      <item path="src/tests/gkbugdump.cpp" ex="false" tool="1" flavor2="0">
+      <item path="src/tests/PgSAgen-fasta-human.cpp" ex="false" tool="1" flavor2="0">
       </item>
     </conf>
     <conf name="Release" type="2">
       <toolsSet>
-        <compilerSet>GNU|GNU</compilerSet>
+        <compilerSet>default</compilerSet>
         <dependencyChecking>true</dependencyChecking>
         <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
       <compileType>
         <cTool>
           <developmentMode>5</developmentMode>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
         </cTool>
         <ccTool>
           <developmentMode>6</developmentMode>
           <standard>8</standard>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
           <commandLine>-pipe</commandLine>
           <warningLevel>2</warningLevel>
         </ccTool>
@@ -427,6 +537,9 @@
         <asmTool>
           <developmentMode>5</developmentMode>
         </asmTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f2</output>
+        </linkerTool>
       </compileType>
       <folder path="TestFiles/f1">
         <cTool>
@@ -443,7 +556,7 @@
           <output>${TESTDIR}/TestFiles/f1</output>
         </linkerTool>
       </folder>
-      <folder path="TestFiles/f2">
+      <folder path="TestFiles/f3">
         <cTool>
           <incDir>
             <pElem>.</pElem>
@@ -455,7 +568,7 @@
           </incDir>
         </ccTool>
         <linkerTool>
-          <output>${TESTDIR}/TestFiles/f2</output>
+          <output>${TESTDIR}/TestFiles/f3</output>
         </linkerTool>
       </folder>
       <item path="src/helper.cpp" ex="false" tool="1" flavor2="0">
@@ -468,6 +581,8 @@
             ex="false"
             tool="3"
             flavor2="0">
+      </item>
+      <item path="src/index/PgSAIndexFactory.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/index/PgSAIndexFactory.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -488,6 +603,11 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="src/index/cache/persistence/CountQueriesCachePersistence.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
       <item path="src/index/cache/persistence/CountQueriesCachePersistence.h"
             ex="false"
             tool="3"
@@ -497,14 +617,29 @@
       </item>
       <item path="src/pgsaconfig.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="src/pseudogenome/DefaultPseudoGenome.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
       <item path="src/pseudogenome/DefaultPseudoGenome.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
+      <item path="src/pseudogenome/MultiPackedPseudoGenome.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
       <item path="src/pseudogenome/MultiPackedPseudoGenome.h"
             ex="false"
             tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/PackedPseudoGenome.cpp"
+            ex="false"
+            tool="1"
             flavor2="0">
       </item>
       <item path="src/pseudogenome/PackedPseudoGenome.h"
@@ -523,6 +658,16 @@
             flavor2="0">
       </item>
       <item path="src/pseudogenome/PseudoGenomeInterface.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/generator/AbstractOverlapPseudoGenomeGenerator.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/generator/AbstractOverlapPseudoGenomeGenerator.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -547,14 +692,29 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="src/pseudogenome/packing/SymbolsPackingFacility.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
       <item path="src/pseudogenome/packing/SymbolsPackingFacility.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
+      <item path="src/pseudogenome/persistence/PseudoGenomePersistence.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
       <item path="src/pseudogenome/persistence/PseudoGenomePersistence.h"
             ex="false"
             tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/readslist/ListOfConstantLengthReads.cpp"
+            ex="false"
+            tool="1"
             flavor2="0">
       </item>
       <item path="src/pseudogenome/readslist/ListOfConstantLengthReads.h"
@@ -577,11 +737,18 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="src/readsset/DefaultReadsSet.cpp" ex="false" tool="1" flavor2="0">
+      </item>
       <item path="src/readsset/DefaultReadsSet.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/readsset/ReadsSetBase.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/readsset/ReadsSetInterface.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/readsset/iterator/ReadsSetIterator.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
       </item>
       <item path="src/readsset/iterator/ReadsSetIterator.h"
             ex="false"
@@ -596,6 +763,11 @@
       <item path="src/suffixarray/BoostedSuffixArrayFactory.h"
             ex="false"
             tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/suffixarray/DefaultSuffixArray.cpp"
+            ex="false"
+            tool="1"
             flavor2="0">
       </item>
       <item path="src/suffixarray/DefaultSuffixArray.h"
@@ -650,6 +822,11 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="src/suffixarray/persistence/SuffixArrayPersistence.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
       <item path="src/suffixarray/persistence/SuffixArrayPersistence.h"
             ex="false"
             tool="3"
@@ -657,11 +834,15 @@
       </item>
       <item path="src/test/PgSATests.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="src/test/PgSAtests.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/test/testdata.cpp" ex="false" tool="1" flavor2="0">
+      </item>
       <item path="src/test/testdata.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="src/tests/PgSAgen-fasta-human.cpp" ex="false" tool="1" flavor2="0">
+      <item path="src/tests/PgSASearchTest.cpp" ex="false" tool="1" flavor2="0">
       </item>
-      <item path="src/tests/gkbugdump.cpp" ex="false" tool="1" flavor2="0">
+      <item path="src/tests/PgSAgen-fasta-human.cpp" ex="false" tool="1" flavor2="0">
       </item>
     </conf>
     <conf name="Release-PgSAgen" type="1">
@@ -671,14 +852,22 @@
         <rebuildPropChanged>true</rebuildPropChanged>
       </toolsSet>
       <compileType>
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </cTool>
         <ccTool>
           <developmentMode>6</developmentMode>
           <stripSymbols>true</stripSymbols>
           <standard>8</standard>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
           <warningLevel>2</warningLevel>
         </ccTool>
         <linkerTool>
-          <output>${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/PgSAgen</output>
+          <output>${TESTDIR}/TestFiles/f2</output>
         </linkerTool>
       </compileType>
       <folder path="TestFiles/f1">
@@ -696,7 +885,7 @@
           <output>${TESTDIR}/TestFiles/f1</output>
         </linkerTool>
       </folder>
-      <folder path="TestFiles/f2">
+      <folder path="TestFiles/f3">
         <cTool>
           <incDir>
             <pElem>.</pElem>
@@ -708,7 +897,7 @@
           </incDir>
         </ccTool>
         <linkerTool>
-          <output>${TESTDIR}/TestFiles/f2</output>
+          <output>${TESTDIR}/TestFiles/f3</output>
         </linkerTool>
       </folder>
       <item path="src/PgSAgen.cpp" ex="false" tool="1" flavor2="0">
@@ -743,6 +932,11 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="src/index/cache/persistence/CountQueriesCachePersistence.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
       <item path="src/index/cache/persistence/CountQueriesCachePersistence.h"
             ex="false"
             tool="3"
@@ -752,14 +946,29 @@
       </item>
       <item path="src/pgsaconfig.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="src/pseudogenome/DefaultPseudoGenome.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
       <item path="src/pseudogenome/DefaultPseudoGenome.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
+      <item path="src/pseudogenome/MultiPackedPseudoGenome.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
       <item path="src/pseudogenome/MultiPackedPseudoGenome.h"
             ex="false"
             tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/PackedPseudoGenome.cpp"
+            ex="false"
+            tool="1"
             flavor2="0">
       </item>
       <item path="src/pseudogenome/PackedPseudoGenome.h"
@@ -778,6 +987,16 @@
             flavor2="0">
       </item>
       <item path="src/pseudogenome/PseudoGenomeInterface.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/generator/AbstractOverlapPseudoGenomeGenerator.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/generator/AbstractOverlapPseudoGenomeGenerator.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -802,14 +1021,29 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="src/pseudogenome/packing/SymbolsPackingFacility.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
       <item path="src/pseudogenome/packing/SymbolsPackingFacility.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
+      <item path="src/pseudogenome/persistence/PseudoGenomePersistence.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
       <item path="src/pseudogenome/persistence/PseudoGenomePersistence.h"
             ex="false"
             tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/readslist/ListOfConstantLengthReads.cpp"
+            ex="false"
+            tool="1"
             flavor2="0">
       </item>
       <item path="src/pseudogenome/readslist/ListOfConstantLengthReads.h"
@@ -832,11 +1066,18 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="src/readsset/DefaultReadsSet.cpp" ex="false" tool="1" flavor2="0">
+      </item>
       <item path="src/readsset/DefaultReadsSet.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/readsset/ReadsSetBase.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/readsset/ReadsSetInterface.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/readsset/iterator/ReadsSetIterator.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
       </item>
       <item path="src/readsset/iterator/ReadsSetIterator.h"
             ex="false"
@@ -851,6 +1092,11 @@
       <item path="src/suffixarray/BoostedSuffixArrayFactory.h"
             ex="false"
             tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/suffixarray/DefaultSuffixArray.cpp"
+            ex="false"
+            tool="1"
             flavor2="0">
       </item>
       <item path="src/suffixarray/DefaultSuffixArray.h"
@@ -905,6 +1151,11 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="src/suffixarray/persistence/SuffixArrayPersistence.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
       <item path="src/suffixarray/persistence/SuffixArrayPersistence.h"
             ex="false"
             tool="3"
@@ -912,11 +1163,15 @@
       </item>
       <item path="src/test/PgSATests.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="src/test/PgSAtests.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/test/testdata.cpp" ex="false" tool="1" flavor2="0">
+      </item>
       <item path="src/test/testdata.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="src/tests/PgSAgen-fasta-human.cpp" ex="false" tool="1" flavor2="0">
+      <item path="src/tests/PgSASearchTest.cpp" ex="false" tool="1" flavor2="0">
       </item>
-      <item path="src/tests/gkbugdump.cpp" ex="false" tool="1" flavor2="0">
+      <item path="src/tests/PgSAgen-fasta-human.cpp" ex="false" tool="1" flavor2="0">
       </item>
     </conf>
     <conf name="Release-PgSAtest" type="1">
@@ -926,14 +1181,25 @@
         <rebuildPropChanged>true</rebuildPropChanged>
       </toolsSet>
       <compileType>
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </cTool>
         <ccTool>
           <developmentMode>6</developmentMode>
           <stripSymbols>true</stripSymbols>
           <standard>8</standard>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
           <warningLevel>2</warningLevel>
         </ccTool>
         <linkerTool>
-          <output>${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/PgSAtest</output>
+          <output>${TESTDIR}/TestFiles/f2</output>
+          <linkerLibItems>
+            <linkerLibLibItem>GkArrays</linkerLibLibItem>
+          </linkerLibItems>
         </linkerTool>
       </compileType>
       <folder path="TestFiles/f1">
@@ -951,7 +1217,7 @@
           <output>${TESTDIR}/TestFiles/f1</output>
         </linkerTool>
       </folder>
-      <folder path="TestFiles/f2">
+      <folder path="TestFiles/f3">
         <cTool>
           <incDir>
             <pElem>.</pElem>
@@ -963,10 +1229,7 @@
           </incDir>
         </ccTool>
         <linkerTool>
-          <output>${TESTDIR}/TestFiles/f2</output>
-          <linkerLibItems>
-            <linkerLibLibItem>GkArrays</linkerLibLibItem>
-          </linkerLibItems>
+          <output>${TESTDIR}/TestFiles/f3</output>
         </linkerTool>
       </folder>
       <item path="src/PgSAtest.cpp" ex="false" tool="1" flavor2="0">
@@ -981,6 +1244,8 @@
             ex="false"
             tool="3"
             flavor2="0">
+      </item>
+      <item path="src/index/PgSAIndexFactory.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/index/PgSAIndexFactory.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -1001,6 +1266,11 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="src/index/cache/persistence/CountQueriesCachePersistence.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
       <item path="src/index/cache/persistence/CountQueriesCachePersistence.h"
             ex="false"
             tool="3"
@@ -1010,14 +1280,29 @@
       </item>
       <item path="src/pgsaconfig.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="src/pseudogenome/DefaultPseudoGenome.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
       <item path="src/pseudogenome/DefaultPseudoGenome.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
+      <item path="src/pseudogenome/MultiPackedPseudoGenome.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
       <item path="src/pseudogenome/MultiPackedPseudoGenome.h"
             ex="false"
             tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/PackedPseudoGenome.cpp"
+            ex="false"
+            tool="1"
             flavor2="0">
       </item>
       <item path="src/pseudogenome/PackedPseudoGenome.h"
@@ -1036,6 +1321,16 @@
             flavor2="0">
       </item>
       <item path="src/pseudogenome/PseudoGenomeInterface.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/generator/AbstractOverlapPseudoGenomeGenerator.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/generator/AbstractOverlapPseudoGenomeGenerator.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -1060,14 +1355,29 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="src/pseudogenome/packing/SymbolsPackingFacility.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
       <item path="src/pseudogenome/packing/SymbolsPackingFacility.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
+      <item path="src/pseudogenome/persistence/PseudoGenomePersistence.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
       <item path="src/pseudogenome/persistence/PseudoGenomePersistence.h"
             ex="false"
             tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/readslist/ListOfConstantLengthReads.cpp"
+            ex="false"
+            tool="1"
             flavor2="0">
       </item>
       <item path="src/pseudogenome/readslist/ListOfConstantLengthReads.h"
@@ -1090,11 +1400,18 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="src/readsset/DefaultReadsSet.cpp" ex="false" tool="1" flavor2="0">
+      </item>
       <item path="src/readsset/DefaultReadsSet.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/readsset/ReadsSetBase.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/readsset/ReadsSetInterface.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/readsset/iterator/ReadsSetIterator.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
       </item>
       <item path="src/readsset/iterator/ReadsSetIterator.h"
             ex="false"
@@ -1109,6 +1426,11 @@
       <item path="src/suffixarray/BoostedSuffixArrayFactory.h"
             ex="false"
             tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/suffixarray/DefaultSuffixArray.cpp"
+            ex="false"
+            tool="1"
             flavor2="0">
       </item>
       <item path="src/suffixarray/DefaultSuffixArray.h"
@@ -1163,6 +1485,11 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="src/suffixarray/persistence/SuffixArrayPersistence.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
       <item path="src/suffixarray/persistence/SuffixArrayPersistence.h"
             ex="false"
             tool="3"
@@ -1170,11 +1497,680 @@
       </item>
       <item path="src/test/PgSATests.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="src/test/PgSAtests.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/test/testdata.cpp" ex="false" tool="1" flavor2="0">
+      </item>
       <item path="src/test/testdata.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/tests/PgSASearchTest.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/tests/PgSAgen-fasta-human.cpp" ex="false" tool="1" flavor2="0">
       </item>
-      <item path="src/tests/gkbugdump.cpp" ex="false" tool="1" flavor2="0">
+    </conf>
+    <conf name="Debug-PgSAtest" type="1">
+      <toolsSet>
+        <compilerSet>default</compilerSet>
+        <dependencyChecking>true</dependencyChecking>
+        <rebuildPropChanged>true</rebuildPropChanged>
+      </toolsSet>
+      <compileType>
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </cTool>
+        <ccTool>
+          <stripSymbols>true</stripSymbols>
+          <standard>8</standard>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+          <warningLevel>2</warningLevel>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f2</output>
+          <linkerLibItems>
+            <linkerLibLibItem>GkArrays</linkerLibLibItem>
+          </linkerLibItems>
+        </linkerTool>
+      </compileType>
+      <folder path="TestFiles/f1">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </cTool>
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f1</output>
+        </linkerTool>
+      </folder>
+      <folder path="TestFiles/f3">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </cTool>
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f3</output>
+        </linkerTool>
+      </folder>
+      <item path="src/PgSAgen.cpp" ex="true" tool="1" flavor2="8">
+      </item>
+      <item path="src/PgSAtest.cpp" ex="false" tool="1" flavor2="8">
+      </item>
+      <item path="src/helper.cpp" ex="false" tool="1" flavor2="8">
+      </item>
+      <item path="src/helper.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/index/DefaultPgSAIndex.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/index/DefaultRevCompPgSAIndex.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/index/PgSAIndexFactory.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/index/PgSAIndexFactory.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/index/PgSAIndexInterface.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/index/cache/CountQueriesCacheBase.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/index/cache/CountQueriesCacheInterface.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/index/cache/DefaultCountQueriesCache.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/index/cache/persistence/CountQueriesCachePersistence.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/index/cache/persistence/CountQueriesCachePersistence.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/pgsaconfig.cpp" ex="false" tool="1" flavor2="8">
+      </item>
+      <item path="src/pgsaconfig.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/pseudogenome/DefaultPseudoGenome.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/DefaultPseudoGenome.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/MultiPackedPseudoGenome.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/MultiPackedPseudoGenome.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/PackedPseudoGenome.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/PackedPseudoGenome.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/PackedPseudoGenomeBase.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/PseudoGenomeBase.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/PseudoGenomeInterface.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/generator/AbstractOverlapPseudoGenomeGenerator.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/generator/AbstractOverlapPseudoGenomeGenerator.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/generator/GreedyVerticalOverlapPseudoGenomeGenerator.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+      </item>
+      <item path="src/pseudogenome/generator/GreedyVerticalOverlapPseudoGenomeGenerator.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/generator/PackedPseudoGenomeGenerator.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/generator/PseudoGenomeGeneratorBase.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/packing/SymbolsPackingFacility.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/packing/SymbolsPackingFacility.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/persistence/PseudoGenomePersistence.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/persistence/PseudoGenomePersistence.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/readslist/ListOfConstantLengthReads.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/readslist/ListOfConstantLengthReads.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/readslist/ReadsListInterface.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/readslist/ReadsListTypes.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/readslist/iterator/ReadsListIteratorInterface.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/readsset/DefaultReadsSet.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/readsset/DefaultReadsSet.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/readsset/ReadsSetBase.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/readsset/ReadsSetInterface.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/readsset/iterator/ReadsSetIterator.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/readsset/iterator/ReadsSetIterator.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/suffixarray/BoostedSuffixArray.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/suffixarray/BoostedSuffixArrayFactory.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/suffixarray/DefaultSuffixArray.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/suffixarray/DefaultSuffixArray.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/suffixarray/DefaultSuffixArrayFactory.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/suffixarray/SparseSuffixArray.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/suffixarray/SparseSuffixArrayBase.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/suffixarray/SparseSuffixArrayFactory.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/suffixarray/SuffixArrayBase.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/suffixarray/SuffixArrayInterface.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/suffixarray/generator/SuffixArrayGenerator.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/suffixarray/iterator/OccurrencesIteratorInterface.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/suffixarray/lookuptable/DefaultSuffixArrayLookupTable.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/suffixarray/lookuptable/SuffixArrayLookupTableInterface.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/suffixarray/persistence/SuffixArrayPersistence.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/suffixarray/persistence/SuffixArrayPersistence.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/test/PgSATests.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/test/PgSAtests.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/test/testdata.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/test/testdata.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/tests/PgSASearchTest.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/tests/PgSAgen-fasta-human.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+    </conf>
+    <conf name="Debug-PgSAgen" type="1">
+      <toolsSet>
+        <compilerSet>default</compilerSet>
+        <dependencyChecking>true</dependencyChecking>
+        <rebuildPropChanged>true</rebuildPropChanged>
+      </toolsSet>
+      <compileType>
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </cTool>
+        <ccTool>
+          <stripSymbols>true</stripSymbols>
+          <standard>8</standard>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+          <warningLevel>2</warningLevel>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f2</output>
+        </linkerTool>
+      </compileType>
+      <folder path="TestFiles/f1">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </cTool>
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f1</output>
+        </linkerTool>
+      </folder>
+      <folder path="TestFiles/f3">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </cTool>
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f3</output>
+        </linkerTool>
+      </folder>
+      <item path="src/PgSAgen.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/helper.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/helper.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/index/DefaultPgSAIndex.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/index/DefaultRevCompPgSAIndex.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/index/PgSAIndexFactory.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/index/PgSAIndexFactory.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/index/PgSAIndexInterface.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/index/cache/CountQueriesCacheBase.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/index/cache/CountQueriesCacheInterface.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/index/cache/DefaultCountQueriesCache.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/index/cache/persistence/CountQueriesCachePersistence.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/index/cache/persistence/CountQueriesCachePersistence.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/pgsaconfig.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/pgsaconfig.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/pseudogenome/DefaultPseudoGenome.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/DefaultPseudoGenome.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/MultiPackedPseudoGenome.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/MultiPackedPseudoGenome.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/PackedPseudoGenome.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/PackedPseudoGenome.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/PackedPseudoGenomeBase.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/PseudoGenomeBase.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/PseudoGenomeInterface.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/generator/AbstractOverlapPseudoGenomeGenerator.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/generator/AbstractOverlapPseudoGenomeGenerator.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/generator/GreedyVerticalOverlapPseudoGenomeGenerator.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/generator/GreedyVerticalOverlapPseudoGenomeGenerator.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/generator/PackedPseudoGenomeGenerator.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/generator/PseudoGenomeGeneratorBase.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/packing/SymbolsPackingFacility.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/packing/SymbolsPackingFacility.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/persistence/PseudoGenomePersistence.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/persistence/PseudoGenomePersistence.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/readslist/ListOfConstantLengthReads.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/readslist/ListOfConstantLengthReads.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/readslist/ReadsListInterface.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/readslist/ReadsListTypes.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/readslist/iterator/ReadsListIteratorInterface.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/readsset/DefaultReadsSet.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/readsset/DefaultReadsSet.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/readsset/ReadsSetBase.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/readsset/ReadsSetInterface.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/readsset/iterator/ReadsSetIterator.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/readsset/iterator/ReadsSetIterator.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/suffixarray/BoostedSuffixArray.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/suffixarray/BoostedSuffixArrayFactory.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/suffixarray/DefaultSuffixArray.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/suffixarray/DefaultSuffixArray.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/suffixarray/DefaultSuffixArrayFactory.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/suffixarray/SparseSuffixArray.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/suffixarray/SparseSuffixArrayBase.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/suffixarray/SparseSuffixArrayFactory.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/suffixarray/SuffixArrayBase.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/suffixarray/SuffixArrayInterface.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/suffixarray/generator/SuffixArrayGenerator.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/suffixarray/iterator/OccurrencesIteratorInterface.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/suffixarray/lookuptable/DefaultSuffixArrayLookupTable.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/suffixarray/lookuptable/SuffixArrayLookupTableInterface.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/suffixarray/persistence/SuffixArrayPersistence.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/suffixarray/persistence/SuffixArrayPersistence.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/test/PgSATests.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/test/PgSAtests.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/test/testdata.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/test/testdata.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/tests/PgSASearchTest.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/tests/PgSAgen-fasta-human.cpp" ex="false" tool="1" flavor2="0">
       </item>
     </conf>
   </confs>

@@ -370,7 +370,7 @@ namespace PgSAIndex {
                 uint_read_len shiftedLength = kmerLength - shift;
                 this->findKmerRange(shiftedKmer, shiftedLength, range);
 
-                sa_pos_addr posAddress;
+                sa_pos_addr posAddress = 0;
                 while(range.start < range.end && !matchPrefix(posAddress = saPosIdx2Address(range.start)))
                     range.start++;
                 if (range.start >= range.end) {

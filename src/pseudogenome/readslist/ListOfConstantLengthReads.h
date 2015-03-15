@@ -52,11 +52,7 @@ namespace PgSAIndex {
             uint_pg_len maxPos;
             bool isSortRequired;
 
-            void generateReverseIndex() {
-                readsListIdx = new uint_reads_cnt[readsCount];
-                for (uint_reads_cnt i = 0; i < readsCount; i++)
-                    readsListIdx[this->getReadOriginalIndexImpl(i)] = i;                
-            }
+            void generateReverseIndex();
             
             ///////////////////////////
             // ITERATION VARIABLES
@@ -111,9 +107,7 @@ namespace PgSAIndex {
                 flagsVariableByAddress(address) |= OCCUR_FLAG;
             }
 
-            inline void clearOccurFlagsByAddress(uchar* address) {
-                flagsVariableByAddress(address) &= ~(OCCURFLAGS_MASK);
-            }
+            void clearOccurFlagsByAddress(uchar* address);
 
             inline void setOccurOnceFlagByAddress(uchar* address) {
                 flagsVariableByAddress(address) |= (((flagsVariableByAddress(address) & OCCUR_FLAG) << 1) | OCCUR_FLAG);
@@ -123,47 +117,13 @@ namespace PgSAIndex {
             
         public:
 
-            ListOfConstantLengthReads(uint_read_len readLength, uint_reads_cnt readsCount, uint_pg_len pseudoGenomeLength)
-            : readLength(readLength)
-            {
-                this->readsCount = readsCount;
-                this->pseudoGenomeLength = pseudoGenomeLength;
-                this->pgReadsList = new uchar[( readsCount + 1) * (uint_max) LIST_ELEMENT_SIZE];
-                this->curRawIdx = 0;
-                this->maxPos = 0;
-                this->isSortRequired = false;
-                this->duplicateFilterK = -1;
-            }
+            ListOfConstantLengthReads(uint_read_len readLength, uint_reads_cnt readsCount, uint_pg_len pseudoGenomeLength);
 
-            ListOfConstantLengthReads(uint_read_len readLength, std::istream& src)
-            : readLength(readLength) {
-                src >> readsCount;
-                src >> pseudoGenomeLength;
-                int srchelper;
-                src >> srchelper;
-                duplicateFilterK = srchelper;
-                src.get(); //"\n";
-                this->pgReadsList = (uchar*) PgSAHelpers::readArray(src, sizeof(uchar) * (readsCount + 1) * LIST_ELEMENT_SIZE);
+            ListOfConstantLengthReads(uint_read_len readLength, std::istream& src);
 
-                this->isSortRequired = false;
-                generateReverseIndex();
-                this->pgReadsListEnd = this->pgReadsList + (uint_max) readsCount * LIST_ELEMENT_SIZE;
-            }
+            void writeImpl(std::ostream& dest);
 
-            void writeImpl(std::ostream& dest) {
-                if (isSortRequired)
-                    cout << "WARNING: Reads list invalid!";
-                dest << readsCount << "\n";
-                dest << pseudoGenomeLength << "\n";
-                dest << (int) duplicateFilterK << "\n";
-                PgSAHelpers::writeArray(dest, this->pgReadsList, sizeof(uchar) * (readsCount + 1) * LIST_ELEMENT_SIZE );
-            };
-
-            virtual ~ListOfConstantLengthReads() {
-                delete[] (this->pgReadsList);
-                if (this->readsListIdx != 0)
-                    delete[] (this->readsListIdx);
-            };
+            virtual ~ListOfConstantLengthReads();
             
             inline const uchar getListElementSizeImpl() { return LIST_ELEMENT_SIZE; };
 
@@ -196,24 +156,20 @@ namespace PgSAIndex {
 
             inline void setOccurFlagImpl(uint_reads_cnt idx) { setOccurFlagByAddress(idx2Address(idx)); };
 
-            inline void clearOccurFlagsImpl(uint_reads_cnt idx) { clearOccurFlagsByAddress(idx2Address(idx)); };
+            void clearOccurFlagsImpl(uint_reads_cnt idx);
 
             inline void setOccurOnceFlagImpl(uint_reads_cnt idx) { setOccurOnceFlagByAddress(idx2Address(idx)); };
 
             ///////////////////////////
             // ITERATION ROUTINES
                                     
-            inline void initIterationImpl(const uint_read_len& kmerLength) { 
-                guardOffset = readLength - kmerLength;
-                skipDuplicateFilter = kmerLength < duplicateFilterK;
-                itAddress = pgReadsList;
-            };
+            void initIterationImpl(const uint_read_len& kmerLength);
             
             inline void setIterationPositionImpl(const RPGOffset<uint_read_len, uint_reads_cnt>& saPos) {
                 itAddress = idx2Address(saPos.readListIndex);
                 suffixPos = saPos.offset + this->getReadPositionByAddress(itAddress); 
                 guard = (int_max) suffixPos - guardOffset;
-                itAddress += LIST_ELEMENT_SIZE;;
+                itAddress += LIST_ELEMENT_SIZE;
             };
 
             inline void setIterationPositionImpl(const RPGOffset<uint_read_len, uint_reads_cnt>& saPos, uchar shift) {
@@ -230,7 +186,7 @@ namespace PgSAIndex {
                 return ((itAddress -= LIST_ELEMENT_SIZE) >= pgReadsList) && ((int_max) this->getReadPositionByAddress(itAddress) >= guard);
             };
             
-             inline uint_reads_cnt getReadOriginalIndexImpl() {
+            inline uint_reads_cnt getReadOriginalIndexImpl() {
                 return getReadOriginalIndexByAddress(itAddress);
             };
             
@@ -259,15 +215,7 @@ namespace PgSAIndex {
                 occurFlagsReadsList.push_back(itAddress);
             };
 
-            inline uint_reads_cnt clearAllOccurFlagsImpl() { 
-                uint_reads_cnt readsWithOccurFlagCount = occurFlagsReadsList.size();
-                for(typename vector<uchar*>::iterator it = occurFlagsReadsList.begin(); it != occurFlagsReadsList.end(); ++it) 
-                    clearOccurFlagsByAddress(*it);
-                
-                occurFlagsReadsList.clear();
-                
-                return readsWithOccurFlagCount;
-            };
+            uint_reads_cnt clearAllOccurFlagsImpl();
 
             inline void setOccurOnceFlagAndPushReadImpl() { 
                 setOccurOnceFlagByAddress(itAddress);
@@ -290,18 +238,7 @@ namespace PgSAIndex {
                 occurFlagsReadsList.clear();
             };
             
-            inline uint_reads_cnt clearAllOccurFlagsAndCountSingleOccurrencesImpl() { 
-                uint_reads_cnt count = 0;
-                for(typename vector<uchar*>::iterator it = occurFlagsReadsList.begin(); it != occurFlagsReadsList.end(); ++it) {
-                    if (hasOccurOnceFlagByAddress(*it))
-                        count++;
-                    clearOccurFlagsByAddress(*it);
-                }
-                
-                occurFlagsReadsList.clear();
-                
-                return count;
-            };
+            uint_reads_cnt clearAllOccurFlagsAndCountSingleOccurrencesImpl();
             
             template<typename api_uint_reads_cnt, typename api_uint_read_len>
             inline void clearAllOccurFlagsAndPushSingleOccurrencesImpl(vector<pair<api_uint_reads_cnt, api_uint_read_len>>& occurrences) { 
@@ -314,41 +251,14 @@ namespace PgSAIndex {
                 occurFlagsOccurrencesList.clear();
             };
 
-            inline void clearAllOccurFlagsAndPushSingleOccurrencesFlattenImpl(vector<uint_flatten_occurrence_max>& flattenOccurrences) {
-                for(typename vector<pair<uchar*, uint_read_len>>::iterator it = occurFlagsOccurrencesList.begin(); it != occurFlagsOccurrencesList.end(); ++it) {
-                    if (this->hasOccurOnceFlagByAddress((*it).first))
-                        flattenOccurrences.push_back( ((uint_flatten_occurrence_max) this->getReadOriginalIndexByAddress((*it).first)) * this->getMaxReadLength() + (*it).second );
-                    this->clearOccurFlagsByAddress((*it).first);
-                }
-                
-                occurFlagsOccurrencesList.clear();                        
-            };            
+            void clearAllOccurFlagsAndPushSingleOccurrencesFlattenImpl(vector<uint_flatten_occurrence_max>& flattenOccurrences);            
             
             /////////////////////////////////
             // GENERATION ROUTINES
            
-            inline void addImpl(uint_pg_len pos, uint_read_len len, uint_reads_cnt idx) {
-                if (maxPos <= pos)
-                    maxPos = pos;
-                else
-                    isSortRequired = true;
-                *((uint_pg_len*) (this->pgReadsList + curRawIdx)) = pos;
-                *((uint_reads_cnt*) (this->pgReadsList + curRawIdx + ORIGINAL_INDEX_OFFSET)) = idx;
-                curRawIdx += LIST_ELEMENT_SIZE;
-            }
+            void addImpl(uint_pg_len pos, uint_read_len len, uint_reads_cnt idx);
 
-            void validateImpl() {
-                if (curRawIdx != readsCount * LIST_ELEMENT_SIZE)
-                    cout << "WARNING: Reads list generation failed: " << curRawIdx / LIST_ELEMENT_SIZE << " elements instead of " << readsCount << "\n";
-
-                if (isSortRequired) {
-                    qsort(this->pgReadsList, readsCount, sizeof(uchar) * LIST_ELEMENT_SIZE, elementsCompare);
-                    isSortRequired = false;
-                }
-
-                // add guard
-                 *((uint_pg_len*) (this->pgReadsList + curRawIdx)) = this->pseudoGenomeLength;
-            }
+            void validateImpl();
 
     };
     

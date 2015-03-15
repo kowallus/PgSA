@@ -14,9 +14,6 @@ namespace PgSAIndex {
     {
         public:
 
-            virtual bool isPseudoGenomeLengthStandardVirtual() = 0;
-            virtual bool isPseudoGenomeLengthMaximalVirtual() = 0;
-
             virtual PseudoGenomeBase* generatePseudoGenomeBase() = 0;
 
             virtual ~PseudoGenomeGeneratorBase() {} ;
