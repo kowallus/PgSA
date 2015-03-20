@@ -8,7 +8,7 @@ namespace PgSAIndex {
     : readLength(readLength) {
         this->readsCount = readsCount;
         this->pseudoGenomeLength = pseudoGenomeLength;
-        this->pgReadsList = new uchar[(readsCount + 1) * (uint_max) LIST_ELEMENT_SIZE];
+        this->pgReadsList = new uchar[(readsCount + 1) * (uint_max) LIST_ELEMENT_SIZE]();
         this->curRawIdx = 0;
         this->maxPos = 0;
         this->isSortRequired = false;
