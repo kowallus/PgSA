@@ -33,7 +33,7 @@ namespace PgSAReadsSet {
 
     template<typename uint_read_len>
     bool ConcatenatedReadsSourceIterator<uint_read_len>::moveNext() {
-        if (!std::getline(*source, line))
+        if (!std::getline(*source, line)) 
             return false;
 
         for (length = 0; length < line.length(); length++)
@@ -41,6 +41,12 @@ namespace PgSAReadsSet {
                 break;
 
         return true;
+    }
+    
+    template<typename uint_read_len>
+    void ConcatenatedReadsSourceIterator<uint_read_len>::rewind() {
+        source->clear();
+        source->seekg(0);
     }
 
     template<typename uint_read_len>
@@ -103,6 +109,13 @@ namespace PgSAReadsSet {
     }
 
     template<typename uint_read_len>
+    void FASTAReadsSourceIterator<uint_read_len>::rewind() {
+        source->seekg(0, source->beg);
+        if (pairSource) 
+            pairSource->seekg(0, pairSource->beg);
+    }
+
+    template<typename uint_read_len>
     bool FASTAReadsSourceIterator<uint_read_len>::moveNextVirtual() {
         return moveNext();
     }
@@ -158,6 +171,13 @@ namespace PgSAReadsSet {
         return true;
     }
 
+    template<typename uint_read_len>
+    void FASTQReadsSourceIterator<uint_read_len>::rewind() {
+        source->seekg(0, source->beg);
+        if (pairSource) 
+            pairSource->seekg(0, pairSource->beg);
+    }
+    
     template<typename uint_read_len>
     bool FASTQReadsSourceIterator<uint_read_len>::moveNextVirtual() {
         return moveNext();

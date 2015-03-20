@@ -165,3 +165,13 @@ string PgSAHelpers::reverseComplement(string kmer) {
     return revcomp;
 }
 
+int PgSAHelpers::readsSufPreCmp(const char* suffixPart, const char* prefixRead) {
+    while (*suffixPart) {
+        if (*suffixPart > *prefixRead)
+            return 1;
+        if (*suffixPart++ < *prefixRead++)
+            return -1;
+    }
+    return 0;
+}
+

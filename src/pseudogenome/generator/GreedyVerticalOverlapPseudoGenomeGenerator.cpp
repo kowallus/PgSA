@@ -23,8 +23,8 @@ namespace PgSAIndex {
          delete(this->orgReadsSet);
     }
     
-        template<typename uint_read_len, typename uint_reads_cnt>
-    string GreedyVerticalOverlapGeneratorTemplate<uint_read_len, uint_reads_cnt>::getRead(uint_reads_cnt incIdx) {
+    template<typename uint_read_len, typename uint_reads_cnt>
+    string GreedyVerticalOverlapGeneratorTemplate<uint_read_len, uint_reads_cnt>::getReadUpToOverlap(uint_reads_cnt incIdx) {
         return orgReadsSet->getRead(incIdx - 1);
     }
     
@@ -63,17 +63,17 @@ namespace PgSAIndex {
         uint_reads_cnt i = 0;
         while (readsSet.empty() && ++i <= this->readsTotal())
             if (!this->hasPredecessor(i))
-                it = readsSet.insert({i, getRead(i).c_str()});
+                it = readsSet.insert({i, getReadUpToOverlap(i).c_str()});
         while (++i <= readsTotal())
             if (!this->hasPredecessor(i))
-                it = readsSet.insert(it, {i, getRead(i).c_str()});
+                it = readsSet.insert(it, {i, getReadUpToOverlap(i).c_str()});
 
         cout << "Put " << readsSet.size() << " reads in multiset.\n";
     }
 
     template<typename uint_read_len, typename uint_reads_cnt>
     uint_reads_cnt GreedyVerticalOverlapGeneratorTemplate<uint_read_len, uint_reads_cnt>::matchInReadsSet(uint_reads_cnt suffixIdx, uint_read_len overlap) {
-        const char* suffix = getRead(suffixIdx).c_str() + (readLength(suffixIdx) - overlap);
+        const char* suffix = getReadUpToOverlap(suffixIdx).c_str() + (readLength(suffixIdx) - overlap);
 
         typename std::multiset<ReadWithIdx>::iterator it = (readsSet.lower_bound({0, suffix}));
         uint_reads_cnt prefixReadIdx;
@@ -110,18 +110,6 @@ namespace PgSAIndex {
 
 //        cout << this->readsLeft << " reads left after " << (uint_read_len_max) overlapLimit << " overlap\n";
         cout << this->countComponents() << " pseudo-genome components\n";
-    }
-
-// HELPERS
-
-    int readsSufPreCmp(const char* suffixPart, const char* prefixRead) {
-        while (*suffixPart) {
-            if (*suffixPart > *prefixRead)
-                return 1;
-            if (*suffixPart++ < *prefixRead++)
-                return -1;
-        }
-        return 0;
     }
 
 // FACTORY

@@ -60,6 +60,8 @@ namespace PgSAIndex {
 
             static const uint_read_len getPosStartOffsetByAddress(const sa_pos_addr saPosAddress);
 
+            static void swapElementsByAddress(const sa_pos_addr saPosAddressFst, const sa_pos_addr saPosAddressSnd);
+            
             // auxiliary data for sorting
             static uint_read_len maxReadLength;
             static PseudoGenome* pgStatic;
@@ -71,7 +73,12 @@ namespace PgSAIndex {
 
             // The walk around enabling sorting suffix array
             // NOTE: Works only in non-concurent mode (only onfe suffix array at the time)
+            
+            void prepareUnsortedSA();
+            
             void generatePgSA();
+            
+            void generateSaisPgSA();
 
             /////////////////////////////////
             // DUPLICATE FILTER GENERATION //

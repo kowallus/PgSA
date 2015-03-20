@@ -1,4 +1,6 @@
 #include "pseudogenome/generator/GreedyVerticalOverlapPseudoGenomeGenerator.h"
+#include "pseudogenome/generator/GreedySwipingPackedOverlapPseudoGenomeGenerator.h"
+#include "pseudogenome/generator/GreedySwipingDefaultOverlapPseudoGenomeGenerator.h"
 #include "index/cache/persistence/CountQueriesCachePersistence.h"
 #include "suffixarray/generator/SuffixArrayGenerator.h"
 #include "suffixarray/persistence/SuffixArrayPersistence.h"
@@ -15,7 +17,9 @@ PseudoGenomeBase* preparePg(string srcFile, string pairFile) {
     else if (SuffixArrayPersistence::isValidSuffixArray(srcFile)) 
         pgb = SuffixArrayPersistence::readPgOnly(srcFile);
     else {         
-        PseudoGenomeGeneratorFactory* pggf = new GreedyVerticalOverlapPseudoGenomeGeneratorFactory();
+//        PseudoGenomeGeneratorFactory* pggf = new GreedyVerticalOverlapPseudoGenomeGeneratorFactory();
+        PseudoGenomeGeneratorFactory* pggf = new GreedySwipingPackedOverlapPseudoGenomeGeneratorFactory();
+//        PseudoGenomeGeneratorFactory* pggf = new GreedySwipingDefaultOverlapPseudoGenomeGeneratorFactory();
         PseudoGenomeGeneratorBase* pggb = pggf->getGenerator(srcFile, pairFile);
         pgb = pggb->generatePseudoGenomeBase();        
         delete(pggb); 

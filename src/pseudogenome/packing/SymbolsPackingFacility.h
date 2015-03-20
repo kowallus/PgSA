@@ -50,9 +50,9 @@ namespace PgSAIndex {
             // value should be not greater then maxValue
             string reverseValue(uint_element value);
             
-            const string reverseSequence(uint_element* sequence, const uint_max pos, const uint_max length);
+            const string reverseSequence(const uint_element* sequence, const uint_max pos, const uint_max length);
             
-            void reverseSequence(uint_element* sequence, const uint_max pos, const uint_max length, char_pg* kmerPtr);  
+            void reverseSequence(const uint_element* sequence, const uint_max pos, const uint_max length, char_pg* destPtr);  
           
             // sequence should consist of at least symbolsPerElement symbols; result should be not greater then maxValue
             uint_element packSymbols(const char_pg* symbols);
@@ -71,6 +71,9 @@ namespace PgSAIndex {
             
             static uchar maxSymbolsPerElement(uchar symbolsCount);
           
+            int compareSequences(uint_element* lSeq, uint_element* rSeq, const uint_max length);
+            int compareSequences(uint_element* lSeq, uint_element* rSeq, uint_max pos, uint_max length);
+            int compareSuffixWithPrefix(uint_element* sufSeq, uint_element* preSeq, uint_max sufPos, uint_max length);
     };
     
 }

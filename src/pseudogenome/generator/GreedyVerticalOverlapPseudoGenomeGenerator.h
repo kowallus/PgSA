@@ -11,8 +11,6 @@ using namespace PgSAReadsSet;
 
 namespace PgSAIndex {
 
-    int readsSufPreCmp(const char* suffixPart, const char* prefixRead);
-
     template < typename uint_read_len, typename uint_reads_cnt >
     class GreedyVerticalOverlapGeneratorTemplate: public AbstractOverlapPseudoGenomeGeneratorTemplate<uint_read_len, uint_reads_cnt>
     {
@@ -24,7 +22,7 @@ namespace PgSAIndex {
             DefaultReadsSet* orgReadsSet = 0;
             
             virtual uint_read_len readLength(uint_reads_cnt incIdx) override;
-            virtual string getRead(uint_reads_cnt incIdx) override;
+            virtual string getReadUpToOverlap(uint_reads_cnt incIdx) override;
             virtual uint_reads_cnt readsTotal() override;
             
             virtual ReadsSetProperties* getReadsSetProperties() override;
@@ -46,7 +44,7 @@ namespace PgSAIndex {
             uint_reads_cnt matchInReadsSet(uint_reads_cnt suffixIdx, uint_read_len overlap);
             void overlapMultisetVertical(uint_read_len, uint_read_len);
 
-            virtual void findOverlappingReads();
+            virtual void findOverlappingReads() override;
             
         public:
 

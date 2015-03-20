@@ -100,6 +100,8 @@ namespace PgSAHelpers {
             }
     };
 
+    int readsSufPreCmp(const char* suffixPart, const char* prefixRead);
+    
 }
 
 #endif // HELPER_H_INCLUDED

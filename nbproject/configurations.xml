@@ -22,6 +22,8 @@
                        projectFiles="true">
           <logicalFolder name="f1" displayName="generator" projectFiles="true">
             <itemPath>src/pseudogenome/generator/AbstractOverlapPseudoGenomeGenerator.h</itemPath>
+            <itemPath>src/pseudogenome/generator/GreedySwipingDefaultOverlapPseudoGenomeGenerator.h</itemPath>
+            <itemPath>src/pseudogenome/generator/GreedySwipingPackedOverlapPseudoGenomeGenerator.h</itemPath>
             <itemPath>src/pseudogenome/generator/GreedyVerticalOverlapPseudoGenomeGenerator.h</itemPath>
             <itemPath>src/pseudogenome/generator/PackedPseudoGenomeGenerator.h</itemPath>
             <itemPath>src/pseudogenome/generator/PseudoGenomeGeneratorBase.h</itemPath>
@@ -52,8 +54,12 @@
             <itemPath>src/readsset/iterator/ReadsSetIterator.h</itemPath>
           </logicalFolder>
           <itemPath>src/readsset/DefaultReadsSet.h</itemPath>
+          <itemPath>src/readsset/PackedReadsSet.h</itemPath>
           <itemPath>src/readsset/ReadsSetBase.h</itemPath>
           <itemPath>src/readsset/ReadsSetInterface.h</itemPath>
+        </logicalFolder>
+        <logicalFolder name="f1" displayName="sais" projectFiles="true">
+          <itemPath>src/sais/sais.c</itemPath>
         </logicalFolder>
         <logicalFolder name="suffixarray" displayName="suffixarray" projectFiles="true">
           <logicalFolder name="generator" displayName="generator" projectFiles="true">
@@ -108,6 +114,8 @@
                        projectFiles="true">
           <logicalFolder name="generator" displayName="generator" projectFiles="true">
             <itemPath>src/pseudogenome/generator/AbstractOverlapPseudoGenomeGenerator.cpp</itemPath>
+            <itemPath>src/pseudogenome/generator/GreedySwipingDefaultOverlapPseudoGenomeGenerator.cpp</itemPath>
+            <itemPath>src/pseudogenome/generator/GreedySwipingPackedOverlapPseudoGenomeGenerator.cpp</itemPath>
             <itemPath>src/pseudogenome/generator/GreedyVerticalOverlapPseudoGenomeGenerator.cpp</itemPath>
           </logicalFolder>
           <logicalFolder name="f1" displayName="packing" projectFiles="true">
@@ -128,6 +136,10 @@
             <itemPath>src/readsset/iterator/ReadsSetIterator.cpp</itemPath>
           </logicalFolder>
           <itemPath>src/readsset/DefaultReadsSet.cpp</itemPath>
+          <itemPath>src/readsset/PackedReadsSet.cpp</itemPath>
+        </logicalFolder>
+        <logicalFolder name="f1" displayName="sais" projectFiles="true">
+          <itemPath>src/sais/sais.h</itemPath>
         </logicalFolder>
         <logicalFolder name="suffixarray" displayName="suffixarray" projectFiles="true">
           <logicalFolder name="generator" displayName="generator" projectFiles="true">
@@ -186,9 +198,11 @@
       </toolsSet>
       <compileType>
         <cTool>
+          <developmentMode>0</developmentMode>
           <incDir>
             <pElem>.</pElem>
           </incDir>
+          <commandLine>-fomit-frame-pointer -Wall</commandLine>
         </cTool>
         <ccTool>
           <stripSymbols>true</stripSymbols>
@@ -336,6 +350,26 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="src/pseudogenome/generator/GreedySwipingDefaultOverlapPseudoGenomeGenerator.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/generator/GreedySwipingDefaultOverlapPseudoGenomeGenerator.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/generator/GreedySwipingPackedOverlapPseudoGenomeGenerator.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/generator/GreedySwipingPackedOverlapPseudoGenomeGenerator.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="src/pseudogenome/generator/GreedyVerticalOverlapPseudoGenomeGenerator.cpp"
             ex="false"
             tool="1"
@@ -405,6 +439,10 @@
       </item>
       <item path="src/readsset/DefaultReadsSet.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="src/readsset/PackedReadsSet.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/readsset/PackedReadsSet.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="src/readsset/ReadsSetBase.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/readsset/ReadsSetInterface.h" ex="false" tool="3" flavor2="0">
@@ -418,6 +456,10 @@
             ex="false"
             tool="3"
             flavor2="0">
+      </item>
+      <item path="src/sais/sais.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="src/sais/sais.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/suffixarray/BoostedSuffixArray.h"
             ex="false"
@@ -517,10 +559,11 @@
       </toolsSet>
       <compileType>
         <cTool>
-          <developmentMode>5</developmentMode>
+          <developmentMode>0</developmentMode>
           <incDir>
             <pElem>.</pElem>
           </incDir>
+          <commandLine>-fomit-frame-pointer -Wall</commandLine>
         </cTool>
         <ccTool>
           <developmentMode>6</developmentMode>
@@ -672,6 +715,26 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="src/pseudogenome/generator/GreedySwipingDefaultOverlapPseudoGenomeGenerator.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/generator/GreedySwipingDefaultOverlapPseudoGenomeGenerator.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/generator/GreedySwipingPackedOverlapPseudoGenomeGenerator.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/generator/GreedySwipingPackedOverlapPseudoGenomeGenerator.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="src/pseudogenome/generator/GreedyVerticalOverlapPseudoGenomeGenerator.cpp"
             ex="false"
             tool="1"
@@ -741,6 +804,10 @@
       </item>
       <item path="src/readsset/DefaultReadsSet.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="src/readsset/PackedReadsSet.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/readsset/PackedReadsSet.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="src/readsset/ReadsSetBase.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/readsset/ReadsSetInterface.h" ex="false" tool="3" flavor2="0">
@@ -754,6 +821,10 @@
             ex="false"
             tool="3"
             flavor2="0">
+      </item>
+      <item path="src/sais/sais.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="src/sais/sais.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/suffixarray/BoostedSuffixArray.h"
             ex="false"
@@ -853,9 +924,13 @@
       </toolsSet>
       <compileType>
         <cTool>
+          <developmentMode>6</developmentMode>
+          <stripSymbols>true</stripSymbols>
+          <architecture>2</architecture>
           <incDir>
             <pElem>.</pElem>
           </incDir>
+          <commandLine>-fomit-frame-pointer</commandLine>
         </cTool>
         <ccTool>
           <developmentMode>6</developmentMode>
@@ -1001,6 +1076,26 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="src/pseudogenome/generator/GreedySwipingDefaultOverlapPseudoGenomeGenerator.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/generator/GreedySwipingDefaultOverlapPseudoGenomeGenerator.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/generator/GreedySwipingPackedOverlapPseudoGenomeGenerator.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/generator/GreedySwipingPackedOverlapPseudoGenomeGenerator.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="src/pseudogenome/generator/GreedyVerticalOverlapPseudoGenomeGenerator.cpp"
             ex="false"
             tool="1"
@@ -1070,6 +1165,10 @@
       </item>
       <item path="src/readsset/DefaultReadsSet.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="src/readsset/PackedReadsSet.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/readsset/PackedReadsSet.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="src/readsset/ReadsSetBase.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/readsset/ReadsSetInterface.h" ex="false" tool="3" flavor2="0">
@@ -1083,6 +1182,10 @@
             ex="false"
             tool="3"
             flavor2="0">
+      </item>
+      <item path="src/sais/sais.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="src/sais/sais.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/suffixarray/BoostedSuffixArray.h"
             ex="false"
@@ -1182,9 +1285,11 @@
       </toolsSet>
       <compileType>
         <cTool>
+          <developmentMode>0</developmentMode>
           <incDir>
             <pElem>.</pElem>
           </incDir>
+          <commandLine>-fomit-frame-pointer -Wall</commandLine>
         </cTool>
         <ccTool>
           <developmentMode>6</developmentMode>
@@ -1335,6 +1440,26 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="src/pseudogenome/generator/GreedySwipingDefaultOverlapPseudoGenomeGenerator.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/generator/GreedySwipingDefaultOverlapPseudoGenomeGenerator.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/generator/GreedySwipingPackedOverlapPseudoGenomeGenerator.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/generator/GreedySwipingPackedOverlapPseudoGenomeGenerator.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="src/pseudogenome/generator/GreedyVerticalOverlapPseudoGenomeGenerator.cpp"
             ex="false"
             tool="1"
@@ -1404,6 +1529,10 @@
       </item>
       <item path="src/readsset/DefaultReadsSet.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="src/readsset/PackedReadsSet.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/readsset/PackedReadsSet.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="src/readsset/ReadsSetBase.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/readsset/ReadsSetInterface.h" ex="false" tool="3" flavor2="0">
@@ -1417,6 +1546,10 @@
             ex="false"
             tool="3"
             flavor2="0">
+      </item>
+      <item path="src/sais/sais.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="src/sais/sais.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/suffixarray/BoostedSuffixArray.h"
             ex="false"
@@ -1516,9 +1649,11 @@
       </toolsSet>
       <compileType>
         <cTool>
+          <developmentMode>0</developmentMode>
           <incDir>
             <pElem>.</pElem>
           </incDir>
+          <commandLine>-fomit-frame-pointer -Wall</commandLine>
         </cTool>
         <ccTool>
           <stripSymbols>true</stripSymbols>
@@ -1670,6 +1805,26 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="src/pseudogenome/generator/GreedySwipingDefaultOverlapPseudoGenomeGenerator.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/generator/GreedySwipingDefaultOverlapPseudoGenomeGenerator.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/generator/GreedySwipingPackedOverlapPseudoGenomeGenerator.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/generator/GreedySwipingPackedOverlapPseudoGenomeGenerator.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="src/pseudogenome/generator/GreedyVerticalOverlapPseudoGenomeGenerator.cpp"
             ex="false"
             tool="1"
@@ -1739,6 +1894,10 @@
       </item>
       <item path="src/readsset/DefaultReadsSet.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="src/readsset/PackedReadsSet.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/readsset/PackedReadsSet.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="src/readsset/ReadsSetBase.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/readsset/ReadsSetInterface.h" ex="false" tool="3" flavor2="0">
@@ -1752,6 +1911,10 @@
             ex="false"
             tool="3"
             flavor2="0">
+      </item>
+      <item path="src/sais/sais.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="src/sais/sais.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/suffixarray/BoostedSuffixArray.h"
             ex="false"
@@ -1854,6 +2017,7 @@
           <incDir>
             <pElem>.</pElem>
           </incDir>
+          <commandLine>-fomit-frame-pointer -Wall</commandLine>
         </cTool>
         <ccTool>
           <stripSymbols>true</stripSymbols>
@@ -1909,8 +2073,6 @@
             ex="false"
             tool="3"
             flavor2="0">
-      </item>
-      <item path="src/index/PgSAIndexFactory.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/index/PgSAIndexFactory.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -2000,6 +2162,26 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="src/pseudogenome/generator/GreedySwipingDefaultOverlapPseudoGenomeGenerator.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/generator/GreedySwipingDefaultOverlapPseudoGenomeGenerator.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/generator/GreedySwipingPackedOverlapPseudoGenomeGenerator.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/pseudogenome/generator/GreedySwipingPackedOverlapPseudoGenomeGenerator.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="src/pseudogenome/generator/GreedyVerticalOverlapPseudoGenomeGenerator.cpp"
             ex="false"
             tool="1"
@@ -2069,6 +2251,10 @@
       </item>
       <item path="src/readsset/DefaultReadsSet.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="src/readsset/PackedReadsSet.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/readsset/PackedReadsSet.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="src/readsset/ReadsSetBase.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/readsset/ReadsSetInterface.h" ex="false" tool="3" flavor2="0">
@@ -2082,6 +2268,10 @@
             ex="false"
             tool="3"
             flavor2="0">
+      </item>
+      <item path="src/sais/sais.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="src/sais/sais.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/suffixarray/BoostedSuffixArray.h"
             ex="false"

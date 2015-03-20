@@ -67,7 +67,7 @@ namespace PgSAIndex {
             
             const char_pg* getSuffixPtrByPosition(const uint_reads_cnt originalIdx, const uint_read_len pos);
             
-            void getKmerByPosition(const uint_reads_cnt originalIdx, const uint_read_len pos, const uint_read_len kValue, char_pg* kmerPtr);
+            void getKmerByPosition(const uint_reads_cnt originalIdx, const uint_read_len pos, const uint_read_len kmerLength, char_pg* kmerPtr);
             
             const string getRead(uint_reads_cnt originalIdx);
             

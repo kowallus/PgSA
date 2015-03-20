@@ -32,7 +32,7 @@ namespace PgSAIndex {
             uint_pg_len_max pseudoGenomeLength;
 
             virtual uint_read_len readLength(uint_reads_cnt incIdx) = 0;
-            virtual string getRead(uint_reads_cnt incIdx) = 0;
+            virtual string getReadUpToOverlap(uint_reads_cnt incIdx) = 0;
             virtual uint_reads_cnt readsTotal() = 0;
 
             virtual ReadsSetProperties* getReadsSetProperties() = 0;

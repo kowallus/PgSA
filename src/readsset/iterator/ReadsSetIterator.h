@@ -42,6 +42,8 @@ namespace PgSAReadsSet {
 
             uint_read_len getReadLength();
 
+            void rewind();
+            
             bool moveNextVirtual();
             string getReadVirtual();
             uint_read_len getReadLengthVirtual();
@@ -72,6 +74,8 @@ namespace PgSAReadsSet {
 
             uint_read_len getReadLength();
 
+            void rewind();
+            
             bool moveNextVirtual();
             string getReadVirtual();
             uint_read_len getReadLengthVirtual();
@@ -99,6 +103,8 @@ namespace PgSAReadsSet {
 
             uint_read_len getReadLength();
 
+            void rewind();
+            
             bool moveNextVirtual();
             string getReadVirtual();
             uint_read_len getReadLengthVirtual();

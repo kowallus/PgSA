@@ -43,12 +43,16 @@ OBJECTFILES= \
 	${OBJECTDIR}/src/pseudogenome/MultiPackedPseudoGenome.o \
 	${OBJECTDIR}/src/pseudogenome/PackedPseudoGenome.o \
 	${OBJECTDIR}/src/pseudogenome/generator/AbstractOverlapPseudoGenomeGenerator.o \
+	${OBJECTDIR}/src/pseudogenome/generator/GreedySwipingDefaultOverlapPseudoGenomeGenerator.o \
+	${OBJECTDIR}/src/pseudogenome/generator/GreedySwipingPackedOverlapPseudoGenomeGenerator.o \
 	${OBJECTDIR}/src/pseudogenome/generator/GreedyVerticalOverlapPseudoGenomeGenerator.o \
 	${OBJECTDIR}/src/pseudogenome/packing/SymbolsPackingFacility.o \
 	${OBJECTDIR}/src/pseudogenome/persistence/PseudoGenomePersistence.o \
 	${OBJECTDIR}/src/pseudogenome/readslist/ListOfConstantLengthReads.o \
 	${OBJECTDIR}/src/readsset/DefaultReadsSet.o \
+	${OBJECTDIR}/src/readsset/PackedReadsSet.o \
 	${OBJECTDIR}/src/readsset/iterator/ReadsSetIterator.o \
+	${OBJECTDIR}/src/sais/sais.o \
 	${OBJECTDIR}/src/suffixarray/DefaultSuffixArray.o \
 	${OBJECTDIR}/src/suffixarray/persistence/SuffixArrayPersistence.o \
 	${OBJECTDIR}/src/test/PgSAtests.o \
@@ -63,7 +67,7 @@ TESTFILES= \
 	${TESTDIR}/TestFiles/f3
 
 # C Compiler Flags
-CFLAGS=
+CFLAGS=-m64 -fomit-frame-pointer
 
 # CC Compiler Flags
 CCFLAGS=
@@ -126,6 +130,16 @@ ${OBJECTDIR}/src/pseudogenome/generator/AbstractOverlapPseudoGenomeGenerator.o: 
 	${RM} "$@.d"
 	$(COMPILE.cc) -O3 -Wall -s -I. -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/pseudogenome/generator/AbstractOverlapPseudoGenomeGenerator.o src/pseudogenome/generator/AbstractOverlapPseudoGenomeGenerator.cpp
 
+${OBJECTDIR}/src/pseudogenome/generator/GreedySwipingDefaultOverlapPseudoGenomeGenerator.o: nbproject/Makefile-${CND_CONF}.mk src/pseudogenome/generator/GreedySwipingDefaultOverlapPseudoGenomeGenerator.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src/pseudogenome/generator
+	${RM} "$@.d"
+	$(COMPILE.cc) -O3 -Wall -s -I. -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/pseudogenome/generator/GreedySwipingDefaultOverlapPseudoGenomeGenerator.o src/pseudogenome/generator/GreedySwipingDefaultOverlapPseudoGenomeGenerator.cpp
+
+${OBJECTDIR}/src/pseudogenome/generator/GreedySwipingPackedOverlapPseudoGenomeGenerator.o: nbproject/Makefile-${CND_CONF}.mk src/pseudogenome/generator/GreedySwipingPackedOverlapPseudoGenomeGenerator.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src/pseudogenome/generator
+	${RM} "$@.d"
+	$(COMPILE.cc) -O3 -Wall -s -I. -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/pseudogenome/generator/GreedySwipingPackedOverlapPseudoGenomeGenerator.o src/pseudogenome/generator/GreedySwipingPackedOverlapPseudoGenomeGenerator.cpp
+
 ${OBJECTDIR}/src/pseudogenome/generator/GreedyVerticalOverlapPseudoGenomeGenerator.o: nbproject/Makefile-${CND_CONF}.mk src/pseudogenome/generator/GreedyVerticalOverlapPseudoGenomeGenerator.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src/pseudogenome/generator
 	${RM} "$@.d"
@@ -151,10 +165,20 @@ ${OBJECTDIR}/src/readsset/DefaultReadsSet.o: nbproject/Makefile-${CND_CONF}.mk s
 	${RM} "$@.d"
 	$(COMPILE.cc) -O3 -Wall -s -I. -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/readsset/DefaultReadsSet.o src/readsset/DefaultReadsSet.cpp
 
+${OBJECTDIR}/src/readsset/PackedReadsSet.o: nbproject/Makefile-${CND_CONF}.mk src/readsset/PackedReadsSet.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src/readsset
+	${RM} "$@.d"
+	$(COMPILE.cc) -O3 -Wall -s -I. -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/readsset/PackedReadsSet.o src/readsset/PackedReadsSet.cpp
+
 ${OBJECTDIR}/src/readsset/iterator/ReadsSetIterator.o: nbproject/Makefile-${CND_CONF}.mk src/readsset/iterator/ReadsSetIterator.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src/readsset/iterator
 	${RM} "$@.d"
 	$(COMPILE.cc) -O3 -Wall -s -I. -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/readsset/iterator/ReadsSetIterator.o src/readsset/iterator/ReadsSetIterator.cpp
+
+${OBJECTDIR}/src/sais/sais.o: nbproject/Makefile-${CND_CONF}.mk src/sais/sais.c 
+	${MKDIR} -p ${OBJECTDIR}/src/sais
+	${RM} "$@.d"
+	$(COMPILE.c) -O3 -s -I. -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/sais/sais.o src/sais/sais.c
 
 ${OBJECTDIR}/src/suffixarray/DefaultSuffixArray.o: nbproject/Makefile-${CND_CONF}.mk src/suffixarray/DefaultSuffixArray.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src/suffixarray
@@ -306,6 +330,32 @@ ${OBJECTDIR}/src/pseudogenome/generator/AbstractOverlapPseudoGenomeGenerator_nom
 	    ${CP} ${OBJECTDIR}/src/pseudogenome/generator/AbstractOverlapPseudoGenomeGenerator.o ${OBJECTDIR}/src/pseudogenome/generator/AbstractOverlapPseudoGenomeGenerator_nomain.o;\
 	fi
 
+${OBJECTDIR}/src/pseudogenome/generator/GreedySwipingDefaultOverlapPseudoGenomeGenerator_nomain.o: ${OBJECTDIR}/src/pseudogenome/generator/GreedySwipingDefaultOverlapPseudoGenomeGenerator.o src/pseudogenome/generator/GreedySwipingDefaultOverlapPseudoGenomeGenerator.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src/pseudogenome/generator
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/src/pseudogenome/generator/GreedySwipingDefaultOverlapPseudoGenomeGenerator.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.cc) -O3 -Wall -s -I. -std=c++11 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/pseudogenome/generator/GreedySwipingDefaultOverlapPseudoGenomeGenerator_nomain.o src/pseudogenome/generator/GreedySwipingDefaultOverlapPseudoGenomeGenerator.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/src/pseudogenome/generator/GreedySwipingDefaultOverlapPseudoGenomeGenerator.o ${OBJECTDIR}/src/pseudogenome/generator/GreedySwipingDefaultOverlapPseudoGenomeGenerator_nomain.o;\
+	fi
+
+${OBJECTDIR}/src/pseudogenome/generator/GreedySwipingPackedOverlapPseudoGenomeGenerator_nomain.o: ${OBJECTDIR}/src/pseudogenome/generator/GreedySwipingPackedOverlapPseudoGenomeGenerator.o src/pseudogenome/generator/GreedySwipingPackedOverlapPseudoGenomeGenerator.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src/pseudogenome/generator
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/src/pseudogenome/generator/GreedySwipingPackedOverlapPseudoGenomeGenerator.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.cc) -O3 -Wall -s -I. -std=c++11 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/pseudogenome/generator/GreedySwipingPackedOverlapPseudoGenomeGenerator_nomain.o src/pseudogenome/generator/GreedySwipingPackedOverlapPseudoGenomeGenerator.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/src/pseudogenome/generator/GreedySwipingPackedOverlapPseudoGenomeGenerator.o ${OBJECTDIR}/src/pseudogenome/generator/GreedySwipingPackedOverlapPseudoGenomeGenerator_nomain.o;\
+	fi
+
 ${OBJECTDIR}/src/pseudogenome/generator/GreedyVerticalOverlapPseudoGenomeGenerator_nomain.o: ${OBJECTDIR}/src/pseudogenome/generator/GreedyVerticalOverlapPseudoGenomeGenerator.o src/pseudogenome/generator/GreedyVerticalOverlapPseudoGenomeGenerator.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src/pseudogenome/generator
 	@NMOUTPUT=`${NM} ${OBJECTDIR}/src/pseudogenome/generator/GreedyVerticalOverlapPseudoGenomeGenerator.o`; \
@@ -371,6 +421,19 @@ ${OBJECTDIR}/src/readsset/DefaultReadsSet_nomain.o: ${OBJECTDIR}/src/readsset/De
 	    ${CP} ${OBJECTDIR}/src/readsset/DefaultReadsSet.o ${OBJECTDIR}/src/readsset/DefaultReadsSet_nomain.o;\
 	fi
 
+${OBJECTDIR}/src/readsset/PackedReadsSet_nomain.o: ${OBJECTDIR}/src/readsset/PackedReadsSet.o src/readsset/PackedReadsSet.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src/readsset
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/src/readsset/PackedReadsSet.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.cc) -O3 -Wall -s -I. -std=c++11 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/readsset/PackedReadsSet_nomain.o src/readsset/PackedReadsSet.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/src/readsset/PackedReadsSet.o ${OBJECTDIR}/src/readsset/PackedReadsSet_nomain.o;\
+	fi
+
 ${OBJECTDIR}/src/readsset/iterator/ReadsSetIterator_nomain.o: ${OBJECTDIR}/src/readsset/iterator/ReadsSetIterator.o src/readsset/iterator/ReadsSetIterator.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src/readsset/iterator
 	@NMOUTPUT=`${NM} ${OBJECTDIR}/src/readsset/iterator/ReadsSetIterator.o`; \
@@ -382,6 +445,19 @@ ${OBJECTDIR}/src/readsset/iterator/ReadsSetIterator_nomain.o: ${OBJECTDIR}/src/r
 	    $(COMPILE.cc) -O3 -Wall -s -I. -std=c++11 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/readsset/iterator/ReadsSetIterator_nomain.o src/readsset/iterator/ReadsSetIterator.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/src/readsset/iterator/ReadsSetIterator.o ${OBJECTDIR}/src/readsset/iterator/ReadsSetIterator_nomain.o;\
+	fi
+
+${OBJECTDIR}/src/sais/sais_nomain.o: ${OBJECTDIR}/src/sais/sais.o src/sais/sais.c 
+	${MKDIR} -p ${OBJECTDIR}/src/sais
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/src/sais/sais.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.c) -O3 -s -I. -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/sais/sais_nomain.o src/sais/sais.c;\
+	else  \
+	    ${CP} ${OBJECTDIR}/src/sais/sais.o ${OBJECTDIR}/src/sais/sais_nomain.o;\
 	fi
 
 ${OBJECTDIR}/src/suffixarray/DefaultSuffixArray_nomain.o: ${OBJECTDIR}/src/suffixarray/DefaultSuffixArray.o src/suffixarray/DefaultSuffixArray.cpp 

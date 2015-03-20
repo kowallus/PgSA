@@ -1,6 +1,8 @@
 #include "DefaultSuffixArray.h"
 #include "DefaultSuffixArrayFactory.h"
 
+#include "../sais/sais.h"
+
 namespace PgSAIndex {
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>
@@ -11,15 +13,16 @@ namespace PgSAIndex {
     *ReadsListIteratorFactoryTemplate<ReadsListClass>::getReadsListIterator(* ((ReadsListClass*) pseudoGenome->getReadsList()))),
     pseudoGenome(pseudoGenome),
     readsList(pseudoGenome->getReadsList()),
-    suffixArray(new uchar[this->getSizeInBytes()]),
+    suffixArray(0),
     lookupTable(lookupTableKeyPrefixLength, pseudoGenome->getReadsSetProperties()) {
-        //TODO: check if setting 0 is necessary.... 
-        suffixArray[this->getSizeInBytes() - 2] = 0;
-        suffixArray[this->getSizeInBytes() - 1] = 0;
-
-        //               cout << "memcheck 3.....\n";
-        //                cin.ignore(1);
-        generatePgSA();
+        
+        cout << "SA creation start.\n";
+        
+//        if ((sizeof(uint_pg_len) == sizeof(int)) && (pseudoGenome->getLengthWithGuard() < INT_MAX / sizeof(int)))
+//            generateSaisPgSA();
+//        else
+            generatePgSA();
+        
         this->lookupTable.generate(this, this->getElementsCount());
         //                cout << "memcheck 4.....\n";
         //                cin.ignore(1);
@@ -51,9 +54,16 @@ namespace PgSAIndex {
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>
-    void DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::generatePgSA() {
-        clock_checkpoint();
+    void DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::prepareUnsortedSA() {
+        suffixArray = new uchar[this->getSizeInBytes()];
+        
+        //TODO: check if setting 0 is necessary.... 
+        suffixArray[this->getSizeInBytes() - 2] = 0;
+        suffixArray[this->getSizeInBytes() - 1] = 0;
 
+        //               cout << "memcheck 3.....\n";
+        //                cin.ignore(1);
+        
         const uchar* curSAPos = suffixArray;
 
         uint_reads_cnt readsListIndex = 0;
@@ -71,7 +81,54 @@ namespace PgSAIndex {
 
         pgStatic = this->pseudoGenome;
         maxReadLength = this->pseudoGenome->maxReadLength();
+    }
 
+    template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>
+    void DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::generateSaisPgSA() {
+        clock_checkpoint();
+        
+        int* saisSA = (int*) malloc((size_t)(this->pseudoGenome->getLengthWithGuard()) * sizeof(int));
+
+        if(sais((const unsigned char*) this->pseudoGenome->getSuffix(0), saisSA, (int) this->pseudoGenome->getLengthWithGuard()) != 0) {
+            fprintf(stderr, "Cannot allocate memory.\n");
+            exit(EXIT_FAILURE);
+        }
+  
+        std::ofstream dest("saisSA.tmp", std::ios::out | std::ios::binary);
+        PgSAHelpers::writeArray(dest, saisSA, (size_t)(this->pseudoGenome->getLengthWithGuard()) * sizeof(int));
+        dest.close();
+        free((void*)saisSA);
+        
+        cout << "SAIS generation time " << clock_millis() << " msec!\n";
+        
+        clock_checkpoint();
+        
+        prepareUnsortedSA();
+        
+        std::ifstream src("saisSA.tmp", std::ifstream::binary);
+        const uchar* curSAPos = suffixArray;
+        int pgPos;
+        for (uint_pg_len i = 0; i < this->elementsCount;) {
+            src.read((char*) &pgPos, sizeof(int));
+            if ((uint_pg_len) pgPos < this->elementsCount) {
+                while ((uint_pg_len) pgPos < i)
+                    pgPos = this->getSuffixByAddress(saPosIdx2Address(pgPos)) - this->pseudoGenome->getSuffix(0);
+                
+                swapElementsByAddress((sa_pos_addr*) curSAPos, saPosIdx2Address(pgPos));
+                curSAPos += SA_ELEMENT_SIZE;
+                i++;
+            }
+        }
+        
+        cout << "SA generation time " << clock_millis() << " msec!\n";
+    }
+    
+    template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>
+    void DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::generatePgSA() {
+        clock_checkpoint();
+
+        prepareUnsortedSA();
+        
         qsort(suffixArray, this->elementsCount, sizeof (uchar) * SA_ELEMENT_SIZE, this->pgSuffixesCompare);
 
         cout << "SA generation time " << clock_millis() << " msec!\n";
@@ -131,8 +188,9 @@ namespace PgSAIndex {
             uint_reads_cnt j = this->getReadsListIndexByAddress(saPosAddress);
             uint_pg_len guard = this->getPosStartOffsetByAddress(saPosAddress) + readsList->getReadPosition(j) - guardOffset;
             while (readsList->getReadPosition(j) >= guard) {
+                if (!readsList->hasOccurFlag(j))
+                    readsIdxs.push_back(j);
                 readsList->setOccurOnceFlag(j);
-                readsIdxs.push_back(j);
                 if (j == 0) break;
                 j--;
             }
@@ -143,13 +201,10 @@ namespace PgSAIndex {
         for (uint_reads_cnt i = 0; i < readsCount; i++) {
             if (!readsList->hasOccurOnceFlag(readsIdxs[i]) && !readsList->hasDuplicateFilterFlag(readsIdxs[i])) {
                 readsList->setDuplicateFilterFlag(readsIdxs[i]);
-                j++;
+                j++;               
             } else
                 readsList->clearOccurFlags(readsIdxs[i]);
         }
-
-        //                if (j > 0)
-        //                    cout << "Found " << j << " reads with duplicates for lutIdx " << lutIdx << "\n";
 
         return j;
     }
@@ -400,6 +455,16 @@ namespace PgSAIndex {
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>
     const sa_pos_addr DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::saPosIdx2Address(const uint_pg_len posIdx) {
         return (sa_pos_addr) (suffixArray + ((uint_max) posIdx) * SA_ELEMENT_SIZE);
+    }
+
+    template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>
+    void DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::swapElementsByAddress(const sa_pos_addr saPosAddressFst, const sa_pos_addr saPosAddressSnd) {
+        uchar tmp;
+        for(int i = 0; i < SA_ELEMENT_SIZE; i++) {
+            tmp = *(((uchar*) saPosAddressFst)+i);
+            *(((uchar*) saPosAddressFst)+i) = *(((uchar*) saPosAddressSnd)+i);
+            *(((uchar*) saPosAddressSnd)+i) = tmp;
+        }
     }
 
     template class DefaultSuffixArray<uint_read_len_min, uint_reads_cnt_std, uint_pg_len_std, 4, 3, 0x00FFFFFF, typename ListOfConstantLengthReadsTypeTemplate<uint_read_len_min, uint_reads_cnt_std, uint_pg_len_std>::Type>;

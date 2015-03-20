@@ -133,7 +133,7 @@ namespace PgSAIndex {
     }
 
     template<typename uint_element>
-    const string SymbolsPackingFacility<uint_element>::reverseSequence(uint_element* sequence, const uint_max pos, const uint_max length) {
+    const string SymbolsPackingFacility<uint_element>::reverseSequence(const uint_element* sequence, const uint_max pos, const uint_max length) {
         string res;
         uint_max i = divideBySmallInteger(pos, symbolsPerElement);
         uint_max reminder = moduloBySmallInteger(pos, this->symbolsPerElement, i);
@@ -145,22 +145,22 @@ namespace PgSAIndex {
     }
 
     template<typename uint_element>
-    void SymbolsPackingFacility<uint_element>::reverseSequence(uint_element* sequence, const uint_max pos, const uint_max length, char_pg* kmerPtr) {
+    void SymbolsPackingFacility<uint_element>::reverseSequence(const uint_element* sequence, const uint_max pos, const uint_max length, char_pg* destPtr) {
 
         uint_max i = divideBySmallInteger(pos, symbolsPerElement);
         uint_max reminder = moduloBySmallInteger(pos, this->symbolsPerElement, i);
 
-        char_pg* ptr = kmerPtr;
-        uint_element value = sequence[i++];
-        for (uchar j = reminder; j < symbolsPerElement; j++)
-            *ptr++ = reverse[value][j];
-
-        while ((uint_max) (ptr - kmerPtr) < length) {
-            value = sequence[i++];
-            for (uchar j = 0; j < symbolsPerElement; j++)
+        char_pg* ptr = destPtr;
+        while (true) {
+            uint_element value = sequence[i++];
+            for (uchar j = reminder; j < symbolsPerElement; j++) {
                 *ptr++ = reverse[value][j];
+                if ((uint_max) (ptr - destPtr) == length)
+                    return;
+            }
+            reminder = 0;
         }
-    }
+   }
 
     template<typename uint_element>
     char_pg SymbolsPackingFacility<uint_element>::reverseValue(uint_element value, uchar position) {
@@ -176,6 +176,76 @@ namespace PgSAIndex {
         return res;
     }
 
+    //FIXME: may exceed length during comparison
+    template<typename uint_element>
+    int SymbolsPackingFacility<uint_element>::compareSequences(uint_element* lSeq, uint_element* rSeq, const uint_max length) {
+        uint_max i = length;
+        while (i >= symbolsPerElement) {
+            if (*lSeq > *rSeq)
+                return 1;
+            if (*lSeq++ < *rSeq++)
+                return -1;
+            i -= symbolsPerElement;
+        } 
+        
+        int j = 0;
+        while (i--) {
+            if (reverse[*lSeq][j] > reverse[*rSeq][j])
+                return 1;
+            if (reverse[*lSeq][j] < reverse[*rSeq][j])
+                return -1;
+            j++;
+        }
+        
+        return 0;
+    }
+
+    template<typename uint_element>
+    int SymbolsPackingFacility<uint_element>::compareSequences(uint_element* lSeq, uint_element* rSeq, uint_max pos, uint_max length) {
+        uint_max i = divideBySmallInteger(pos, symbolsPerElement);
+        uint_max reminder = moduloBySmallInteger(pos, this->symbolsPerElement, i);
+
+        lSeq += i;
+        rSeq += i;
+        for (uchar j = reminder; j < symbolsPerElement; j++) {
+            if (reverse[*lSeq][j] > reverse[*rSeq][j])
+                return 1;
+            if (reverse[*lSeq][j] < reverse[*rSeq][j])
+                return -1;
+            if (--length == 0)
+                return 0;
+        }
+        
+        return compareSequences(lSeq + 1, rSeq + 1, length);
+    }
+
+    template<typename uint_element>
+    int SymbolsPackingFacility<uint_element>::compareSuffixWithPrefix(uint_element* sufSeq, uint_element* preSeq, uint_max sufPos, uint_max length) {
+        uint_max i = divideBySmallInteger(sufPos, symbolsPerElement);
+        uint_max reminder = moduloBySmallInteger(sufPos, this->symbolsPerElement, i);
+        
+        sufSeq += i;
+        if (reminder == 0)
+            return compareSequences(sufSeq, preSeq, length);
+        
+        uchar sufIdx = reminder;
+        uchar preIdx = 0;
+        while (true) {
+            if (reverse[*sufSeq][sufIdx] > reverse[*preSeq][preIdx])
+                return 1;
+            if (reverse[*sufSeq][sufIdx] < reverse[*preSeq][preIdx])
+                return -1;
+            if (--length == 0)
+                return 0;
+            if (++preIdx == symbolsPerElement) {
+                preIdx = 0; preSeq++;
+            } 
+            if (++sufIdx == symbolsPerElement) {
+                sufIdx = 0; sufSeq++;
+            }
+        }
+    }
+    
     template class SymbolsPackingFacility<uint_ps_element_min>;
     template class SymbolsPackingFacility<uint_ps_element_std>;
 }
