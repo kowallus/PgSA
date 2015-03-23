@@ -111,5 +111,8 @@ int main(int argc, char *argv[])
         delete(sab);
     }
     
+    cout << "DONE \n";
+    cin.ignore(1);    
+    
     exit(EXIT_SUCCESS);
 }

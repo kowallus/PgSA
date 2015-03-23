@@ -17,11 +17,14 @@ namespace PgSAIndex {
     lookupTable(lookupTableKeyPrefixLength, pseudoGenome->getReadsSetProperties()) {
         
         cout << "SA creation start.\n";
+
+        pgStatic = this->pseudoGenome;
+        maxReadLength = this->pseudoGenome->maxReadLength();
         
 //        if ((sizeof(uint_pg_len) == sizeof(int)) && (pseudoGenome->getLengthWithGuard() < INT_MAX / sizeof(int)))
-//            generateSaisPgSA();
+            generateSaisPgSA();
 //        else
-            generatePgSA();
+//            generatePgSA();
         
         this->lookupTable.generate(this, this->getElementsCount());
         //                cout << "memcheck 4.....\n";
@@ -79,24 +82,62 @@ namespace PgSAIndex {
         if (curSAPos != suffixArray + this->pseudoGenome->getLength() * (uint_max) SA_ELEMENT_SIZE)
             cout << "WARNING: SA generation failed: " << (int) (curSAPos - suffixArray) / SA_ELEMENT_SIZE << " elements instead of " << this->pseudoGenome->getLength() << "\n";
 
-        pgStatic = this->pseudoGenome;
-        maxReadLength = this->pseudoGenome->maxReadLength();
+    }
+
+    template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>
+    void DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::updateSAPositionQueue(int saGroup) {
+        
+        int relativePosition = 0;
+        
+        while (saPartSrc[saGroup]->read((char*) &relativePosition, sizeof(int))) {
+            
+            if (relativePosition >= maxPartSize)
+                continue;
+            currentSaPartPos[saGroup] = (uint_pg_len) saGroup * (uint_pg_len) maxPartSize + ((uint_pg_len) relativePosition);
+            if (currentSaPartPos[saGroup] >= this->elementsCount)
+                continue;
+            
+            list<int>::reverse_iterator it = saPartsOrder.rbegin();
+            while (true) {
+                if (it == saPartsOrder.rend() || (strcmplcp(pseudoGenome->getSuffix(currentSaPartPos[saGroup]), pseudoGenome->getSuffix(currentSaPartPos[*it]), maxReadLength) >= 0)) {
+                    saPartsOrder.insert(it.base(), saGroup);
+                    return;
+                }
+                it++;
+            }
+        }
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>
     void DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::generateSaisPgSA() {
         clock_checkpoint();
         
-        int* saisSA = (int*) malloc((size_t)(this->pseudoGenome->getLengthWithGuard()) * sizeof(int));
-
-        if(sais((const unsigned char*) this->pseudoGenome->getSuffix(0), saisSA, (int) this->pseudoGenome->getLengthWithGuard()) != 0) {
-            fprintf(stderr, "Cannot allocate memory.\n");
-            exit(EXIT_FAILURE);
+        int maxPartBruttoSize = INT_MAX / (sizeof(int));
+        
+        if ((uint_max) maxPartBruttoSize * 6 > this->pseudoGenome->getLengthWithGuard() * (uint_max) SA_ELEMENT_SIZE)
+            maxPartBruttoSize = this->pseudoGenome->getLengthWithGuard() * (uint_max) SA_ELEMENT_SIZE / 6;
+        
+        maxPartSize = maxPartBruttoSize - maxReadLength;
+        int noOfParts = 0; 
+        
+        int* saisSA = (int*) malloc((size_t)(maxPartBruttoSize * sizeof(int)));
+        
+        while (noOfParts * (uint_pg_len) maxPartSize < this->pseudoGenome->getLengthWithGuard()) {
+            
+            int partSize = this->pseudoGenome->getLengthWithGuard() - noOfParts * maxPartSize;
+            if (partSize > maxPartBruttoSize)
+                partSize = maxPartBruttoSize;
+                
+            if(sais((const unsigned char*) this->pseudoGenome->getSuffix(noOfParts * maxPartSize), saisSA, (int) partSize) != 0) {
+                fprintf(stderr, "Cannot allocate memory.\n");
+                exit(EXIT_FAILURE);
+            }
+            
+            std::ofstream dest("saisSA" + toString(noOfParts++) + ".tmp", std::ios::out | std::ios::binary);
+            PgSAHelpers::writeArray(dest, saisSA, (size_t)(partSize) * sizeof(int));
+            dest.close();
         }
-  
-        std::ofstream dest("saisSA.tmp", std::ios::out | std::ios::binary);
-        PgSAHelpers::writeArray(dest, saisSA, (size_t)(this->pseudoGenome->getLengthWithGuard()) * sizeof(int));
-        dest.close();
+        
         free((void*)saisSA);
         
         cout << "SAIS generation time " << clock_millis() << " msec!\n";
@@ -105,20 +146,42 @@ namespace PgSAIndex {
         
         prepareUnsortedSA();
         
-        std::ifstream src("saisSA.tmp", std::ifstream::binary);
-        const uchar* curSAPos = suffixArray;
-        int pgPos;
-        for (uint_pg_len i = 0; i < this->elementsCount;) {
-            src.read((char*) &pgPos, sizeof(int));
-            if ((uint_pg_len) pgPos < this->elementsCount) {
-                while ((uint_pg_len) pgPos < i)
-                    pgPos = this->getSuffixByAddress(saPosIdx2Address(pgPos)) - this->pseudoGenome->getSuffix(0);
-                
-                swapElementsByAddress((sa_pos_addr*) curSAPos, saPosIdx2Address(pgPos));
-                curSAPos += SA_ELEMENT_SIZE;
-                i++;
-            }
+        readsList->buildLUT();
+        
+        currentSaPartPos.resize(noOfParts);
+        for (int i = 0; i < noOfParts; i++) {
+            saPartSrc.push_back(new std::ifstream("saisSA" + toString(i) + ".tmp", std::ifstream::binary));
+            updateSAPositionQueue(i);
         }
+        
+        const uchar* curSAPos = suffixArray;
+        uint_pg_len pgPos;
+        for (uint_pg_len i = 0; i < this->elementsCount; i++) {
+            int j = saPartsOrder.front();
+            pgPos = currentSaPartPos[j];
+            
+//            cout << (int) j << "\t" << pgPos << "\t" << string(this->pseudoGenome->getSuffix(pgPos), 30) << "\n";
+            
+            if ((uint_pg_len) pgPos < i) {
+                uint_reads_cnt readsListIndex = readsList->findFurthestReadContaining(pgPos);
+                *((uint_reads_cnt*) curSAPos) = readsListIndex;
+                *((uint_read_len*) (curSAPos + POS_START_OFFSET)) = pgPos - readsList->getReadPosition(readsListIndex);
+            } else
+                swapElementsByAddress((sa_pos_addr*) curSAPos, saPosIdx2Address(pgPos));
+
+            curSAPos += SA_ELEMENT_SIZE;
+            
+            saPartsOrder.pop_front();
+            updateSAPositionQueue(j);
+        }
+        
+        for (int i = 0; i < noOfParts; i++) {
+            saPartSrc[i]->close();
+            delete(saPartSrc[i]);
+            remove(("saisSA" + toString(noOfParts) + ".tmp").c_str());
+        }
+        
+        saPartSrc.clear();
         
         cout << "SA generation time " << clock_millis() << " msec!\n";
     }
@@ -139,14 +202,7 @@ namespace PgSAIndex {
         const char_pg* readA = getSuffixStatic((sa_pos_addr) a);
         const char_pg* readB = getSuffixStatic((sa_pos_addr) b);
 
-        int i = 0;
-        while (i++ < maxReadLength) {
-            if (*readA > *readB)
-                return 1;
-            if (*readA++ < *readB++)
-                return -1;
-        }
-        return 0;
+        return strcmplcp(readA, readB, maxReadLength);
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>

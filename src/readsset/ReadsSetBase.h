@@ -95,7 +95,9 @@ namespace PgSAReadsSet {
                 this->properties = new ReadsSetProperties(src);
             };
 
-            virtual ~ReadsSetBase() { delete(properties); };
+            virtual ~ReadsSetBase() { 
+                delete(properties); 
+            };
 
         public:
 

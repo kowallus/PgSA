@@ -139,7 +139,7 @@ namespace PgSAIndex {
         cout << "Pseudogenome assembled in " << clock_millis() << " msec\n\n";
 
         // TODO: seperate generation of cache
-        genPG->setCountQueriesCache(new GeneratedCountQueriesCache(genPG, genPG->getReadsSetProperties()));
+//        genPG->setCountQueriesCache(new GeneratedCountQueriesCache(genPG, genPG->getReadsSetProperties()));
 
         return genPG;
     }

@@ -79,15 +79,45 @@ namespace PgSAIndex {
             void generate(SuffixArrayInterface<uint_read_len, uint_reads_cnt, uint_pg_len, SuffixArrayClass>* pgsa, uint_pg_len saElementsCount) {
                 clock_checkpoint();
                 
+                cout << this->getLookupTableLengthWithGuard() << " in lookup\n";
+                
                 lookup = new uint_pg_len[getLookupTableLengthWithGuard()];
                 
                 uint_max j = 0;
-                for(uint_pg_len i = 0; i < saElementsCount; i++) {
-                    const string suffix = pgsa->getSuffix(i, this->keyPrefixLength);
-                    uint_max lutIdx = pgSuffixToLookupTableIdx(suffix.data());
-                    while (j <= lutIdx)
-                        lookup[j++] = i;
+                
+                uint_pg_len i = 0;
+                bool bigStep = true;
+                int step = saElementsCount / getLookupTableLengthWithGuard() * 5 / 3;
+                if (step == 0)
+                    step = 1;
+                while (i < saElementsCount) {
+                    
+                    if (bigStep) {
+                        if (i + step >= saElementsCount)
+                            bigStep = false;
+                        else {
+                            const string suffix = pgsa->getSuffix(i + step, this->keyPrefixLength);
+                            uint_max lutIdx = pgSuffixToLookupTableIdx(suffix.data());
+                            if (j <= lutIdx)
+                                bigStep = false;
+                            else
+                                i += step;
+                        }
+                    }
+                    
+                    if (!bigStep) {
+                        const string suffix = pgsa->getSuffix(i, this->keyPrefixLength);
+                        uint_max lutIdx = pgSuffixToLookupTableIdx(suffix.data());
+                        if (j <= lutIdx) {
+                            bigStep = true;
+                            while (j <= lutIdx)
+                                lookup[j++] = i;
+                        }
+                        i++;
+                    }
+                    
                 }
+                
                 while(j < getLookupTableLengthWithGuard())
                     lookup[j++] = saElementsCount;
                 

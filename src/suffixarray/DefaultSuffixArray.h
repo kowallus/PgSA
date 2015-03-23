@@ -8,6 +8,7 @@
 #include "iterator/OccurrencesIteratorInterface.h"
 
 #include <byteswap.h>
+#include <list>
 
 using namespace PgSAHelpers;
 
@@ -79,7 +80,12 @@ namespace PgSAIndex {
             void generatePgSA();
             
             void generateSaisPgSA();
-
+            vector<std::ifstream*> saPartSrc;
+            int maxPartSize = 0;
+            vector<uint_pg_len> currentSaPartPos;
+            list<int> saPartsOrder;
+            void updateSAPositionQueue(int saGroup);
+            
             /////////////////////////////////
             // DUPLICATE FILTER GENERATION //
             /////////////////////////////////

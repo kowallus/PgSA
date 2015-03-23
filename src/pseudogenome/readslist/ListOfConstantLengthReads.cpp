@@ -81,6 +81,54 @@ namespace PgSAIndex {
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, unsigned char LIST_ELEMENT_SIZE, uchar FLAGS_OFFSET>
+    void ListOfConstantLengthReads<uint_read_len, uint_reads_cnt, uint_pg_len, LIST_ELEMENT_SIZE, FLAGS_OFFSET>::buildLUTImpl() {
+        while (pseudoGenomeLength >> lookupStepShift++ > readsCount);
+        
+        lookup.resize((pseudoGenomeLength >> lookupStepShift) + 2);
+        
+        uint_pg_len j = 0;
+        uint_reads_cnt i = 0;
+        while (i < readsCount) {
+
+            uint_pg_len nextReadPos = getReadPositionImpl(i + 1);           
+            while ((j << lookupStepShift) < nextReadPos)
+                lookup[j++] = i;
+            
+            i++;
+        }
+
+        lookup[j++] = readsCount;
+    }
+        
+    template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, unsigned char LIST_ELEMENT_SIZE, uchar FLAGS_OFFSET>
+    uint_reads_cnt ListOfConstantLengthReads<uint_read_len, uint_reads_cnt, uint_pg_len, LIST_ELEMENT_SIZE, FLAGS_OFFSET>::findFurthestReadContainingImpl(uint_pg_len pos) {
+      
+        uint_reads_cnt lIdx = lookup[pos >> lookupStepShift];
+        uint_reads_cnt rIdx = lookup[(pos >> lookupStepShift) + 1] + 1;
+        if (rIdx > readsCount)
+            rIdx = readsCount;
+        
+        if ((getReadPositionImpl(lIdx) > pos) || (getReadPositionImpl(rIdx) <= pos))
+            cout << "whoops\n";
+        
+        uint_reads_cnt mIdx;
+        
+        int cmpRes = 0;
+        
+        while (lIdx < rIdx) {
+            mIdx = (lIdx + rIdx) / 2;
+            cmpRes = (long long int) pos - (long long int) getReadPositionImpl(mIdx);
+
+            if (cmpRes >= 0) 
+                lIdx = mIdx + 1;
+            else if (cmpRes < 0)
+                rIdx = mIdx;
+        }
+ 
+        return lIdx - 1;
+    }
+
+    template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, unsigned char LIST_ELEMENT_SIZE, uchar FLAGS_OFFSET>
     uint_reads_cnt ListOfConstantLengthReads<uint_read_len, uint_reads_cnt, uint_pg_len, LIST_ELEMENT_SIZE, FLAGS_OFFSET>::clearAllOccurFlagsAndCountSingleOccurrencesImpl() {
         uint_reads_cnt count = 0;
         for (typename vector<uchar*>::iterator it = occurFlagsReadsList.begin(); it != occurFlagsReadsList.end(); ++it) {

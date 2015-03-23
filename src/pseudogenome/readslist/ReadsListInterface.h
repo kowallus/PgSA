@@ -26,6 +26,9 @@ namespace PgSAIndex {
 
             inline uint_reads_cnt getReadsListIndexOfOriginalIndex(uint_reads_cnt originalIdx) { return static_cast<ReadsListClass*>(this)->getReadsListIndexOfOriginalIndexImpl(originalIdx); };
             
+            inline void buildLUT() { static_cast<ReadsListClass*>(this)->buildLUTImpl(); };
+            inline uint_reads_cnt findFurthestReadContaining(uint_pg_len pos) { return static_cast<ReadsListClass*>(this)->findFurthestReadContainingImpl(pos); };
+            
             inline uint_read_len getDuplicateFilterKmerLength() { return static_cast<ReadsListClass*>(this)->getDuplicateFilterKmerLengthImpl(); };
             inline void setDuplicateFilterKmerLength(uint_read_len kLength) { static_cast<ReadsListClass*>(this)->setDuplicateFilterKmerLengthImpl(kLength); };
             

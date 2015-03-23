@@ -102,6 +102,8 @@ namespace PgSAHelpers {
 
     int readsSufPreCmp(const char* suffixPart, const char* prefixRead);
     
+    int strcmplcp(const char* lStrPtr, const char* rStrPtr, int length);
+    
 }
 
 #endif // HELPER_H_INCLUDED

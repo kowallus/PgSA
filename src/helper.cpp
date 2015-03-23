@@ -175,3 +175,27 @@ int PgSAHelpers::readsSufPreCmp(const char* suffixPart, const char* prefixRead) 
     return 0;
 }
 
+int PgSAHelpers::strcmplcp(const char* lStrPtr, const char* rStrPtr, int length) {
+    
+    int i = 0;
+    while (length - i >= 4) {
+        int cmp = bswap_32(*(uint32_t*) lStrPtr) - bswap_32(*(uint32_t*) rStrPtr);
+        if (cmp != 0)
+            break;
+        lStrPtr += 4;
+        rStrPtr += 4;
+        i += 4;
+    }
+
+    while (i < length) {
+        i++;
+        int cmp = *lStrPtr++ - *rStrPtr++;
+        if (cmp > 0)
+            return 1;
+        if (cmp < 0)
+            return -1;
+    }
+
+    return 0;
+
+}

@@ -140,6 +140,11 @@ namespace PgSAIndex {
                 return readsListIdx[originalIdx];
             }
             
+            vector<uint_reads_cnt> lookup;
+            int lookupStepShift = 0;
+            void buildLUTImpl();
+            uint_reads_cnt findFurthestReadContainingImpl(uint_pg_len pos);
+            
             inline uint_read_len getDuplicateFilterKmerLengthImpl() { return duplicateFilterK; };
             inline void setDuplicateFilterKmerLengthImpl(uint_read_len kLength) { duplicateFilterK = kLength; };
 

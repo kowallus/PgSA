@@ -26,8 +26,8 @@ namespace PgSAIndex {
 
     template < typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, class ReadsListClass >
     DefaultPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>::~DefaultPseudoGenome() {
-        delete[]sequence;
         delete(readsList);
+        delete[]sequence;      
     }
     
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, class ReadsListClass>
