@@ -38,6 +38,7 @@ namespace PgSAHelpers {
     template<typename uint>
     inline uint divideBySmallInteger(const uint dividend, const unsigned char divisor) {
         switch (divisor) {
+            case 1: return dividend / 1;
             case 2: return dividend / 2;
             case 3: return dividend / 3;
             case 4: return dividend / 4;

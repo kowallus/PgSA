@@ -29,6 +29,8 @@ namespace PgSAIndex {
             
             inline uint_flatten_occurrence_max getFlattenOccurrence() { return static_cast<ReadsIteratorClass*>(this)->getFlattenOccurrenceImpl(); };
             
+            inline uint_reads_cnt getReadIndex() { return static_cast<ReadsIteratorClass*>(this)->getReadIndexImpl(); };
+            
             //true if read does not contain duplicate kmers (of filter kmer length)
             inline bool hasDuplicateFilterFlag() { return static_cast<ReadsIteratorClass*>(this)->hasDuplicateFilterFlagImpl(); };
 

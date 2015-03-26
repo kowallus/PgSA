@@ -33,7 +33,7 @@ namespace PgSAIndex {
 
             typedef DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass> ThisDefaultSuffixArrayType;
             typedef DefaultPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass> PseudoGenome;
-            typedef DefaultSuffixArrayLookupTable<uint_read_len, uint_pg_len, ThisDefaultSuffixArrayType> SuffixArrayLookupTable;
+            typedef DefaultSuffixArrayLookupTable<uint_read_len, uint_pg_len> SuffixArrayLookupTable;
             typedef ReadsListInterface<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass> ReadsList;
             typedef OccurrencesIteratorInterface<uint_read_len, uint_reads_cnt, typename SuffixArrayTraits<ThisDefaultSuffixArrayType>::ReadsListIteratorClass, typename SuffixArrayTraits<ThisDefaultSuffixArrayType>::OccurrencesIteratorClass> OccurrencesIterator;
             
@@ -97,7 +97,7 @@ namespace PgSAIndex {
             uint_max markReadsWithDuplicates(uint_max lutIdx);
 
             void buildReadsWithDuplicatesFilter();
-
+            
             ///////////////////////////////
             // SEARCHING HELPER ROUTINES //
             ///////////////////////////////

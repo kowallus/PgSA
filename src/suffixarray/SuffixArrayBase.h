@@ -59,7 +59,7 @@ namespace PgSAIndex {
                 this->type = base->getTypeID();
                 this->maxReadLength = base->getPseudoGenomeBase()->getReadsSetProperties()->maxReadLength;
                 this->readsCount = base->getPseudoGenomeBase()->getReadsSetProperties()->readsCount;
-                this->pgLength = base->getPseudoGenomeBase()->getLength();
+                this->pgLength = base->getPseudoGenomeBase()->getPseudoGenomeLength();
                 this->saSizeInBytes = base->getSizeInBytes();
             }
 

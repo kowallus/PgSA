@@ -14,7 +14,7 @@ namespace PgSAIndex {
     const string PGTYPE_DEFAULT = "DEFAULT_PGEN";
 
     template < typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, class ReadsListClass >
-    class DefaultPseudoGenome: public PseudoGenomeInterface<uint_read_len, uint_reads_cnt, uint_pg_len>,
+    class DefaultPseudoGenome: public PseudoGenomeInterface<uint_read_len, uint_reads_cnt, uint_pg_len, DefaultPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>>,
                                public PseudoGenomeBase
     {
         protected:
@@ -61,6 +61,9 @@ namespace PgSAIndex {
             
             uint_read_len readLength(const uint_reads_cnt originalIdx);
 
+            const char_pg getSymbolImpl(const uint_pg_len posIdx);
+            const uint_pg_len getLengthImpl();
+            
             uint_read_len maxReadLengthVirtual();
             uint_reads_cnt readsCountVirtual();
             bool isReadLengthConstantVirtual();

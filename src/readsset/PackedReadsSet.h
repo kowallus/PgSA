@@ -15,7 +15,8 @@ namespace PgSAReadsSet {
     {
         private:
 
-            vector<vector<uint_ps_element_min>> packedReads;
+            uint_ps_element_min* packedReads;
+            uchar packedLength;
             vector<uint_read_len_max> lengths;
 
         public:
@@ -25,16 +26,16 @@ namespace PgSAReadsSet {
             template<class ReadsSourceIterator>
             PackedReadsSet(ReadsSourceIterator*);
 
-            virtual ~PackedReadsSet() {};
+            virtual ~PackedReadsSet();
 
             inline uint_read_len_max maxReadLength() { return properties->maxReadLength; };
             inline uint_reads_cnt_max readsCount() { return properties->readsCount; };
 
             inline bool isReadLengthConstant() { return properties->constantReadLength; };
 
-            inline const vector<uint_ps_element_min> getPackedRead(uint_reads_cnt_max i) { return packedReads[i];};
-            inline const string getReadPrefix(uint_reads_cnt_max i, uint_read_len_max skipSuffix) { return sPacker->reverseSequence((unsigned char*) packedReads[i].data(), 0, readLength(i) - skipSuffix);};
-            inline const string getRead(uint_reads_cnt_max i) { return sPacker->reverseSequence((unsigned char*) packedReads[i].data(), 0, readLength(i));};
+            inline const uint_ps_element_min* getPackedRead(uint_reads_cnt_max i) { return packedReads + i * (size_t) packedLength;};
+            inline const string getReadPrefix(uint_reads_cnt_max i, uint_read_len_max skipSuffix) { return sPacker->reverseSequence(packedReads + i * (size_t) packedLength, 0, readLength(i) - skipSuffix);};
+            inline const string getRead(uint_reads_cnt_max i) { return sPacker->reverseSequence(packedReads + (size_t) packedLength * i, 0, readLength(i));};
             inline uint_read_len_max readLength(uint_reads_cnt_max i) { return lengths[i]; };
 
             int comparePackedReads(uint_reads_cnt_max lIdx, uint_reads_cnt_max rIdx);
@@ -64,14 +65,19 @@ namespace PgSAReadsSet {
                 if (filename.substr(filename.length() - 6) == ".fasta") {
                     FASTAReadsSourceIterator<uint_read_len_max>* readsSource = new FASTAReadsSourceIterator<uint_read_len_max>(streamSource, pairSource);
                     readsSet = new PackedReadsSet(readsSource);
+                    delete(readsSource);
                 } else if (filename.substr(filename.length() - 6) == ".fastq") {
                     FASTQReadsSourceIterator<uint_read_len_max>* readsSource = new FASTQReadsSourceIterator<uint_read_len_max>(streamSource, pairSource);
                     readsSet = new PackedReadsSet(readsSource);
+                    delete(readsSource);
                 } else {
                     ConcatenatedReadsSourceIterator<uint_read_len_max>* readsSource = new ConcatenatedReadsSourceIterator<uint_read_len_max>(streamSource);
                     readsSet = new PackedReadsSet(readsSource);
+                    delete(readsSource);
                 }
                 delete(streamSource);
+                if (pairSource)
+                    delete(pairSource);
                 return readsSet;
             }
     };

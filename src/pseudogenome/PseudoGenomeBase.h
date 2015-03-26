@@ -30,7 +30,7 @@ namespace PgSAIndex {
             bool isPGLengthStd() { return PgSAIndex::isPGLengthStd(length); };
             bool isPGLengthMax() { return PgSAIndex::isPGLengthMax(length); };
 
-            const uint_pg_len_max getLength() { return this->length; };
+            const uint_pg_len_max getPseudoGenomeLength() { return this->length; };
 
             virtual string getTypeID() = 0;
             virtual void write(std::ostream& dest) = 0;
@@ -57,7 +57,7 @@ namespace PgSAIndex {
                 this->constantReadLength = base->getReadsSetProperties()->constantReadLength;
                 this->maxReadLength = base->getReadsSetProperties()->maxReadLength;
                 this->readsCount = base->getReadsSetProperties()->readsCount;
-                this->pgLength = base->getLength();
+                this->pgLength = base->getPseudoGenomeLength();
             }
 
             PseudoGenomeHeader(std::istream& src) {

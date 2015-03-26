@@ -167,6 +167,18 @@ namespace PgSAIndex {
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, typename uint_pg_element, class ReadsListClass>
+    const char_pg PackedPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, uint_pg_element, ReadsListClass>::getSymbolImpl(const uint_pg_len posIdx) {
+        char tmp;
+        sPacker->reverseSequence(sequence, posIdx + 1, 1, &tmp);
+        return tmp;
+    }
+
+    template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, typename uint_pg_element, class ReadsListClass>
+    const uint_pg_len PackedPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, uint_pg_element, ReadsListClass>::getLengthImpl() {
+        return this->getPseudoGenomeLength();
+    }
+
+    template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, typename uint_pg_element, class ReadsListClass>
     uint_read_len PackedPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, uint_pg_element, ReadsListClass>::maxReadLengthVirtual() {
         return maxReadLength();
     }

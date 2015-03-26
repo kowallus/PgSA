@@ -13,7 +13,7 @@ namespace PgSAIndex {
     const string PGTYPE_MULTIPACKED = "MULTIPACKED_PGEN";
     
     template < typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, typename uint_pg_element, class ReadsListClass >
-    class MultiPackedPseudoGenome: public PseudoGenomeInterface<uint_read_len, uint_reads_cnt, uint_pg_len>,
+    class MultiPackedPseudoGenome: public PseudoGenomeInterface<uint_read_len, uint_reads_cnt, uint_pg_len, MultiPackedPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, uint_pg_element, ReadsListClass>>,
             public PackedPseudoGenomeBase
     {
         private:
@@ -70,6 +70,9 @@ namespace PgSAIndex {
             
             uint_read_len readLength(uint_reads_cnt originalIdx);
 
+            const char_pg getSymbolImpl(const uint_pg_len posIdx);
+            const uint_pg_len getLengthImpl();
+            
             SymbolsPackingFacility<uint_pg_element>* getSymbolsPacker();
             
             uint_read_len maxReadLengthVirtual();

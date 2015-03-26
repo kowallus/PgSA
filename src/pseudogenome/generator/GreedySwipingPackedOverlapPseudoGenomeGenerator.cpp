@@ -50,7 +50,7 @@ namespace PgSAIndex {
     template<typename uint_read_len, typename uint_reads_cnt>
     uchar GreedySwipingPackedOverlapGeneratorTemplate<uint_read_len, uint_reads_cnt>::getSymbolOrderFromRead(uint_reads_cnt incIdx, uint_read_len offset) {
         char tmp;
-        packedReadsSet->sPacker->reverseSequence(packedReadsSet->getPackedRead(incIdx - 1).data(), offset, 1, &tmp);
+        packedReadsSet->sPacker->reverseSequence(packedReadsSet->getPackedRead(incIdx - 1), offset, 1, &tmp);
         return (uchar) getReadsSetProperties()->symbolOrder[(uchar) tmp];
     }
 
@@ -198,6 +198,16 @@ namespace PgSAIndex {
         
             cout << this->readsLeft << " reads left after " << (uint_read_len_max) (packedReadsSet->maxReadLength() - i) << " overlap\n";
         }
+
+        sortedReadsIdxs.clear();
+        sortedReadsIdxs.shrink_to_fit();
+        sortedSuffixIdxs.clear();
+        sortedSuffixIdxs.shrink_to_fit();
+        ssiSymbolIdx.clear();
+        ssiSymbolIdx.shrink_to_fit();
+        ssiSymbolEnd.clear();
+        ssiSymbolEnd.shrink_to_fit();
+        ssiOrder.clear();
         
         cout << this->countComponents() << " pseudo-genome components\n";
         

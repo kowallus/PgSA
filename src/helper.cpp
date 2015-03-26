@@ -13,7 +13,7 @@ unsigned long long int PgSAHelpers::clock_millis() {
     return (clock() - checkpoint) * (unsigned long long int) 1000 / CLOCKS_PER_SEC;
 }
 
-const size_t chunkSize = 1000000000;
+const size_t chunkSize = 10000000;
 
 void* PgSAHelpers::readArray(std::istream& in, size_t arraySizeInBytes) {
 
@@ -189,7 +189,7 @@ int PgSAHelpers::strcmplcp(const char* lStrPtr, const char* rStrPtr, int length)
 
     while (i < length) {
         i++;
-        int cmp = *lStrPtr++ - *rStrPtr++;
+        int cmp = *(unsigned char*)(lStrPtr++) - *(unsigned char*)(rStrPtr++);
         if (cmp > 0)
             return 1;
         if (cmp < 0)

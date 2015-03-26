@@ -21,7 +21,7 @@ namespace PgSAIndex {
         public:
             
             PackedPseudoGenomeGenerator(PseudoGenomeBase* pgb, uchar symbolsPerElement)
-            : pseudoGenomeLength(pgb->getLength()),
+            : pseudoGenomeLength(pgb->getPseudoGenomeLength()),
                     pgb(pgb), 
                     symbolsPerElement(symbolsPerElement) 
             { };

@@ -5,7 +5,7 @@ namespace PgSAIndex {
     template < typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, class ReadsListClass >
     DefaultPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>::DefaultPseudoGenome(uint_pg_len pgLength, ReadsSetProperties* properties)
     : PseudoGenomeBase(pgLength, properties) {
-        this->sequence = new char_pg[(this->getLengthWithGuard()) * sizeof(char_pg)];
+        this->sequence = new char_pg[this->getLengthWithGuard()];
     }
     
     template < typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, class ReadsListClass >
@@ -108,6 +108,16 @@ namespace PgSAIndex {
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, class ReadsListClass>
     uint_read_len DefaultPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>::readLength(const uint_reads_cnt originalIdx) {
         return this->readsList->getReadLength(this->readsList->getReadsListIndexOfOriginalIndex(originalIdx));
+    }
+
+    template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, class ReadsListClass>
+    const char_pg DefaultPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>::getSymbolImpl(const uint_pg_len posIdx) {
+        return *(sequence + posIdx);
+    }
+
+    template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, class ReadsListClass>
+    const uint_pg_len DefaultPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>::getLengthImpl() {
+        return this->getPseudoGenomeLength();
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, class ReadsListClass>

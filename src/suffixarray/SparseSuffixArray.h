@@ -7,6 +7,7 @@
 #include "lookuptable/DefaultSuffixArrayLookupTable.h"
 #include "../pseudogenome/PackedPseudoGenome.h"
 #include "iterator/OccurrencesIteratorInterface.h"
+#include "../sais/sais.h"
 
 using namespace PgSAHelpers;
 
@@ -34,7 +35,7 @@ namespace PgSAIndex {
 
             typedef SparseSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, uint_pg_element, uint_skipped_element, SA_ELEMENT_SIZE, POS_START_OFFSET, SKIPPED_OFFSET, READSLIST_INDEX_MASK, ReadsListClass> ThisDefaultSuffixArrayType;
             typedef PackedPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, uint_pg_element, ReadsListClass> PseudoGenome;
-            typedef DefaultSuffixArrayLookupTable<uint_read_len, uint_pg_len, ThisDefaultSuffixArrayType> SuffixArrayLookupTable;
+            typedef DefaultSuffixArrayLookupTable<uint_read_len, uint_pg_len> SuffixArrayLookupTable;
             typedef ReadsListInterface<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass> ReadsList;
             typedef OccurrencesIteratorInterface<uint_read_len, uint_reads_cnt, typename SuffixArrayTraits<ThisDefaultSuffixArrayType>::ReadsListIteratorClass, typename SuffixArrayTraits<ThisDefaultSuffixArrayType>::OccurrencesIteratorClass> OccurrencesIterator;
                         
@@ -66,6 +67,16 @@ namespace PgSAIndex {
             inline const sa_pos_addr saPosIdx2Address(const uint_pg_len posIdx) {
                 return (sa_pos_addr) (suffixArray + ((uint_max) posIdx) * SA_ELEMENT_SIZE);
             }
+            
+            inline static void swapElementsByAddress(const sa_pos_addr saPosAddressFst, const sa_pos_addr saPosAddressSnd) {
+                uchar tmp;
+                for(int i = 0; i < SA_ELEMENT_SIZE; i++) {
+                    tmp = *(((uchar*) saPosAddressFst)+i);
+                    *(((uchar*) saPosAddressFst)+i) = *(((uchar*) saPosAddressSnd)+i);
+                    *(((uchar*) saPosAddressSnd)+i) = tmp;
+        }
+            };
+            
 
             //////////////////////////////////////
             // SUFFIX ARRAY GENERATION ROUTINES //
@@ -106,24 +117,10 @@ namespace PgSAIndex {
                 return 0;
             }
 
-            // The walk around enabling sorting suffix array
-            // NOTE: Works only in non-concurent mode (only onfe suffix array at the time)
-            void sortPgSA() {
-
-                pgStatic = this->pseudoGenome;
-                maxReadLengthRaw = (this->pseudoGenome->maxReadLength() + this->pseudoGenome->getSymbolsPerElement() - 1) / this->pseudoGenome->getSymbolsPerElement();
-
-                clock_checkpoint();
+            uint_pg_len elementsCountWithoutGuard = 0;
+            
+            void prepareUnsortedSA() {
                 
-                // elementsCount - 1 if last element points to guard read
-                if (this->getPosition(this->elementsCount - 1).readListIndex == this->pseudoGenome->readsCount())
-                    qsort(suffixArray, this->elementsCount - 1, sizeof(uchar) * SA_ELEMENT_SIZE, this->pgSuffixesCompare);
-                else
-                    qsort(suffixArray, this->elementsCount, sizeof(uchar) * SA_ELEMENT_SIZE, this->pgSuffixesCompare);
-                cout << "SA sort time " << clock_millis() << " msec!\n";
-            }
-
-            void generatePgSA() {
                 const uchar* curSAPos = suffixArray;
 
                 uint_reads_cnt readsListIndex = 0;
@@ -141,12 +138,195 @@ namespace PgSAIndex {
                     curSAPos += SA_ELEMENT_SIZE;
                 }
 
+                elementsCountWithoutGuard = this->getPosition(this->elementsCount - 1).readListIndex == this->pseudoGenome->readsCount()?this->elementsCount - 1:this->elementsCount;
+                
                 if (curSAPos != suffixArray + this->elementsCount * (uint_max) SA_ELEMENT_SIZE )
                     cout << "WARNING: SA generation failed: " << (int) (curSAPos - suffixArray) / SA_ELEMENT_SIZE << " elements instead of " << this->elementsCount << "\n";
 
-                sortPgSA();
+            }
+            
+            void generatePgSA() {
+                clock_checkpoint();
+                
+                prepareUnsortedSA();
+                
+                qsort(suffixArray, elementsCountWithoutGuard, sizeof(uchar) * SA_ELEMENT_SIZE, this->pgSuffixesCompare);
+                
+                cout << "SA generation time " << clock_millis() << " msec!\n";
             }
 
+            vector<std::ifstream*> saPartSrc;
+            int maxPartSize = 0;
+            vector<uint_pg_len> currentSaPartPos;
+            list<int> saPartsOrder;
+            
+            void updateSAPositionQueue(int saGroup) {
+                int relativePosition = 0;
+
+                while (saPartSrc[saGroup]->read((char*) &relativePosition, sizeof(int))) {
+
+                    if (relativePosition >= maxPartSize)
+                        continue;
+                    currentSaPartPos[saGroup] = (uint_pg_len) saGroup * (uint_pg_len) maxPartSize + ((uint_pg_len) relativePosition);
+                    if (currentSaPartPos[saGroup] >= elementsCountWithoutGuard)
+                        continue;
+
+                    list<int>::reverse_iterator it = saPartsOrder.rbegin();
+                    while (true) {
+                        if (it == saPartsOrder.rend() || (strcmplcp((const char*) pseudoGenome->getRawSuffix(1 + currentSaPartPos[saGroup]), (const char*) pseudoGenome->getRawSuffix(1 + currentSaPartPos[*it]), maxReadLengthRaw) >= 0)) {
+                            saPartsOrder.insert(it.base(), saGroup);
+                            return;
+                        }
+                        it++;
+                    }
+                }
+            }
+            
+            void generateSaisPgSA() {
+                clock_checkpoint();
+        
+                int maxPartBruttoSize = INT_MAX / (sizeof(int));
+                uint_pg_len pgElementsCountWithGuard = pseudoGenome->getElementsCountWithGuard();
+
+                if ((uint_max) maxPartBruttoSize * 6 > pgElementsCountWithGuard * (uint_max) SA_ELEMENT_SIZE)
+                    maxPartBruttoSize = pgElementsCountWithGuard * (uint_max) SA_ELEMENT_SIZE / 6;
+
+                maxPartSize = maxPartBruttoSize - maxReadLengthRaw;
+                int noOfParts = 0; 
+
+                int* saisSA = (int*) malloc((size_t)(maxPartBruttoSize * sizeof(int)));
+
+                while (noOfParts * (uint_pg_len) maxPartSize < pgElementsCountWithGuard ) {
+
+                    int partSize = pgElementsCountWithGuard - noOfParts * maxPartSize;
+                    if (partSize > maxPartBruttoSize)
+                        partSize = maxPartBruttoSize;
+
+                    if(sais((const unsigned char*) this->pseudoGenome->getRawSuffix(1 + noOfParts * maxPartSize), saisSA, (int) partSize) != 0) {
+                        fprintf(stderr, "Cannot allocate memory.\n");
+                        exit(EXIT_FAILURE);
+                    }
+
+                    std::ofstream dest("saisSA" + toString(noOfParts++) + ".tmp", std::ios::out | std::ios::binary);
+                    PgSAHelpers::writeArray(dest, saisSA, (size_t)(partSize) * sizeof(int));
+                    dest.close();
+                }
+
+                free((void*)saisSA);
+
+                cout << "SAIS generation time " << clock_millis() << " msec!\n";
+
+                clock_checkpoint();
+
+                prepareUnsortedSA();
+
+                readsList->buildLUT();
+
+                currentSaPartPos.resize(noOfParts);
+                for (int i = 0; i < noOfParts; i++) {
+                    saPartSrc.push_back(new std::ifstream("saisSA" + toString(i) + ".tmp", std::ifstream::binary));
+                    updateSAPositionQueue(i);
+                }
+
+                const uchar* curSAPos = suffixArray;
+                uint_pg_len saPos;
+                for (uint_pg_len i = 0; i < elementsCountWithoutGuard; i++) {
+                    int j = saPartsOrder.front();
+                    saPos = currentSaPartPos[j];
+
+                    uint_pg_len pgPos = saPos * pseudoGenome->getSymbolsPerElement() + skippedSymbolsCount;
+                    
+                    if ((uint_pg_len) saPos < i) {
+                        uint_reads_cnt readsListIndex = readsList->findFurthestReadContaining(pgPos);
+                        *((uint_reads_cnt*) curSAPos) = readsListIndex;
+                        *((uint_read_len*) (curSAPos + POS_START_OFFSET)) = pgPos - readsList->getReadPosition(readsListIndex);
+                        *((uint_skipped_element*) (curSAPos + SKIPPED_OFFSET)) = 
+                            sPacker->packSymbols(pseudoGenome->getSuffix(pgPos - skippedSymbolsCount, skippedSymbolsCount).data());
+                    } else
+                        swapElementsByAddress((sa_pos_addr*) curSAPos, saPosIdx2Address(saPos));
+
+                    curSAPos += SA_ELEMENT_SIZE;
+
+                    saPartsOrder.pop_front();
+                    updateSAPositionQueue(j);
+                }
+
+                for (int i = 0; i < noOfParts; i++) {
+                    saPartSrc[i]->close();
+                    delete(saPartSrc[i]);
+                    remove(("saisSA" + toString(noOfParts) + ".tmp").c_str());
+                }
+
+                saPartSrc.clear();
+
+                cout << "SA generation time " << clock_millis() << " msec!\n";
+            }
+
+            void buildReadsWithDuplicatesFilter() {
+                clock_checkpoint();
+
+                readsList->setDuplicateFilterKmerLength(this->lookupTable.getKeyPrefixLength());
+                if (readsList->getDuplicateFilterKmerLength() != this->lookupTable.getKeyPrefixLength()) {
+                    cout << "Unsupported duplicate filter size " << readsList->getDuplicateFilterKmerLength() << " expected " << this->lookupTable.getKeyPrefixLength() << "!\n";
+                    exit(-1);
+                }
+                uint_max filterCount = 0;
+                
+                ReadsSetProperties* properties = this->pseudoGenome->getReadsSetProperties();
+                
+                string kmer(this->lookupTable.getKeyPrefixLength(), properties->symbolsList[0]);
+                               
+                while (true) {
+                    filterCount += markReadsWithDuplicates(kmer);
+                    
+                    uchar i = this->lookupTable.getKeyPrefixLength();
+                    uchar order;
+                    do {
+                        order = properties->symbolOrder[(unsigned char) kmer[--i]] + 1;
+                        if (order == properties->symbolsCount)
+                            order = 0;
+                        kmer[i] = properties->symbolsList[order];
+                    } while (order == 0 && i > 0);
+                    if (i == 0 && order == 0)
+                        break;
+                }
+                
+                cout << "Found " << filterCount << " reads containing duplicate " << (int) readsList->getDuplicateFilterKmerLength()
+                        << "-mers in " << clock_millis() << " msec!\n";
+            }
+            
+            uint_max markReadsWithDuplicates(string kmer) {
+
+                vector<uint_reads_cnt> readsIdxs;
+                
+                const uint_read_len guardOffset = readsList->getMaxReadLength() - readsList->getDuplicateFilterKmerLength();
+                OccurrencesIterator& oit = this->getKmerOccurrencesIterator(kmer);
+                
+                while(oit.moveNext()) {
+                    uint_reads_cnt j = oit.getReadIndex();
+                     
+                    if (readsList->hasDuplicateFilterFlag(j))
+                        continue;
+                    if (guardOffset >= oit.getOccurrenceOffset()) {
+                        if (!readsList->hasOccurFlag(j))
+                            readsIdxs.push_back(j);
+                        readsList->setOccurOnceFlag(j);
+                    }
+                }
+
+                uint_reads_cnt j = 0;
+                uint_reads_cnt readsCount = readsIdxs.size();
+                for (uint_reads_cnt i = 0; i < readsCount; i++) {
+                    if (!readsList->hasOccurOnceFlag(readsIdxs[i]) && !readsList->hasDuplicateFilterFlag(readsIdxs[i])) {
+                        readsList->setDuplicateFilterFlag(readsIdxs[i]);
+                        j++;               
+                    } 
+                    readsList->clearOccurFlags(readsIdxs[i]);
+                }
+
+                return j;
+            }
+            
             ///////////////////////////////
             // SEARCHING HELPER ROUTINES //
             ///////////////////////////////
@@ -279,8 +459,18 @@ namespace PgSAIndex {
                 suffixArray[this->getSizeInBytes() - 2] = 0;
                 suffixArray[this->getSizeInBytes() - 1] = 0;
                 
-                generatePgSA();
-                this->lookupTable.generate(this, this->getElementsCount());
+                pgStatic = this->pseudoGenome;
+                maxReadLengthRaw = (this->pseudoGenome->maxReadLength() + this->pseudoGenome->getSymbolsPerElement() - 1) / this->pseudoGenome->getSymbolsPerElement();
+                
+                this->lookupTable.generateFromPg(this->pseudoGenome, pseudoGenome->getSymbolsPerElement(), skippedSymbolsCount);
+                
+                if ((sizeof(uint_pg_element) == sizeof(char)))
+                    generateSaisPgSA();
+                else
+                    generatePgSA();              
+                
+//                this->lookupTable.generateFromSA(this, this->getElementsCount());
+                buildReadsWithDuplicatesFilter();
             };
 
             SparseSuffixArray(PseudoGenome* pseudoGenome, std::istream& src)

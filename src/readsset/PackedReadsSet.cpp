@@ -45,27 +45,37 @@ namespace PgSAReadsSet {
 
         properties->generateSymbolOrder();
 
-        sPacker = new SymbolsPackingFacility<uint_ps_element_min>(properties, SymbolsPackingFacility<uint_ps_element_min>::maxSymbolsPerElement(properties->symbolsCount));
-        unsigned char buffer[properties->maxReadLength + 1] = {0}; 
-
+        uchar symbolsPerElement = SymbolsPackingFacility<uint_ps_element_min>::maxSymbolsPerElement(properties->symbolsCount);
+        sPacker = new SymbolsPackingFacility<uint_ps_element_min>(properties, symbolsPerElement);
+ 
+        packedLength = (properties->maxReadLength + symbolsPerElement - 1) / symbolsPerElement;
+        
+        packedReads = new uint_ps_element_min[(size_t) packedLength * properties->readsCount];
+        
+        uint_ps_element_min* packedReadsPtr = packedReads;
+        
         readsIterator->rewind();
         while (readsIterator->moveNext()) {
-            int packedLength = sPacker->packSequence(readsIterator->getRead().c_str(), readsIterator->getReadLength(), buffer);
-            packedReads.push_back(vector<uint_ps_element_min>(buffer, buffer + packedLength));
+            sPacker->packSequence(readsIterator->getRead().data(), readsIterator->getReadLength(), packedReadsPtr);
+            packedReadsPtr += packedLength;
         }
-               
+        
     };
 
+    PackedReadsSet::~PackedReadsSet() {
+        delete[] packedReads;
+    }
+
     int PackedReadsSet::comparePackedReads(uint_reads_cnt_max lIdx, uint_reads_cnt_max rIdx){
-        return sPacker->compareSequences(packedReads[lIdx].data(), packedReads[rIdx].data(), properties->maxReadLength);
+        return sPacker->compareSequences(packedReads + lIdx * (size_t) packedLength, packedReads + rIdx * (size_t) packedLength, properties->maxReadLength);
     }
 
     int PackedReadsSet::comparePackedReads(uint_reads_cnt_max lIdx, uint_reads_cnt_max rIdx, uint_read_len_max offset) {
-        return sPacker->compareSequences(packedReads[lIdx].data(), packedReads[rIdx].data(), offset, properties->maxReadLength - offset);
+        return sPacker->compareSequences(packedReads + lIdx * (size_t) packedLength, packedReads + rIdx * (size_t) packedLength, offset, properties->maxReadLength - offset);
     }
 
     int PackedReadsSet::compareSuffixWithPrefix(uint_reads_cnt_max sufIdx, uint_reads_cnt_max preIdx, uint_read_len_max sufOffset) {
-        return sPacker->compareSuffixWithPrefix(packedReads[sufIdx].data(), packedReads[preIdx].data(), sufOffset, properties->maxReadLength - sufOffset);
+        return sPacker->compareSuffixWithPrefix(packedReads + sufIdx * (size_t) packedLength, packedReads + preIdx * (size_t) packedLength, sufOffset, properties->maxReadLength - sufOffset);
     }
 
     template PackedReadsSet::PackedReadsSet<ConcatenatedReadsSourceIterator<uint_read_len_min>>(ConcatenatedReadsSourceIterator<uint_read_len_min>* readsIterator);

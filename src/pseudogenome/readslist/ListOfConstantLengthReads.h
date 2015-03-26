@@ -87,6 +87,10 @@ namespace PgSAIndex {
                 return (*((uint_reads_cnt*) (address + ORIGINAL_INDEX_OFFSET)));
             };
             
+            inline uint_reads_cnt address2Idx(uchar* address) {
+                return (uint_reads_cnt) ((address - pgReadsList) / LIST_ELEMENT_SIZE);
+            };
+            
             inline bool hasDuplicateFilterFlagByAddress(uchar* address) {
                 return flagsVariableByAddress(address) & DUPINREADS_FLAG;
             };
@@ -201,6 +205,10 @@ namespace PgSAIndex {
             
             inline uint_flatten_occurrence_max getFlattenOccurrenceImpl() { 
                 return ((uint_flatten_occurrence_max) this->getReadOriginalIndexImpl()) * this->getMaxReadLength() + this->getOccurrenceOffsetImpl();
+            };
+            
+            inline uint_reads_cnt getReadIndexImpl() {
+                return address2Idx(itAddress);
             };
             
             inline bool hasDuplicateFilterFlagImpl() { 

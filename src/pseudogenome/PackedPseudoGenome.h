@@ -13,7 +13,7 @@ namespace PgSAIndex {
     const string PGTYPE_PACKED = "PACKED_PGEN";
 
     template < typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, typename uint_pg_element, class ReadsListClass >
-    class PackedPseudoGenome: public PseudoGenomeInterface<uint_read_len, uint_reads_cnt, uint_pg_len>,
+    class PackedPseudoGenome: public PseudoGenomeInterface<uint_read_len, uint_reads_cnt, uint_pg_len, PackedPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, uint_pg_element, ReadsListClass>>,
             public PackedPseudoGenomeBase
     {
         private:
@@ -26,8 +26,6 @@ namespace PgSAIndex {
             ReadsListInterface<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>* readsList = 0;
 
             CountQueriesCacheBase* countQueriesCache = 0;
-
-            const uint_pg_element* getRawSuffix(const uint_pg_len rawPos);
             
         public:
 
@@ -53,6 +51,8 @@ namespace PgSAIndex {
 
             char getSymbol(uint_pg_len pos);
 
+            const uint_pg_element* getRawSuffix(const uint_pg_len rawPos);
+            
             const uint_pg_element* getRawSuffix(const uint_reads_cnt readsListIdx, const uint_read_len pos);
             
             uint_read_len maxReadLength();
@@ -73,6 +73,9 @@ namespace PgSAIndex {
             
             uint_read_len readLength(uint_reads_cnt originalIdx);
 
+            const char_pg getSymbolImpl(const uint_pg_len posIdx);
+            const uint_pg_len getLengthImpl();
+            
             SymbolsPackingFacility<uint_pg_element>* getSymbolsPacker();
             
             uint_read_len maxReadLengthVirtual();

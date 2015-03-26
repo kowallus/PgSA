@@ -35,6 +35,7 @@ namespace PgSAIndex {
             inline uint_reads_cnt getReadOriginalIndexImpl() { return readsIterator.getReadOriginalIndex(); };
             inline uint_read_len getOccurrenceOffsetImpl() { return readsIterator.getOccurrenceOffset(); };
             inline uint_flatten_occurrence_max getFlattenOccurrenceImpl() { return readsIterator.getFlattenOccurrence(); };
+            inline uint_reads_cnt getReadIndexImpl() { return readsIterator.getReadIndex(); };
             
             inline bool hasDuplicateFilterFlagImpl() { return readsIterator.hasDuplicateFilterFlag(); };
             inline bool hasOccurFlagImpl() { return readsIterator.hasOccurFlag(); };

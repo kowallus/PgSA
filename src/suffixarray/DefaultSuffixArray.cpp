@@ -20,13 +20,15 @@ namespace PgSAIndex {
 
         pgStatic = this->pseudoGenome;
         maxReadLength = this->pseudoGenome->maxReadLength();
+  
+        this->lookupTable.generateFromPg(this->pseudoGenome, 1, 0);
         
 //        if ((sizeof(uint_pg_len) == sizeof(int)) && (pseudoGenome->getLengthWithGuard() < INT_MAX / sizeof(int)))
             generateSaisPgSA();
 //        else
 //            generatePgSA();
         
-        this->lookupTable.generate(this, this->getElementsCount());
+//        this->lookupTable.generateFromSA(this, this->getElementsCount());
         //                cout << "memcheck 4.....\n";
         //                cin.ignore(1);
         buildReadsWithDuplicatesFilter();
@@ -242,6 +244,8 @@ namespace PgSAIndex {
         for (uint_pg_len i = start; i < stop; i++) {
             const sa_pos_addr saPosAddress = this->saPosIdx2Address(i);
             uint_reads_cnt j = this->getReadsListIndexByAddress(saPosAddress);
+            if (readsList->hasDuplicateFilterFlag(j))
+                continue;            
             uint_pg_len guard = this->getPosStartOffsetByAddress(saPosAddress) + readsList->getReadPosition(j) - guardOffset;
             while (readsList->getReadPosition(j) >= guard) {
                 if (!readsList->hasOccurFlag(j))
@@ -258,8 +262,8 @@ namespace PgSAIndex {
             if (!readsList->hasOccurOnceFlag(readsIdxs[i]) && !readsList->hasDuplicateFilterFlag(readsIdxs[i])) {
                 readsList->setDuplicateFilterFlag(readsIdxs[i]);
                 j++;               
-            } else
-                readsList->clearOccurFlags(readsIdxs[i]);
+            }
+            readsList->clearOccurFlags(readsIdxs[i]);
         }
 
         return j;
