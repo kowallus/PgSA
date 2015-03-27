@@ -40,7 +40,6 @@ OBJECTFILES= \
 	${OBJECTDIR}/src/index/cache/persistence/CountQueriesCachePersistence.o \
 	${OBJECTDIR}/src/pgsaconfig.o \
 	${OBJECTDIR}/src/pseudogenome/DefaultPseudoGenome.o \
-	${OBJECTDIR}/src/pseudogenome/MultiPackedPseudoGenome.o \
 	${OBJECTDIR}/src/pseudogenome/PackedPseudoGenome.o \
 	${OBJECTDIR}/src/pseudogenome/generator/AbstractOverlapPseudoGenomeGenerator.o \
 	${OBJECTDIR}/src/pseudogenome/generator/GreedySwipingDefaultOverlapPseudoGenomeGenerator.o \
@@ -115,11 +114,6 @@ ${OBJECTDIR}/src/pseudogenome/DefaultPseudoGenome.o: nbproject/Makefile-${CND_CO
 	${MKDIR} -p ${OBJECTDIR}/src/pseudogenome
 	${RM} "$@.d"
 	$(COMPILE.cc) -O3 -Wall -s -I. -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/pseudogenome/DefaultPseudoGenome.o src/pseudogenome/DefaultPseudoGenome.cpp
-
-${OBJECTDIR}/src/pseudogenome/MultiPackedPseudoGenome.o: nbproject/Makefile-${CND_CONF}.mk src/pseudogenome/MultiPackedPseudoGenome.cpp 
-	${MKDIR} -p ${OBJECTDIR}/src/pseudogenome
-	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -Wall -s -I. -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/pseudogenome/MultiPackedPseudoGenome.o src/pseudogenome/MultiPackedPseudoGenome.cpp
 
 ${OBJECTDIR}/src/pseudogenome/PackedPseudoGenome.o: nbproject/Makefile-${CND_CONF}.mk src/pseudogenome/PackedPseudoGenome.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src/pseudogenome
@@ -295,19 +289,6 @@ ${OBJECTDIR}/src/pseudogenome/DefaultPseudoGenome_nomain.o: ${OBJECTDIR}/src/pse
 	    $(COMPILE.cc) -O3 -Wall -s -I. -std=c++11 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/pseudogenome/DefaultPseudoGenome_nomain.o src/pseudogenome/DefaultPseudoGenome.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/src/pseudogenome/DefaultPseudoGenome.o ${OBJECTDIR}/src/pseudogenome/DefaultPseudoGenome_nomain.o;\
-	fi
-
-${OBJECTDIR}/src/pseudogenome/MultiPackedPseudoGenome_nomain.o: ${OBJECTDIR}/src/pseudogenome/MultiPackedPseudoGenome.o src/pseudogenome/MultiPackedPseudoGenome.cpp 
-	${MKDIR} -p ${OBJECTDIR}/src/pseudogenome
-	@NMOUTPUT=`${NM} ${OBJECTDIR}/src/pseudogenome/MultiPackedPseudoGenome.o`; \
-	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
-	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
-	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
-	then  \
-	    ${RM} "$@.d";\
-	    $(COMPILE.cc) -O3 -Wall -s -I. -std=c++11 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/pseudogenome/MultiPackedPseudoGenome_nomain.o src/pseudogenome/MultiPackedPseudoGenome.cpp;\
-	else  \
-	    ${CP} ${OBJECTDIR}/src/pseudogenome/MultiPackedPseudoGenome.o ${OBJECTDIR}/src/pseudogenome/MultiPackedPseudoGenome_nomain.o;\
 	fi
 
 ${OBJECTDIR}/src/pseudogenome/PackedPseudoGenome_nomain.o: ${OBJECTDIR}/src/pseudogenome/PackedPseudoGenome.o src/pseudogenome/PackedPseudoGenome.cpp 

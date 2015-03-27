@@ -41,7 +41,6 @@ OBJECTFILES= \
 	${OBJECTDIR}/src/index/cache/persistence/CountQueriesCachePersistence.o \
 	${OBJECTDIR}/src/pgsaconfig.o \
 	${OBJECTDIR}/src/pseudogenome/DefaultPseudoGenome.o \
-	${OBJECTDIR}/src/pseudogenome/MultiPackedPseudoGenome.o \
 	${OBJECTDIR}/src/pseudogenome/PackedPseudoGenome.o \
 	${OBJECTDIR}/src/pseudogenome/generator/AbstractOverlapPseudoGenomeGenerator.o \
 	${OBJECTDIR}/src/pseudogenome/generator/GreedySwipingDefaultOverlapPseudoGenomeGenerator.o \
@@ -82,15 +81,15 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=-lGkArrays
+LDLIBSOPTIONS=
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
-	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${TESTDIR}/TestFiles/f2.exe
+	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/PgSATest.exe
 
-${TESTDIR}/TestFiles/f2.exe: ${OBJECTFILES}
-	${MKDIR} -p ${TESTDIR}/TestFiles
-	${LINK.cc} -o ${TESTDIR}/TestFiles/f2 ${OBJECTFILES} ${LDLIBSOPTIONS}
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/PgSATest.exe: ${OBJECTFILES}
+	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
+	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/PgSATest ${OBJECTFILES} ${LDLIBSOPTIONS}
 
 ${OBJECTDIR}/src/PgSAtest.o: nbproject/Makefile-${CND_CONF}.mk src/PgSAtest.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src
@@ -121,11 +120,6 @@ ${OBJECTDIR}/src/pseudogenome/DefaultPseudoGenome.o: nbproject/Makefile-${CND_CO
 	${MKDIR} -p ${OBJECTDIR}/src/pseudogenome
 	${RM} "$@.d"
 	$(COMPILE.cc) -O3 -Wall -s -I. -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/pseudogenome/DefaultPseudoGenome.o src/pseudogenome/DefaultPseudoGenome.cpp
-
-${OBJECTDIR}/src/pseudogenome/MultiPackedPseudoGenome.o: nbproject/Makefile-${CND_CONF}.mk src/pseudogenome/MultiPackedPseudoGenome.cpp 
-	${MKDIR} -p ${OBJECTDIR}/src/pseudogenome
-	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -Wall -s -I. -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/pseudogenome/MultiPackedPseudoGenome.o src/pseudogenome/MultiPackedPseudoGenome.cpp
 
 ${OBJECTDIR}/src/pseudogenome/PackedPseudoGenome.o: nbproject/Makefile-${CND_CONF}.mk src/pseudogenome/PackedPseudoGenome.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src/pseudogenome
@@ -314,19 +308,6 @@ ${OBJECTDIR}/src/pseudogenome/DefaultPseudoGenome_nomain.o: ${OBJECTDIR}/src/pse
 	    $(COMPILE.cc) -O3 -Wall -s -I. -std=c++11 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/pseudogenome/DefaultPseudoGenome_nomain.o src/pseudogenome/DefaultPseudoGenome.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/src/pseudogenome/DefaultPseudoGenome.o ${OBJECTDIR}/src/pseudogenome/DefaultPseudoGenome_nomain.o;\
-	fi
-
-${OBJECTDIR}/src/pseudogenome/MultiPackedPseudoGenome_nomain.o: ${OBJECTDIR}/src/pseudogenome/MultiPackedPseudoGenome.o src/pseudogenome/MultiPackedPseudoGenome.cpp 
-	${MKDIR} -p ${OBJECTDIR}/src/pseudogenome
-	@NMOUTPUT=`${NM} ${OBJECTDIR}/src/pseudogenome/MultiPackedPseudoGenome.o`; \
-	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
-	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
-	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
-	then  \
-	    ${RM} "$@.d";\
-	    $(COMPILE.cc) -O3 -Wall -s -I. -std=c++11 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/pseudogenome/MultiPackedPseudoGenome_nomain.o src/pseudogenome/MultiPackedPseudoGenome.cpp;\
-	else  \
-	    ${CP} ${OBJECTDIR}/src/pseudogenome/MultiPackedPseudoGenome.o ${OBJECTDIR}/src/pseudogenome/MultiPackedPseudoGenome_nomain.o;\
 	fi
 
 ${OBJECTDIR}/src/pseudogenome/PackedPseudoGenome_nomain.o: ${OBJECTDIR}/src/pseudogenome/PackedPseudoGenome.o src/pseudogenome/PackedPseudoGenome.cpp 
@@ -563,7 +544,7 @@ ${OBJECTDIR}/src/test/testdata_nomain.o: ${OBJECTDIR}/src/test/testdata.o src/te
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
 	${RM} -r ${CND_BUILDDIR}/${CND_CONF}
-	${RM} ${TESTDIR}/TestFiles/f2.exe
+	${RM} ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/PgSATest.exe
 
 # Subprojects
 .clean-subprojects:

@@ -117,21 +117,13 @@ void testBoosted() {
 
     typedef DefaultPseudoGenomeOfConstantLengthReadsType<uint_read_len_min, uint_reads_cnt_std, uint_pg_len_std> DPGType;
     DPGType* dpg = DPGType::castBase(rsab->getPseudoGenomeBase());
-    typedef MultiPackedPseudoGenomeOfConstantLengthReadsType<uint_read_len_min, uint_reads_cnt_std, uint_pg_len_std, uint_ps_element_min> MPPGType;
-    MPPGType* mppg = new MPPGType(dpg, 4);
     
     cout << dpg->getRead(0) << "\n";
-    cout << mppg->getRead(0) << "\n";
     cout << dpg->getRead(1) << "\n";
-    cout << mppg->getRead(1) << "\n";
     cout << dpg->getRead(2) << "\n";
-    cout << mppg->getRead(2) << "\n";
     cout << dpg->getRead(3) << "\n";
-    cout << mppg->getRead(3) << "\n";
     cout << dpg->getRead(4) << "\n";
-    cout << mppg->getRead(4) << "\n";
     
-
 }
 /*
 void testIndex() {

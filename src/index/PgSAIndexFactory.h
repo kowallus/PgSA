@@ -16,8 +16,8 @@ namespace PgSAIndex {
         private:
 
             template < typename api_uint_reads_cnt, typename api_uint_read_len >
-            static PgSAIndexInterface<api_uint_reads_cnt, api_uint_read_len>* getPgSAIndexAPITemplate(string pgsaFile, string cacheFile, bool boosted, bool boosized, bool reverseComplements) {
-                SuffixArrayBase* sab = SuffixArrayPersistence::readPgSA(pgsaFile, boosted, boosized);
+            static PgSAIndexInterface<api_uint_reads_cnt, api_uint_read_len>* getPgSAIndexAPITemplate(string pgsaFile, string cacheFile, bool reverseComplements) {
+                SuffixArrayBase* sab = SuffixArrayPersistence::readPgSA(pgsaFile);
                 
                 DefaultCountQueriesCacheStandard* dcqcs = 0;
                 if (cacheFile.compare("")) 
@@ -79,15 +79,6 @@ namespace PgSAIndex {
                         return getPgSAIndexSparseTemplate<api_uint_reads_cnt, api_uint_read_len, uint_read_len, uint_reads_cnt, uint_pg_len, uint_ps_element_std>(sab, dcqcs, ppgb, pgsaPrefix, reverseComplements);
                 }
                 
-                if (sab->getTypeID() == PGSATYPE_BOOSTED) {
-                   PackedPseudoGenomeBase* ppgb = static_cast<PackedPseudoGenomeBase*>(sab->getPseudoGenomeBase());
-                   if (ppgb->isPgElementMinimal())
-                        return getPgSAIndexBoostedTemplate<api_uint_reads_cnt, api_uint_read_len, uint_read_len, uint_reads_cnt, uint_pg_len, uint_ps_element_min>(sab, dcqcs, ppgb, pgsaPrefix, reverseComplements);
-                   if (ppgb->isPgElementStandard())
-                        return getPgSAIndexBoostedTemplate<api_uint_reads_cnt, api_uint_read_len, uint_read_len, uint_reads_cnt, uint_pg_len, uint_ps_element_std>(sab, dcqcs, ppgb, pgsaPrefix, reverseComplements);
-                    
-                }
-                
                 cout << "ERROR: unsupported PgSA " << sab->getTypeID();
                 return 0;                
             }
@@ -121,24 +112,6 @@ namespace PgSAIndex {
                 cout << "ERROR: unsupported PgSA " << sab->getTypeID();
                 return 0;             
             }
-            
-            template< typename api_uint_reads_cnt, typename api_uint_read_len, typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, typename uint_pg_element>
-            static PgSAIndexInterface<api_uint_reads_cnt, api_uint_read_len>* getPgSAIndexBoostedTemplate(SuffixArrayBase* sab, DefaultCountQueriesCacheStandard* dcqcs, PackedPseudoGenomeBase* ppgb, string pgsaPrefix, bool reverseComplements) {
-                if (ppgb->isReadLengthConstant()) {
-                    if (bytesPerValue(ppgb->getReadsSetProperties()->readsCount) <= BytesPerReadIndex<uint_reads_cnt>::minimum) {
-                        typedef typename BoostedSuffixArrayOfConstantLengthTypeTemplate<uint_read_len, uint_reads_cnt, uint_pg_len, uint_pg_element, BytesPerReadIndex<uint_reads_cnt>::minimum>::Type SuffixArrayClass;
-                        return getPgSAIndexConstructorTemplate<api_uint_reads_cnt, api_uint_read_len, uint_read_len, uint_reads_cnt, uint_pg_len, SuffixArrayClass>(
-                                        sab, dcqcs, pgsaPrefix, reverseComplements);
-                    }
-                    if (bytesPerValue(ppgb->getReadsSetProperties()->readsCount) <= BytesPerReadIndex<uint_reads_cnt>::standard) {
-                        typedef typename BoostedSuffixArrayOfConstantLengthTypeTemplate<uint_read_len, uint_reads_cnt, uint_pg_len, uint_pg_element, BytesPerReadIndex<uint_reads_cnt>::standard>::Type SuffixArrayClass;
-                        return getPgSAIndexConstructorTemplate<api_uint_reads_cnt, api_uint_read_len, uint_read_len, uint_reads_cnt, uint_pg_len, SuffixArrayClass>(
-                                        sab, dcqcs, pgsaPrefix, reverseComplements);
-                    }
-                }    
-                cout << "ERROR: unsupported PgSA " << sab->getTypeID();
-                return 0;             
-            }
 
             template< typename api_uint_reads_cnt, typename api_uint_read_len, typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, class SuffixArrayClass>
             static PgSAIndexInterface<api_uint_reads_cnt, api_uint_read_len>* getPgSAIndexConstructorTemplate(SuffixArrayBase* sab, DefaultCountQueriesCacheStandard* dcqcs, string pgsaPrefix, bool reverseComplements) {
@@ -152,18 +125,10 @@ namespace PgSAIndex {
             }
             
         public:
-            static PgSAIndexStandard* getPgSAIndexStandard(string pgsaFile, string cacheFile, bool boosted, bool boosized, bool reverseComplements);
+            static PgSAIndexStandard* getPgSAIndexStandard(string pgsaFile, string cacheFile, bool reverseComplements);
             
-            static PgSAIndexStandard* getPgSAIndexStandard(string pgsaFile, bool boosted, bool boosized, bool reverseComplements) {
-                return getPgSAIndexAPITemplate<uint_reads_cnt_std, unsigned int >(pgsaFile, "", boosted, boosized, reverseComplements);
-            }
-            
-            static PgSAIndexStandard* getPgSAIndexStandard(string pgsaFile, string cacheFile, bool reverseComplements) {
-                return getPgSAIndexAPITemplate<uint_reads_cnt_std, unsigned int >(pgsaFile, cacheFile, false, false, reverseComplements);
-            }
-            
-            static PgSAIndexStandard* getPgSAIndexStandard(string pgsaFile, bool reverseComplements) {
-                return getPgSAIndexAPITemplate<uint_reads_cnt_std, unsigned int >(pgsaFile, "", false, false, reverseComplements);
+            static PgSAIndexStandard* getPgSAIndexStandard(string pgsaFile, bool boosted, bool reverseComplements) {
+                return getPgSAIndexAPITemplate<uint_reads_cnt_std, unsigned int >(pgsaFile, "", reverseComplements);
             }
     };
     

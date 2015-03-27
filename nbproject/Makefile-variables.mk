@@ -32,9 +32,9 @@ CND_PACKAGE_NAME_Release-PgSAgen=pgsa.tar
 CND_PACKAGE_PATH_Release-PgSAgen=dist/Release-PgSAgen/Cygwin_4.x-Windows/package/pgsa.tar
 # Release-PgSAtest configuration
 CND_PLATFORM_Release-PgSAtest=Cygwin_4.x-Windows
-CND_ARTIFACT_DIR_Release-PgSAtest=build/Release-PgSAtest/Cygwin_4.x-Windows/tests/TestFiles
-CND_ARTIFACT_NAME_Release-PgSAtest=f2
-CND_ARTIFACT_PATH_Release-PgSAtest=build/Release-PgSAtest/Cygwin_4.x-Windows/tests/TestFiles/f2
+CND_ARTIFACT_DIR_Release-PgSAtest=dist/Release-PgSAtest/Cygwin_4.x-Windows
+CND_ARTIFACT_NAME_Release-PgSAtest=PgSATest
+CND_ARTIFACT_PATH_Release-PgSAtest=dist/Release-PgSAtest/Cygwin_4.x-Windows/PgSATest
 CND_PACKAGE_DIR_Release-PgSAtest=dist/Release-PgSAtest/Cygwin_4.x-Windows/package
 CND_PACKAGE_NAME_Release-PgSAtest=pgsa.tar
 CND_PACKAGE_PATH_Release-PgSAtest=dist/Release-PgSAtest/Cygwin_4.x-Windows/package/pgsa.tar

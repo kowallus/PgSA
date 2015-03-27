@@ -46,7 +46,6 @@
             <itemPath>src/pseudogenome/readslist/ReadsListTypes.h</itemPath>
           </logicalFolder>
           <itemPath>src/pseudogenome/DefaultPseudoGenome.h</itemPath>
-          <itemPath>src/pseudogenome/MultiPackedPseudoGenome.h</itemPath>
           <itemPath>src/pseudogenome/PackedPseudoGenome.h</itemPath>
           <itemPath>src/pseudogenome/PackedPseudoGenomeBase.h</itemPath>
           <itemPath>src/pseudogenome/PseudoGenomeBase.h</itemPath>
@@ -78,8 +77,6 @@
           <logicalFolder name="persistence" displayName="persistence" projectFiles="true">
             <itemPath>src/suffixarray/persistence/SuffixArrayPersistence.h</itemPath>
           </logicalFolder>
-          <itemPath>src/suffixarray/BoostedSuffixArray.h</itemPath>
-          <itemPath>src/suffixarray/BoostedSuffixArrayFactory.h</itemPath>
           <itemPath>src/suffixarray/DefaultSuffixArray.h</itemPath>
           <itemPath>src/suffixarray/DefaultSuffixArrayFactory.h</itemPath>
           <itemPath>src/suffixarray/SparseSuffixArray.h</itemPath>
@@ -131,7 +128,6 @@
             <itemPath>src/pseudogenome/readslist/ListOfConstantLengthReads.cpp</itemPath>
           </logicalFolder>
           <itemPath>src/pseudogenome/DefaultPseudoGenome.cpp</itemPath>
-          <itemPath>src/pseudogenome/MultiPackedPseudoGenome.cpp</itemPath>
           <itemPath>src/pseudogenome/PackedPseudoGenome.cpp</itemPath>
         </logicalFolder>
         <logicalFolder name="readsset" displayName="readsset" projectFiles="true">
@@ -314,16 +310,6 @@
             tool="3"
             flavor2="0">
       </item>
-      <item path="src/pseudogenome/MultiPackedPseudoGenome.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="src/pseudogenome/MultiPackedPseudoGenome.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
       <item path="src/pseudogenome/PackedPseudoGenome.cpp"
             ex="false"
             tool="1"
@@ -469,16 +455,6 @@
       <item path="src/sais/sais.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="src/sais/sais.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/suffixarray/BoostedSuffixArray.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="src/suffixarray/BoostedSuffixArrayFactory.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
       </item>
       <item path="src/suffixarray/DefaultSuffixArray.cpp"
             ex="false"
@@ -689,16 +665,6 @@
             tool="3"
             flavor2="0">
       </item>
-      <item path="src/pseudogenome/MultiPackedPseudoGenome.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="src/pseudogenome/MultiPackedPseudoGenome.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
       <item path="src/pseudogenome/PackedPseudoGenome.cpp"
             ex="false"
             tool="1"
@@ -844,16 +810,6 @@
       <item path="src/sais/sais.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="src/sais/sais.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/suffixarray/BoostedSuffixArray.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="src/suffixarray/BoostedSuffixArrayFactory.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
       </item>
       <item path="src/suffixarray/DefaultSuffixArray.cpp"
             ex="false"
@@ -1060,16 +1016,6 @@
             tool="3"
             flavor2="0">
       </item>
-      <item path="src/pseudogenome/MultiPackedPseudoGenome.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="src/pseudogenome/MultiPackedPseudoGenome.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
       <item path="src/pseudogenome/PackedPseudoGenome.cpp"
             ex="false"
             tool="1"
@@ -1215,16 +1161,6 @@
       <item path="src/sais/sais.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="src/sais/sais.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/suffixarray/BoostedSuffixArray.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="src/suffixarray/BoostedSuffixArrayFactory.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
       </item>
       <item path="src/suffixarray/DefaultSuffixArray.cpp"
             ex="false"
@@ -1335,10 +1271,7 @@
           <warningLevel>2</warningLevel>
         </ccTool>
         <linkerTool>
-          <output>${TESTDIR}/TestFiles/f2</output>
-          <linkerLibItems>
-            <linkerLibLibItem>GkArrays</linkerLibLibItem>
-          </linkerLibItems>
+          <output>${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/PgSATest</output>
         </linkerTool>
       </compileType>
       <folder path="TestFiles/f1">
@@ -1430,16 +1363,6 @@
             flavor2="0">
       </item>
       <item path="src/pseudogenome/DefaultPseudoGenome.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="src/pseudogenome/MultiPackedPseudoGenome.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="src/pseudogenome/MultiPackedPseudoGenome.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -1589,16 +1512,6 @@
       <item path="src/sais/sais.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="src/sais/sais.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/suffixarray/BoostedSuffixArray.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="src/suffixarray/BoostedSuffixArrayFactory.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
       </item>
       <item path="src/suffixarray/DefaultSuffixArray.cpp"
             ex="false"
@@ -1809,16 +1722,6 @@
             tool="3"
             flavor2="0">
       </item>
-      <item path="src/pseudogenome/MultiPackedPseudoGenome.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="src/pseudogenome/MultiPackedPseudoGenome.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
       <item path="src/pseudogenome/PackedPseudoGenome.cpp"
             ex="false"
             tool="1"
@@ -1964,16 +1867,6 @@
       <item path="src/sais/sais.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="src/sais/sais.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/suffixarray/BoostedSuffixArray.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="src/suffixarray/BoostedSuffixArrayFactory.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
       </item>
       <item path="src/suffixarray/DefaultSuffixArray.cpp"
             ex="false"
@@ -2176,16 +2069,6 @@
             tool="3"
             flavor2="0">
       </item>
-      <item path="src/pseudogenome/MultiPackedPseudoGenome.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="src/pseudogenome/MultiPackedPseudoGenome.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
       <item path="src/pseudogenome/PackedPseudoGenome.cpp"
             ex="false"
             tool="1"
@@ -2331,16 +2214,6 @@
       <item path="src/sais/sais.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="src/sais/sais.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/suffixarray/BoostedSuffixArray.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="src/suffixarray/BoostedSuffixArrayFactory.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
       </item>
       <item path="src/suffixarray/DefaultSuffixArray.cpp"
             ex="false"

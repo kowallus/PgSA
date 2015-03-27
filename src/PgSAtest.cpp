@@ -6,9 +6,9 @@
 #include <stdlib.h>    /* for exit */
 #include <unistd.h>
 
-PgSAIndexStandard* prepareIndex(string idxFile, string cacheFile, bool boosted, bool boosized) {
+PgSAIndexStandard* prepareIndex(string idxFile, string cacheFile) {
 
-    return PgSAIndexFactory::getPgSAIndexStandard(idxFile, cacheFile, boosted, boosized, false);
+    return PgSAIndexFactory::getPgSAIndexStandard(idxFile, cacheFile, false);
 
 };
 
@@ -19,8 +19,6 @@ int main(int argc, char *argv[])
     int repeat = 11;
     int testKmersNumber = 100000;
     vector<unsigned short> kLengths = {11, 16, 22};
-    bool bFlag = false; // boost memory usage for standard PgSA
-    bool vFlag = false; // use non-default implementaion for standard PgSA
     bool sFlag = false; // scramble reads (for uncorrecly concatenated pair-ended data)
     bool fFlag = false; // filter TTTTTT.....TTTT reads (for compatibility with CGk tests)
     bool pFlag = false; // query by position
@@ -29,7 +27,7 @@ int main(int argc, char *argv[])
     size_t pos;
     size_t found;
 
-    while ((opt = getopt(argc, argv, "bvsfpr:n:c:k:?")) != -1) {
+    while ((opt = getopt(argc, argv, "sfpr:n:c:k:?")) != -1) {
         switch (opt) {
         case 'r':
             repeat = atoi(optarg);
@@ -51,12 +49,6 @@ int main(int argc, char *argv[])
             }
             kLengths.push_back(atoi(kParam.substr(pos).c_str()));
             break;
-        case 'b':
-            bFlag = true;
-            break;
-        case 'v':
-            vFlag = true;
-            break;
         case 's':
             sFlag = true;
             break;
@@ -68,7 +60,7 @@ int main(int argc, char *argv[])
             break;
         case '?':
         default: /* '?' */
-            fprintf(stderr, "Usage: %s [-k length] [-r no of repeats] [-n no of testkmers] [-c cachefile] [-p] [-s] [-f] [-b] [-v] indexfile\n\n",
+            fprintf(stderr, "Usage: %s [-k length] [-r no of repeats] [-n no of testkmers] [-c cachefile] [-p] [-s] [-f] indexfile\n\n",
                     argv[0]);
             fprintf(stderr, "-p query by position\n-s scramble reads (for uncorrecly concatenated pair-ended data)\n-f -filter TTTTTT.....TTTT reads (for compatibility with CGk tests)\n-b boost memory usage for speed (experimental)\n-v use non-default implementation variant (experimental)\n\n");
             exit(EXIT_FAILURE);
@@ -84,7 +76,7 @@ int main(int argc, char *argv[])
 
     string idxFile(argv[optind++]);
 
-    PgSAIndexStandard* idx = prepareIndex(idxFile, cacheFile, vFlag, bFlag);
+    PgSAIndexStandard* idx = prepareIndex(idxFile, cacheFile);
 
     cout << "*****************************************************************************\n";
     cout << idx->getDescription();
