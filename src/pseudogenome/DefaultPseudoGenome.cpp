@@ -26,7 +26,8 @@ namespace PgSAIndex {
 
     template < typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, class ReadsListClass >
     DefaultPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>::~DefaultPseudoGenome() {
-        delete(readsList);
+        if (readsList)
+            delete(readsList);
         delete[]sequence;      
     }
     
@@ -49,11 +50,7 @@ namespace PgSAIndex {
         dest << "\n";
         this->readsList->write(dest);
     }
-    template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, class ReadsListClass>
-    CountQueriesCacheBase* DefaultPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>::getCountQueriesCacheBase() {
-        return countQueriesCache;
-    }
-
+    
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, class ReadsListClass>
     ReadsListInterface<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>* DefaultPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>::getReadsList() 
     {
@@ -182,11 +179,6 @@ namespace PgSAIndex {
         // adding guard
         for (uint_pg_len i = pos; i < this->getLengthWithGuard(); i++)
             this->sequence[i] = this->properties->symbolsList[this->properties->symbolsCount - 1];
-    }
-
-    template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, class GeneratedReadsListClass>
-    void GeneratedPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, GeneratedReadsListClass>::setCountQueriesCache(CountQueriesCacheBase* cqcb) {
-        this->countQueriesCache = cqcb;
     }
     
     template class DefaultPseudoGenome<uint_read_len_min, uint_reads_cnt_std, uint_pg_len_std, typename ListOfConstantLengthReadsTypeTemplate<uint_read_len_min, uint_reads_cnt_std, uint_pg_len_std>::Type>;

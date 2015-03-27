@@ -25,8 +25,6 @@ namespace PgSAIndex {
             PseudoGenomeBase* srcPGB; //manages readsList;
             ReadsListInterface<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>* readsList = 0;
 
-            CountQueriesCacheBase* countQueriesCache = 0;
-            
             const uint_pg_element* getRawSuffix(const uint_pg_len pos);
             
         public:
@@ -40,9 +38,7 @@ namespace PgSAIndex {
             string getTypeID();
 
             void write(std::ostream& dest);
-            
-            CountQueriesCacheBase* getCountQueriesCacheBase();
-            
+
             uint_pg_len getElementsCountWithGuard();
             
             ReadsListInterface<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>* getReadsList();

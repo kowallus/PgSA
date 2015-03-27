@@ -16,10 +16,9 @@ namespace PgSAIndex {
             sequence[i] = sPacker->getMaxValue();
 
         this->readsList = srcPseudoGenome->getReadsList();
-
-        countQueriesCache = srcPseudoGenome->getCountQueriesCacheBase();
-        srcPGB = srcPseudoGenome;
-        orgPg = srcPseudoGenome->getSuffix(0);
+        srcPseudoGenome->unmanageReadsList();
+        
+        delete(srcPseudoGenome);
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, typename uint_pg_element, class ReadsListClass>
@@ -38,21 +37,12 @@ namespace PgSAIndex {
         this->readsList = new ReadsListClass(maxReadLength(), src);
 
         sPacker = new SymbolsPackingFacility<uint_pg_element>(this->getReadsSetProperties(), symbolsPerElement);
-
-        string str = getSuffix(0, this->getLength());
-        char* seq = new char_pg[str.size() + 1];
-        std::copy(str.begin(), str.end(), seq);
-        seq[str.size()] = '\0';
-        orgPg = seq;
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, typename uint_pg_element, class ReadsListClass>
     PackedPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, uint_pg_element, ReadsListClass>::~PackedPseudoGenome() {
         delete[]sequence;
-        if (srcPGB == 0)
-            delete(readsList);
-        else
-            delete[]orgPg;
+        delete(readsList);
         delete(sPacker);
     }
 
@@ -89,11 +79,6 @@ namespace PgSAIndex {
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, typename uint_pg_element, class ReadsListClass>
-    const char_pg* PackedPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, uint_pg_element, ReadsListClass>::getSuffixPtrByPosition(const uint_reads_cnt originalIdx, const uint_read_len pos) {
-        return orgPg + this->readsList->getReadPosition(this->readsList->getReadsListIndexOfOriginalIndex(originalIdx)) + pos;
-    }
-
-    template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, typename uint_pg_element, class ReadsListClass>
     const string PackedPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, uint_pg_element, ReadsListClass>::getRead(uint_reads_cnt originalIdx) {
         return getSuffix(this->readsList->getReadPosition(this->readsList->getReadsListIndexOfOriginalIndex(originalIdx)), readLength(originalIdx));
     }
@@ -102,11 +87,6 @@ namespace PgSAIndex {
     PackedPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, uint_pg_element, ReadsListClass>* PackedPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, uint_pg_element, ReadsListClass>::castBase(PseudoGenomeBase* base) {
         // TODO: validate
         return static_cast<PackedPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, uint_pg_element, ReadsListClass>*> (base);
-    }
-
-    template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, typename uint_pg_element, class ReadsListClass>
-    CountQueriesCacheBase* PackedPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, uint_pg_element, ReadsListClass>::getCountQueriesCacheBase() {
-        return countQueriesCache;
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, typename uint_pg_element, class ReadsListClass>

@@ -5,6 +5,9 @@
       <logicalFolder name="src" displayName="src" projectFiles="true">
         <logicalFolder name="index" displayName="index" projectFiles="true">
           <logicalFolder name="cache" displayName="cache" projectFiles="true">
+            <logicalFolder name="f1" displayName="generator" projectFiles="true">
+              <itemPath>src/index/cache/generator/CountQueriesCacheGenerator.h</itemPath>
+            </logicalFolder>
             <logicalFolder name="persistence" displayName="persistence" projectFiles="true">
               <itemPath>src/index/cache/persistence/CountQueriesCachePersistence.h</itemPath>
             </logicalFolder>
@@ -277,6 +280,11 @@
             flavor2="0">
       </item>
       <item path="src/index/cache/DefaultCountQueriesCache.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/index/cache/generator/CountQueriesCacheGenerator.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -646,6 +654,11 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="src/index/cache/generator/CountQueriesCacheGenerator.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="src/index/cache/persistence/CountQueriesCachePersistence.cpp"
             ex="false"
             tool="1"
@@ -1003,6 +1016,11 @@
             flavor2="0">
       </item>
       <item path="src/index/cache/DefaultCountQueriesCache.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/index/cache/generator/CountQueriesCacheGenerator.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -1367,6 +1385,11 @@
             flavor2="0">
       </item>
       <item path="src/index/cache/DefaultCountQueriesCache.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/index/cache/generator/CountQueriesCacheGenerator.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -1736,6 +1759,11 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="src/index/cache/generator/CountQueriesCacheGenerator.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="src/index/cache/persistence/CountQueriesCachePersistence.cpp"
             ex="false"
             tool="1"
@@ -2089,6 +2117,11 @@
             flavor2="0">
       </item>
       <item path="src/index/cache/DefaultCountQueriesCache.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/index/cache/generator/CountQueriesCacheGenerator.h"
             ex="false"
             tool="3"
             flavor2="0">

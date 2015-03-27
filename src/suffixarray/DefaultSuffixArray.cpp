@@ -244,13 +244,14 @@ namespace PgSAIndex {
         for (uint_pg_len i = start; i < stop; i++) {
             const sa_pos_addr saPosAddress = this->saPosIdx2Address(i);
             uint_reads_cnt j = this->getReadsListIndexByAddress(saPosAddress);
-            if (readsList->hasDuplicateFilterFlag(j))
-                continue;            
+            
             uint_pg_len guard = this->getPosStartOffsetByAddress(saPosAddress) + readsList->getReadPosition(j) - guardOffset;
             while (readsList->getReadPosition(j) >= guard) {
-                if (!readsList->hasOccurFlag(j))
-                    readsIdxs.push_back(j);
-                readsList->setOccurOnceFlag(j);
+                if (!readsList->hasDuplicateFilterFlag(j)) {
+                    if (!readsList->hasOccurFlag(j))
+                        readsIdxs.push_back(j);
+                    readsList->setOccurOnceFlag(j);
+                }
                 if (j == 0) break;
                 j--;
             }

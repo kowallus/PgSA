@@ -1,6 +1,5 @@
-#include "pseudogenome/generator/GreedyVerticalOverlapPseudoGenomeGenerator.h"
 #include "pseudogenome/generator/GreedySwipingPackedOverlapPseudoGenomeGenerator.h"
-#include "pseudogenome/generator/GreedySwipingDefaultOverlapPseudoGenomeGenerator.h"
+#include "index/cache/generator/CountQueriesCacheGenerator.h"
 #include "index/cache/persistence/CountQueriesCachePersistence.h"
 #include "suffixarray/generator/SuffixArrayGenerator.h"
 #include "suffixarray/persistence/SuffixArrayPersistence.h"
@@ -17,9 +16,7 @@ PseudoGenomeBase* preparePg(string srcFile, string pairFile) {
     else if (SuffixArrayPersistence::isValidSuffixArray(srcFile)) 
         pgb = SuffixArrayPersistence::readPgOnly(srcFile);
     else {         
-//        PseudoGenomeGeneratorFactory* pggf = new GreedyVerticalOverlapPseudoGenomeGeneratorFactory();
         PseudoGenomeGeneratorFactory* pggf = new GreedySwipingPackedOverlapPseudoGenomeGeneratorFactory();
-//        PseudoGenomeGeneratorFactory* pggf = new GreedySwipingDefaultOverlapPseudoGenomeGeneratorFactory();
         PseudoGenomeGeneratorBase* pggb = pggf->getGenerator(srcFile, pairFile);
         pgb = pggb->generatePseudoGenomeBase();        
         delete(pggb); 
@@ -34,6 +31,14 @@ PseudoGenomeBase* preparePg(string srcFile, string pairFile) {
     return pgb;
 }
 
+CountQueriesCacheBase* generateCache(PseudoGenomeBase* pgb) {
+    CountQueriesCacheBase* cqcb = 0;
+
+    cqcb = CountQueriesCacheGenerator::generateCountQueriesCache(pgb);
+    
+    return cqcb;
+};
+
 SuffixArrayBase* generateSA(PseudoGenomeBase* pgb, int rate) {
     SuffixArrayBase* sab;
 
@@ -47,6 +52,7 @@ SuffixArrayBase* generateSA(PseudoGenomeBase* pgb, int rate) {
     }
     return sab;
 };
+
 
 int main(int argc, char *argv[])
 {
@@ -93,7 +99,7 @@ int main(int argc, char *argv[])
     PseudoGenomeBase* pgb = preparePg(srcFile, pairFile);
     
     if (cFlag) {
-        CountQueriesCacheBase* cqcb = pgb->getCountQueriesCacheBase();
+        CountQueriesCacheBase* cqcb = generateCache(pgb);
         if (cqcb == 0) {
             fprintf(stderr, "Error: cache not available.\n");
         } else {
@@ -105,7 +111,9 @@ int main(int argc, char *argv[])
     if (pFlag) {        
         PseudoGenomePersistence::writePseudoGenome(pgb, idxPrefix);
         delete(pgb);
-    } else {
+    } 
+    
+    if (!pFlag && !cFlag) {
         SuffixArrayBase* sab = generateSA(pgb, compressionRate);
         SuffixArrayPersistence::writePgSA(sab, idxPrefix);
         delete(sab);

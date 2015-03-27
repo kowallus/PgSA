@@ -17,9 +17,10 @@ namespace PgSAIndex {
         }
 
         this->readsList = srcPseudoGenome->getReadsList();
-        countQueriesCache = srcPseudoGenome->getCountQueriesCacheBase();
-        srcPGB = srcPseudoGenome;
-        orgPg = srcPseudoGenome->getSuffix(0);
+        
+        srcPseudoGenome->unmanageReadsList();
+        delete(srcPseudoGenome);
+        
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, typename uint_pg_element, class ReadsListClass>
@@ -28,8 +29,7 @@ namespace PgSAIndex {
             delete[]sequences[i];
         delete[]sequences;
         delete(sPacker);
-        //delete(readsList);
-        delete(srcPGB);
+        delete(readsList);
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, typename uint_pg_element, class ReadsListClass>
@@ -88,11 +88,6 @@ namespace PgSAIndex {
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, typename uint_pg_element, class ReadsListClass>
     string MultiPackedPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, uint_pg_element, ReadsListClass>::getTypeID() {
         return PGTYPE_MULTIPACKED;
-    }
-
-    template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, typename uint_pg_element, class ReadsListClass>
-    CountQueriesCacheBase* MultiPackedPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, uint_pg_element, ReadsListClass>::getCountQueriesCacheBase() {
-        return countQueriesCache;
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, typename uint_pg_element, class ReadsListClass>

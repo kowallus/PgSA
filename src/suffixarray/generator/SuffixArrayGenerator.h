@@ -25,7 +25,7 @@ namespace PgSAIndex {
 
                 PseudoGenomeGeneratorBase* pggb = pggf->getGenerator(readsFile, pairFile);
                 
-                // FIXME: handle destruction of pgb...
+                // FIXME: handle destruction of pgb... now it is done by a packedPg
                 PseudoGenomeBase* pgb = pggb->generatePseudoGenomeBase();
                 delete(pggb); // frees lots of memory :)...
                 
@@ -47,11 +47,11 @@ namespace PgSAIndex {
                 return generateSuffixArray(ppgb, PGSATYPE_SPARSE);
             }
 
-            // WARNING: This method skips generation of duplicate filter (DONE in SA)
+
             static SuffixArrayBase* generateSparseSuffixArray(string readsFile, PseudoGenomeGeneratorFactory* pggf, uchar symbolsInterval) {
                 PseudoGenomeGeneratorBase* pggb = pggf->getGenerator(readsFile);
                 
-                // FIXME: handle destruction of pgb... now necessary for maintaining ReadsList and Cache
+                // FIXME: handle destruction of pgb nicely... 
                 PseudoGenomeBase* pgb = pggb->generatePseudoGenomeBase();
                 delete(pggb); // frees lots of memory :
                 

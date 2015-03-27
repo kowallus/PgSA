@@ -18,15 +18,11 @@ namespace PgSAIndex {
     {
         private:
             uint_pg_element* sequence;
-            const char_pg* orgPg;
             
             SymbolsPackingFacility<uint_pg_element>* sPacker;
             
-            PseudoGenomeBase* srcPGB = 0; //if set manages readsList;
             ReadsListInterface<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>* readsList = 0;
 
-            CountQueriesCacheBase* countQueriesCache = 0;
-            
         public:
 
             PackedPseudoGenome(DefaultPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>* srcPseudoGenome, uchar symbolsPerElement);
@@ -40,8 +36,6 @@ namespace PgSAIndex {
             string getTypeID();
 
             void write(std::ostream& dest);
-            
-            CountQueriesCacheBase* getCountQueriesCacheBase();
             
             uint_pg_len getElementsCountWithGuard();
             
@@ -64,9 +58,7 @@ namespace PgSAIndex {
             const string getSuffix(const uint_pg_len pos, const uint_pg_len length);
 
             const string getSuffix(const uint_reads_cnt readsListIdx, const uint_read_len offset, const uint_pg_len length);
-            
-            const char_pg* getSuffixPtrByPosition(const uint_reads_cnt originalIdx, const uint_read_len pos);
-            
+          
             void getKmerByPosition(const uint_reads_cnt originalIdx, const uint_read_len pos, const uint_read_len kmerLength, char_pg* kmerPtr);
             
             const string getRead(uint_reads_cnt originalIdx);

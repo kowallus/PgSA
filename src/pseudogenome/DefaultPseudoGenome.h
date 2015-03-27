@@ -22,8 +22,6 @@ namespace PgSAIndex {
 
             ReadsListInterface<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>* readsList = 0;
 
-            CountQueriesCacheBase* countQueriesCache = 0;
-            
         public:
 
             DefaultPseudoGenome(uint_pg_len pgLength, ReadsSetProperties* properties);
@@ -36,10 +34,10 @@ namespace PgSAIndex {
 
             void write(std::ostream& dest);
             
-            CountQueriesCacheBase* getCountQueriesCacheBase();
-            
             ReadsListInterface<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>* getReadsList();
-//            uint_pg_len getLength() { return this->length; };
+            void unmanageReadsList() {
+                readsList = 0;
+            };
 
             uint_pg_len getLengthWithGuard();
             
@@ -91,9 +89,6 @@ namespace PgSAIndex {
             void append(const string& read, uint_read_len length, uint_read_len overlap, uint_reads_cnt orgIdx);
 
             void validate();
-            
-            void setCountQueriesCache(CountQueriesCacheBase* cqcb);
-            
     };
 
     template <typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len>
