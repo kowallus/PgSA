@@ -54,6 +54,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/src/readsset/iterator/ReadsSetIterator.o \
 	${OBJECTDIR}/src/sais/sais.o \
 	${OBJECTDIR}/src/suffixarray/DefaultSuffixArray.o \
+	${OBJECTDIR}/src/suffixarray/SparseSuffixArray.o \
 	${OBJECTDIR}/src/suffixarray/persistence/SuffixArrayPersistence.o \
 	${OBJECTDIR}/src/test/PgSAtests.o \
 	${OBJECTDIR}/src/test/testdata.o
@@ -184,6 +185,11 @@ ${OBJECTDIR}/src/suffixarray/DefaultSuffixArray.o: nbproject/Makefile-${CND_CONF
 	${MKDIR} -p ${OBJECTDIR}/src/suffixarray
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Wall -s -I. -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/suffixarray/DefaultSuffixArray.o src/suffixarray/DefaultSuffixArray.cpp
+
+${OBJECTDIR}/src/suffixarray/SparseSuffixArray.o: nbproject/Makefile-${CND_CONF}.mk src/suffixarray/SparseSuffixArray.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src/suffixarray
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -Wall -s -I. -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/suffixarray/SparseSuffixArray.o src/suffixarray/SparseSuffixArray.cpp
 
 ${OBJECTDIR}/src/suffixarray/persistence/SuffixArrayPersistence.o: nbproject/Makefile-${CND_CONF}.mk src/suffixarray/persistence/SuffixArrayPersistence.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src/suffixarray/persistence
@@ -471,6 +477,19 @@ ${OBJECTDIR}/src/suffixarray/DefaultSuffixArray_nomain.o: ${OBJECTDIR}/src/suffi
 	    $(COMPILE.cc) -g -Wall -s -I. -std=c++11 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/suffixarray/DefaultSuffixArray_nomain.o src/suffixarray/DefaultSuffixArray.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/src/suffixarray/DefaultSuffixArray.o ${OBJECTDIR}/src/suffixarray/DefaultSuffixArray_nomain.o;\
+	fi
+
+${OBJECTDIR}/src/suffixarray/SparseSuffixArray_nomain.o: ${OBJECTDIR}/src/suffixarray/SparseSuffixArray.o src/suffixarray/SparseSuffixArray.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src/suffixarray
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/src/suffixarray/SparseSuffixArray.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.cc) -g -Wall -s -I. -std=c++11 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/suffixarray/SparseSuffixArray_nomain.o src/suffixarray/SparseSuffixArray.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/src/suffixarray/SparseSuffixArray.o ${OBJECTDIR}/src/suffixarray/SparseSuffixArray_nomain.o;\
 	fi
 
 ${OBJECTDIR}/src/suffixarray/persistence/SuffixArrayPersistence_nomain.o: ${OBJECTDIR}/src/suffixarray/persistence/SuffixArrayPersistence.o src/suffixarray/persistence/SuffixArrayPersistence.cpp 

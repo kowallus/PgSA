@@ -89,7 +89,7 @@ int main(int argc, char *argv[])
         
         exit(EXIT_FAILURE);
     }
-    
+        
     string srcFile(argv[optind++]);
     string pairFile = "";
     if (optind == argc - 2)
@@ -119,8 +119,8 @@ int main(int argc, char *argv[])
         delete(sab);
     }
     
-    cout << "DONE \n";
-    cin.ignore(1);    
+//    cout << "DONE \n";
+//    cin.ignore(1);    
     
     exit(EXIT_SUCCESS);
 }

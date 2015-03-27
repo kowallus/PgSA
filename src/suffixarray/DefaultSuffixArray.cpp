@@ -245,8 +245,8 @@ namespace PgSAIndex {
             const sa_pos_addr saPosAddress = this->saPosIdx2Address(i);
             uint_reads_cnt j = this->getReadsListIndexByAddress(saPosAddress);
             
-            uint_pg_len guard = this->getPosStartOffsetByAddress(saPosAddress) + readsList->getReadPosition(j) - guardOffset;
-            while (readsList->getReadPosition(j) >= guard) {
+            int_max guard = (int_max) this->getPosStartOffsetByAddress(saPosAddress) + (int_max) readsList->getReadPosition(j) - (int_max) guardOffset;
+            while ((int_max) readsList->getReadPosition(j) >= guard) {
                 if (!readsList->hasDuplicateFilterFlag(j)) {
                     if (!readsList->hasOccurFlag(j))
                         readsIdxs.push_back(j);
@@ -261,6 +261,7 @@ namespace PgSAIndex {
         uint_reads_cnt readsCount = readsIdxs.size();
         for (uint_reads_cnt i = 0; i < readsCount; i++) {
             if (!readsList->hasOccurOnceFlag(readsIdxs[i]) && !readsList->hasDuplicateFilterFlag(readsIdxs[i])) {
+//                cout << readsIdxs[i] << "\t" << readsList->getReadOriginalIndex(readsIdxs[i]) << "\t" << (int) lutIdx << "\n";
                 readsList->setDuplicateFilterFlag(readsIdxs[i]);
                 j++;               
             }

@@ -153,6 +153,7 @@
             <itemPath>src/suffixarray/persistence/SuffixArrayPersistence.cpp</itemPath>
           </logicalFolder>
           <itemPath>src/suffixarray/DefaultSuffixArray.cpp</itemPath>
+          <itemPath>src/suffixarray/SparseSuffixArray.cpp</itemPath>
         </logicalFolder>
         <logicalFolder name="test" displayName="test" projectFiles="true">
           <itemPath>src/test/PgSAtests.cpp</itemPath>
@@ -492,6 +493,11 @@
       <item path="src/suffixarray/DefaultSuffixArrayFactory.h"
             ex="false"
             tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/suffixarray/SparseSuffixArray.cpp"
+            ex="false"
+            tool="1"
             flavor2="0">
       </item>
       <item path="src/suffixarray/SparseSuffixArray.h"
@@ -864,6 +870,11 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="src/suffixarray/SparseSuffixArray.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
       <item path="src/suffixarray/SparseSuffixArray.h"
             ex="false"
             tool="3"
@@ -955,7 +966,7 @@
           <warningLevel>2</warningLevel>
         </ccTool>
         <linkerTool>
-          <output>${TESTDIR}/TestFiles/f2</output>
+          <output>${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/PgSAgen</output>
         </linkerTool>
       </compileType>
       <folder path="TestFiles/f1">
@@ -1228,6 +1239,11 @@
       <item path="src/suffixarray/DefaultSuffixArrayFactory.h"
             ex="false"
             tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/suffixarray/SparseSuffixArray.cpp"
+            ex="false"
+            tool="1"
             flavor2="0">
       </item>
       <item path="src/suffixarray/SparseSuffixArray.h"
@@ -1597,6 +1613,11 @@
       <item path="src/suffixarray/DefaultSuffixArrayFactory.h"
             ex="false"
             tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/suffixarray/SparseSuffixArray.cpp"
+            ex="false"
+            tool="1"
             flavor2="0">
       </item>
       <item path="src/suffixarray/SparseSuffixArray.h"
@@ -1969,6 +1990,11 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="src/suffixarray/SparseSuffixArray.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
       <item path="src/suffixarray/SparseSuffixArray.h"
             ex="false"
             tool="3"
@@ -2329,6 +2355,11 @@
       <item path="src/suffixarray/DefaultSuffixArrayFactory.h"
             ex="false"
             tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/suffixarray/SparseSuffixArray.cpp"
+            ex="false"
+            tool="1"
             flavor2="0">
       </item>
       <item path="src/suffixarray/SparseSuffixArray.h"

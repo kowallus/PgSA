@@ -54,6 +54,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/src/readsset/iterator/ReadsSetIterator.o \
 	${OBJECTDIR}/src/sais/sais.o \
 	${OBJECTDIR}/src/suffixarray/DefaultSuffixArray.o \
+	${OBJECTDIR}/src/suffixarray/SparseSuffixArray.o \
 	${OBJECTDIR}/src/suffixarray/persistence/SuffixArrayPersistence.o \
 	${OBJECTDIR}/src/test/PgSAtests.o \
 	${OBJECTDIR}/src/test/testdata.o
@@ -84,11 +85,11 @@ LDLIBSOPTIONS=
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
-	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${TESTDIR}/TestFiles/f2.exe
+	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/PgSAgen.exe
 
-${TESTDIR}/TestFiles/f2.exe: ${OBJECTFILES}
-	${MKDIR} -p ${TESTDIR}/TestFiles
-	${LINK.cc} -o ${TESTDIR}/TestFiles/f2 ${OBJECTFILES} ${LDLIBSOPTIONS}
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/PgSAgen.exe: ${OBJECTFILES}
+	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
+	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/PgSAgen ${OBJECTFILES} ${LDLIBSOPTIONS}
 
 ${OBJECTDIR}/src/PgSAgen.o: nbproject/Makefile-${CND_CONF}.mk src/PgSAgen.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src
@@ -184,6 +185,11 @@ ${OBJECTDIR}/src/suffixarray/DefaultSuffixArray.o: nbproject/Makefile-${CND_CONF
 	${MKDIR} -p ${OBJECTDIR}/src/suffixarray
 	${RM} "$@.d"
 	$(COMPILE.cc) -O3 -Wall -s -I. -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/suffixarray/DefaultSuffixArray.o src/suffixarray/DefaultSuffixArray.cpp
+
+${OBJECTDIR}/src/suffixarray/SparseSuffixArray.o: nbproject/Makefile-${CND_CONF}.mk src/suffixarray/SparseSuffixArray.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src/suffixarray
+	${RM} "$@.d"
+	$(COMPILE.cc) -O3 -Wall -s -I. -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/suffixarray/SparseSuffixArray.o src/suffixarray/SparseSuffixArray.cpp
 
 ${OBJECTDIR}/src/suffixarray/persistence/SuffixArrayPersistence.o: nbproject/Makefile-${CND_CONF}.mk src/suffixarray/persistence/SuffixArrayPersistence.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src/suffixarray/persistence
@@ -473,6 +479,19 @@ ${OBJECTDIR}/src/suffixarray/DefaultSuffixArray_nomain.o: ${OBJECTDIR}/src/suffi
 	    ${CP} ${OBJECTDIR}/src/suffixarray/DefaultSuffixArray.o ${OBJECTDIR}/src/suffixarray/DefaultSuffixArray_nomain.o;\
 	fi
 
+${OBJECTDIR}/src/suffixarray/SparseSuffixArray_nomain.o: ${OBJECTDIR}/src/suffixarray/SparseSuffixArray.o src/suffixarray/SparseSuffixArray.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src/suffixarray
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/src/suffixarray/SparseSuffixArray.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.cc) -O3 -Wall -s -I. -std=c++11 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/suffixarray/SparseSuffixArray_nomain.o src/suffixarray/SparseSuffixArray.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/src/suffixarray/SparseSuffixArray.o ${OBJECTDIR}/src/suffixarray/SparseSuffixArray_nomain.o;\
+	fi
+
 ${OBJECTDIR}/src/suffixarray/persistence/SuffixArrayPersistence_nomain.o: ${OBJECTDIR}/src/suffixarray/persistence/SuffixArrayPersistence.o src/suffixarray/persistence/SuffixArrayPersistence.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src/suffixarray/persistence
 	@NMOUTPUT=`${NM} ${OBJECTDIR}/src/suffixarray/persistence/SuffixArrayPersistence.o`; \
@@ -525,7 +544,7 @@ ${OBJECTDIR}/src/test/testdata_nomain.o: ${OBJECTDIR}/src/test/testdata.o src/te
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
 	${RM} -r ${CND_BUILDDIR}/${CND_CONF}
-	${RM} ${TESTDIR}/TestFiles/f2.exe
+	${RM} ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/PgSAgen.exe
 
 # Subprojects
 .clean-subprojects:

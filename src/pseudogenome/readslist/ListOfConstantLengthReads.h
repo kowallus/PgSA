@@ -172,19 +172,23 @@ namespace PgSAIndex {
             ///////////////////////////
             // ITERATION ROUTINES
                                     
-            void initIterationImpl(const uint_read_len& kmerLength);
+            inline void initIterationImpl(const uint_read_len& kmerLength) {
+                guardOffset = readLength - kmerLength;
+                skipDuplicateFilter = kmerLength < duplicateFilterK;
+                itAddress = pgReadsList;
+            }
             
             inline void setIterationPositionImpl(const RPGOffset<uint_read_len, uint_reads_cnt>& saPos) {
                 itAddress = idx2Address(saPos.readListIndex);
                 suffixPos = saPos.offset + this->getReadPositionByAddress(itAddress); 
-                guard = (int_max) suffixPos - guardOffset;
+                guard = (int_max) suffixPos - (int_max) guardOffset;
                 itAddress += LIST_ELEMENT_SIZE;
             };
 
             inline void setIterationPositionImpl(const RPGOffset<uint_read_len, uint_reads_cnt>& saPos, uchar shift) {
                 itAddress = idx2Address(saPos.readListIndex);
                 suffixPos = saPos.offset + this->getReadPositionByAddress(itAddress) - shift;
-                guard = (int_max) suffixPos - guardOffset;
+                guard = (int_max) suffixPos - (int_max) guardOffset;
 
                 while ((itAddress >= pgReadsList) && (suffixPos < getReadPositionByAddress(itAddress)))
                     itAddress -= LIST_ELEMENT_SIZE;

@@ -174,13 +174,6 @@ namespace PgSAIndex {
         clearOccurFlagsByAddress(idx2Address(idx));
     }
     
-    template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, unsigned char LIST_ELEMENT_SIZE, uchar FLAGS_OFFSET>
-    void ListOfConstantLengthReads<uint_read_len, uint_reads_cnt, uint_pg_len, LIST_ELEMENT_SIZE, FLAGS_OFFSET>::initIterationImpl(const uint_read_len& kmerLength) {
-        guardOffset = readLength - kmerLength;
-        skipDuplicateFilter = kmerLength < duplicateFilterK;
-        itAddress = pgReadsList;
-    }
-    
     template class ListOfConstantLengthReads<uint_read_len_min, uint_reads_cnt_std, uint_pg_len_std, 9, 4>;
     template class ListOfConstantLengthReads<uint_read_len_std, uint_reads_cnt_std, uint_pg_len_std, 9, 4>;
     template class ListOfConstantLengthReads<uint_read_len_min, uint_reads_cnt_std, uint_pg_len_max, 13, 8>;

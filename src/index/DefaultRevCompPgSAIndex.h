@@ -99,7 +99,7 @@ namespace PgSAIndex {
             };
 
             void reportOccurrences(api_uint_reads_cnt orgIdx, api_uint_read_len pos, api_uint_read_len k, vector<pair<api_uint_reads_cnt, api_uint_read_len>>& kmersPos) {
-//                throw std::runtime_error("not implemented");
+                throw(errno);
             }
             
             // Q4 - What is the number of occurrences of kmer?
@@ -112,7 +112,7 @@ namespace PgSAIndex {
             };
 
             uint_max countOccurrences(api_uint_reads_cnt orgIdx, api_uint_read_len pos, api_uint_read_len k) {
-//                throw std::runtime_error("not implemented");
+                throw(errno);
                 return 0;
             }
             
@@ -131,7 +131,7 @@ namespace PgSAIndex {
             };
 
             void reportReadsWithSingleOccurrence(api_uint_reads_cnt orgIdx, api_uint_read_len pos, api_uint_read_len k, vector<api_uint_reads_cnt>& readsIdxs) {
-//                throw std::runtime_error("not implemented");
+                throw(errno);
             }
             
             // Q6 - In how many reads does kmer occur only once?
@@ -144,7 +144,7 @@ namespace PgSAIndex {
             };
             
             api_uint_reads_cnt countSingleOccurrences(api_uint_reads_cnt orgIdx, api_uint_read_len pos, api_uint_read_len k) {
-//                throw std::runtime_error("not implemented");
+                throw(errno);
                 return 0;
             }
 
@@ -176,7 +176,7 @@ namespace PgSAIndex {
             };
 
             void reportSingleOccurrences(api_uint_reads_cnt orgIdx, api_uint_read_len pos, api_uint_read_len k, vector<pair<api_uint_reads_cnt, api_uint_read_len>>& kmersPos) {
-//                throw std::runtime_error("not implemented");
+                throw(errno);
             }
             
             const string getDescription() { return impl->getDescription(); };
