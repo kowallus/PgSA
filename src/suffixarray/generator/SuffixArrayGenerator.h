@@ -36,7 +36,7 @@ namespace PgSAIndex {
                 return generateSuffixArray(pgb, PGSATYPE_DEFAULT, fixed_min_k);
             }
             
-            static SuffixArrayBase* generateSparseSuffixArray(PseudoGenomeBase* pgb, uchar symbolsInterval) {
+            static SuffixArrayBase* generateSparseSuffixArray(PseudoGenomeBase* pgb, uchar symbolsInterval, int fixed_min_k = 1) {
 
                 PseudoGenomeGeneratorBase* pggb = new PackedPseudoGenomeGenerator(pgb, symbolsInterval);
                 
@@ -44,7 +44,7 @@ namespace PgSAIndex {
                 
                 delete(pggb);
                 
-                return generateSuffixArray(ppgb, PGSATYPE_SPARSE);
+                return generateSuffixArray(ppgb, PGSATYPE_SPARSE, fixed_min_k);
             }
 
 
@@ -90,12 +90,10 @@ namespace PgSAIndex {
                 if (saTypeID == PGSATYPE_SPARSE) {
                     PackedPseudoGenomeBase* ppgb = static_cast<PackedPseudoGenomeBase*>(pgb);
                     if (ppgb->isPgElementMinimal()) 
-                        return generateSparseSuffixArrayTemplate<uint_read_len, uint_reads_cnt, uint_pg_len, uint_ps_element_min>(ppgb);
+                        return generateSparseSuffixArrayTemplate<uint_read_len, uint_reads_cnt, uint_pg_len, uint_ps_element_min>(ppgb, fixed_min_k);
                     if (ppgb->isPgElementStandard()) 
-                        return generateSparseSuffixArrayTemplate<uint_read_len, uint_reads_cnt, uint_pg_len, uint_ps_element_std>(ppgb);
-
+                        return generateSparseSuffixArrayTemplate<uint_read_len, uint_reads_cnt, uint_pg_len, uint_ps_element_std>(ppgb, fixed_min_k);
                 }
-                    
                 
                 cout << "ERROR: unknown PGSATYPE " << saTypeID;
                 return 0;
@@ -114,7 +112,7 @@ namespace PgSAIndex {
             }
             
             template < typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, typename uint_pg_element >
-            static SuffixArrayBase* generateSparseSuffixArrayTemplate(PackedPseudoGenomeBase* ppgb) {
+            static SuffixArrayBase* generateSparseSuffixArrayTemplate(PackedPseudoGenomeBase* ppgb, int fixed_min_k = 1) {
                 const uchar skippedSymbolsCount = ppgb->getSymbolsPerElement() - 1;
                 const uchar symbolsCount = ppgb->getReadsSetProperties()->symbolsCount;
                 
@@ -122,9 +120,9 @@ namespace PgSAIndex {
                     typedef PackedPseudoGenomeOfConstantLengthReadsType<uint_read_len, uint_reads_cnt, uint_pg_len, uint_pg_element> PseudoGenomeClass;
                     PseudoGenomeClass* pg = PseudoGenomeClass::castBase(ppgb);
                     if(SymbolsPackingFacility<uint_ps_element_min>::isCompatibile(skippedSymbolsCount, symbolsCount))
-                        return SparseSuffixArrayFactory<uint_read_len, uint_reads_cnt, uint_pg_len, uint_pg_element, uint_ps_element_min>::getSuffixArrayOfConstantLenghtReads(pg);
+                        return SparseSuffixArrayFactory<uint_read_len, uint_reads_cnt, uint_pg_len, uint_pg_element, uint_ps_element_min>::getSuffixArrayOfConstantLenghtReads(pg, fixed_min_k);
                     if(SymbolsPackingFacility<uint_ps_element_std>::isCompatibile(skippedSymbolsCount, symbolsCount))
-                        return SparseSuffixArrayFactory<uint_read_len, uint_reads_cnt, uint_pg_len, uint_pg_element, uint_ps_element_std>::getSuffixArrayOfConstantLenghtReads(pg);
+                        return SparseSuffixArrayFactory<uint_read_len, uint_reads_cnt, uint_pg_len, uint_pg_element, uint_ps_element_std>::getSuffixArrayOfConstantLenghtReads(pg, fixed_min_k);
                 }
 
                 cout << "ERROR: unsupported variant of " << PGSATYPE_DEFAULT;

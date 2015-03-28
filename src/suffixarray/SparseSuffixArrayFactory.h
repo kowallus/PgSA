@@ -72,11 +72,11 @@ namespace PgSAIndex {
     class SparseSuffixArrayFactory {       
         public:
 
-            static SuffixArrayBase* getSuffixArrayOfConstantLenghtReads(PackedPseudoGenomeOfConstantLengthReadsType<uint_read_len, uint_reads_cnt, uint_pg_len, uint_pg_element>* pg) {   
+            static SuffixArrayBase* getSuffixArrayOfConstantLenghtReads(PackedPseudoGenomeOfConstantLengthReadsType<uint_read_len, uint_reads_cnt, uint_pg_len, uint_pg_element>* pg, int fixed_min_k = 1) {
                 if (bytesPerValue(pg->readsCount()) <= BytesPerReadIndex<uint_reads_cnt>::minimum) 
-                    return new typename SparseSuffixArrayOfConstantLengthTypeTemplate<uint_read_len, uint_reads_cnt, uint_pg_len, uint_pg_element, uint_skipped_element, BytesPerReadIndex<uint_reads_cnt>::minimum>::Type(pg);
+                    return new typename SparseSuffixArrayOfConstantLengthTypeTemplate<uint_read_len, uint_reads_cnt, uint_pg_len, uint_pg_element, uint_skipped_element, BytesPerReadIndex<uint_reads_cnt>::minimum>::Type(pg, fixed_min_k);
                 if (bytesPerValue(pg->readsCount()) == BytesPerReadIndex<uint_reads_cnt>::standard)
-                    return new typename SparseSuffixArrayOfConstantLengthTypeTemplate<uint_read_len, uint_reads_cnt, uint_pg_len, uint_pg_element, uint_skipped_element, BytesPerReadIndex<uint_reads_cnt>::standard>::Type(pg);
+                    return new typename SparseSuffixArrayOfConstantLengthTypeTemplate<uint_read_len, uint_reads_cnt, uint_pg_len, uint_pg_element, uint_skipped_element, BytesPerReadIndex<uint_reads_cnt>::standard>::Type(pg, fixed_min_k);
                 cout << "WARNING: SA factory fail!";
                 return 0;
             }

@@ -45,7 +45,7 @@ SuffixArrayBase* generateSA(PseudoGenomeBase* pgb, int rate, int fixed_min_k) {
     if (rate == 1) 
         sab = SuffixArrayGenerator::generateDefaultSuffixArray(pgb, fixed_min_k);
     else if (rate > 1)
-        sab = SuffixArrayGenerator::generateSparseSuffixArray(pgb, rate);    
+        sab = SuffixArrayGenerator::generateSparseSuffixArray(pgb, rate, fixed_min_k);    
     else {
         fprintf(stderr, "Unsupported compression rate: %d\n", rate);
         exit(EXIT_FAILURE);

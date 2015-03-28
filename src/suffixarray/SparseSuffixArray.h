@@ -52,6 +52,8 @@ namespace PgSAIndex {
             const uint_read_len lookupTableKeyPrefixLength = 11;
             SuffixArrayLookupTable lookupTable;
             
+            uchar fixed_min_k;
+            
             // HELPER METHODS
             
             const RPGOffset<uint_read_len, uint_reads_cnt> getPositionByAddress(const sa_pos_addr& saPosAddress);
@@ -63,7 +65,7 @@ namespace PgSAIndex {
             const sa_pos_addr saPosIdx2Address(const uint_pg_len posIdx);
             
             static void swapElementsByAddress(const sa_pos_addr saPosAddressFst, const sa_pos_addr saPosAddressSnd);
-            
+            static void copyElementsByAddress(const sa_pos_addr saPosAddressDest, const sa_pos_addr saPosAddressSrc);
 
             //////////////////////////////////////
             // SUFFIX ARRAY GENERATION ROUTINES //
@@ -117,13 +119,14 @@ namespace PgSAIndex {
 
             const uint_max determineElementsCount(PseudoGenome* pseudoGenome);
             
-            const uint_max getSizeInBytesWithGuard(PseudoGenome* pseudoGenome);
+            uint_max getSuffixArraySizeInBytesWithGuard(uint_pg_len elementsCount);
+            uint_pg_len getSuffixArrayElementsCount(uint_max sizeInBytesWithGuard);
             
             void determineCheckLastElementFromShift(uint_read_len& kmerLength);
             
         public:
             
-            SparseSuffixArray(PseudoGenome* pseudoGenome);
+            SparseSuffixArray(PseudoGenome* pseudoGenome, int fixed_min_k = 1);
 
             SparseSuffixArray(PseudoGenome* pseudoGenome, std::istream& src);
 

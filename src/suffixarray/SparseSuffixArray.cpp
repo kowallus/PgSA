@@ -6,16 +6,17 @@
 namespace PgSAIndex {
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, typename uint_pg_element, typename uint_skipped_element, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uchar SKIPPED_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>
-    SparseSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, uint_pg_element, uint_skipped_element, SA_ELEMENT_SIZE, POS_START_OFFSET, SKIPPED_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::SparseSuffixArray(PseudoGenome* pseudoGenome)
+    SparseSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, uint_pg_element, uint_skipped_element, SA_ELEMENT_SIZE, POS_START_OFFSET, SKIPPED_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::SparseSuffixArray(PseudoGenome* pseudoGenome, int fixed_min_k)
     : // up to 2 additional bytes to avoid overflowing during casting to uint_reads_cnt
-    SparseSuffixArrayBase(determineElementsCount(pseudoGenome), getSizeInBytesWithGuard(pseudoGenome), pseudoGenome, pseudoGenome->getSymbolsPerElement() - 1, sizeof (uint_skipped_element)),
+    SparseSuffixArrayBase(determineElementsCount(pseudoGenome), getSuffixArraySizeInBytesWithGuard(pseudoGenome->getLength() / pseudoGenome->getSymbolsPerElement()), pseudoGenome, pseudoGenome->getSymbolsPerElement() - 1, sizeof (uint_skipped_element)),
     OccurrencesIteratorInterface<uint_read_len, uint_reads_cnt, typename ReadsListIteratorFactoryTemplate<ReadsListClass>::ReadsListIteratorClass, ThisDefaultSuffixArrayType>(
     *ReadsListIteratorFactoryTemplate<ReadsListClass>::getReadsListIterator(* ((ReadsListClass*) pseudoGenome->getReadsList()))),
     pseudoGenome(pseudoGenome),
     readsList(pseudoGenome->getReadsList()),
     suffixArray(new uchar[this->getSizeInBytes()]),
     sPacker(new SymbolsPackingFacility<uint_skipped_element>(pseudoGenome->getReadsSetProperties(), pseudoGenome->getSymbolsPerElement() - 1)),
-    lookupTable(lookupTableKeyPrefixLength, pseudoGenome->getReadsSetProperties()) {
+    lookupTable(lookupTableKeyPrefixLength, pseudoGenome->getReadsSetProperties()),
+    fixed_min_k(fixed_min_k) {
         //TODO: check if setting 0 is necessary.... 
         suffixArray[this->getSizeInBytes() - 2] = 0;
         suffixArray[this->getSizeInBytes() - 1] = 0;
@@ -23,14 +24,15 @@ namespace PgSAIndex {
         pgStatic = this->pseudoGenome;
         maxReadLengthRaw = (this->pseudoGenome->maxReadLength() + this->pseudoGenome->getSymbolsPerElement() - 1) / this->pseudoGenome->getSymbolsPerElement();
 
-        this->lookupTable.generateFromPg(this->pseudoGenome, pseudoGenome->getSymbolsPerElement(), skippedSymbolsCount);
-
         if ((sizeof (uint_pg_element) == sizeof (char)))
             generateSaisPgSA();
         else
             generatePgSA();
 
-        //                this->lookupTable.generateFromSA(this, this->getElementsCount());
+        if (fixed_min_k == 1)
+            this->lookupTable.generateFromPg(this->pseudoGenome, pseudoGenome->getSymbolsPerElement(), skippedSymbolsCount);
+        else 
+            this->lookupTable.generateFromSA(this, this->getElementsCount());
         buildReadsWithDuplicatesFilter();
     }
 
@@ -131,9 +133,13 @@ namespace PgSAIndex {
             updateSAPositionQueue(i);
         }
 
+        uint_read_len maxReadLength = this->pseudoGenome->maxReadLength();
         const uchar* curSAPos = suffixArray;
         uint_pg_len saPos;
-        for (uint_pg_len i = 0; i < elementsCountWithoutGuard; i++) {
+        
+        uint_pg_len i = 0;
+       
+        while (!saPartsOrder.empty()) {
             int j = saPartsOrder.front();
             saPos = currentSaPartPos[j];
 
@@ -146,14 +152,20 @@ namespace PgSAIndex {
                 *((uint_skipped_element*) (curSAPos + SKIPPED_OFFSET)) =
                         sPacker->packSymbols(pseudoGenome->getSuffix(pgPos - skippedSymbolsCount, skippedSymbolsCount).data());
             } else
-                swapElementsByAddress((sa_pos_addr*) curSAPos, saPosIdx2Address(saPos));
+                copyElementsByAddress((sa_pos_addr*) curSAPos, saPosIdx2Address(saPos));
 
-            curSAPos += SA_ELEMENT_SIZE;
+            if (*(curSAPos + POS_START_OFFSET) <= maxReadLength - fixed_min_k + skippedSymbolsCount) {
+                curSAPos += SA_ELEMENT_SIZE;
+                i++;
+            }
 
             saPartsOrder.pop_front();
             updateSAPositionQueue(j);
         }
 
+        elementsCount = i;
+        suffixArrayBytes = getSuffixArraySizeInBytesWithGuard(elementsCount);
+        
         for (int i = 0; i < noOfParts; i++) {
             saPartSrc[i]->close();
             delete(saPartSrc[i]);
@@ -176,6 +188,11 @@ namespace PgSAIndex {
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, typename uint_pg_element, typename uint_skipped_element, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uchar SKIPPED_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>
+    inline void SparseSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, uint_pg_element, uint_skipped_element, SA_ELEMENT_SIZE, POS_START_OFFSET, SKIPPED_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::copyElementsByAddress(const sa_pos_addr saPosAddressDest, const sa_pos_addr saPosAddressSrc) {
+        std::copy((uchar*) saPosAddressSrc, (uchar*) saPosAddressSrc + SA_ELEMENT_SIZE, (uchar*) saPosAddressDest);
+    }
+
+    template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, typename uint_pg_element, typename uint_skipped_element, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uchar SKIPPED_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>
     void SparseSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, uint_pg_element, uint_skipped_element, SA_ELEMENT_SIZE, POS_START_OFFSET, SKIPPED_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::generatePgSA() {
         clock_checkpoint();
 
@@ -183,6 +200,23 @@ namespace PgSAIndex {
 
         qsort(suffixArray, elementsCountWithoutGuard, sizeof (uchar) * SA_ELEMENT_SIZE, this->pgSuffixesCompare);
 
+        if (fixed_min_k > 1) {
+            const uchar* curSAPos = suffixArray;
+            const uchar* oldSAPos = suffixArray;
+            uint_read_len maxReadLength = this->pseudoGenome->maxReadLength();
+            
+            for(uint_pg_len i = 0; i < elementsCountWithoutGuard; i++) {
+                if (*(oldSAPos + POS_START_OFFSET) <= maxReadLength - fixed_min_k + skippedSymbolsCount) {
+                    copyElementsByAddress((sa_pos_addr*) curSAPos, (sa_pos_addr*) oldSAPos);
+                    curSAPos += SA_ELEMENT_SIZE;
+                }    
+                oldSAPos += SA_ELEMENT_SIZE;
+            }
+            
+            elementsCount = (curSAPos - suffixArray) / SA_ELEMENT_SIZE;
+            suffixArrayBytes = getSuffixArraySizeInBytesWithGuard(elementsCount);
+        }
+        
         cout << "SA generation time " << clock_millis() << " msec!\n";
     }
 
@@ -203,7 +237,7 @@ namespace PgSAIndex {
     
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, typename uint_pg_element, typename uint_skipped_element, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uchar SKIPPED_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>
     SparseSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, uint_pg_element, uint_skipped_element, SA_ELEMENT_SIZE, POS_START_OFFSET, SKIPPED_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::SparseSuffixArray(PseudoGenome* pseudoGenome, std::istream& src)
-    : SparseSuffixArrayBase(determineElementsCount(pseudoGenome), getSizeInBytesWithGuard(pseudoGenome), pseudoGenome, pseudoGenome->getSymbolsPerElement() - 1, sizeof (uint_skipped_element)),
+    : SparseSuffixArrayBase(determineElementsCount(pseudoGenome), getSuffixArraySizeInBytesWithGuard(pseudoGenome->getLength() / pseudoGenome->getSymbolsPerElement()), pseudoGenome, pseudoGenome->getSymbolsPerElement() - 1, sizeof (uint_skipped_element)),
     OccurrencesIteratorInterface<uint_read_len, uint_reads_cnt, typename ReadsListIteratorFactoryTemplate<ReadsListClass>::ReadsListIteratorClass, ThisDefaultSuffixArrayType>(
     *ReadsListIteratorFactoryTemplate<ReadsListClass>::getReadsListIterator(* ((ReadsListClass*) pseudoGenome->getReadsList()))),
     pseudoGenome(pseudoGenome),
@@ -214,9 +248,12 @@ namespace PgSAIndex {
         src >> arraySize;
         src.get(); // '/n'
 
-        if (arraySize != this->getSizeInBytes())
+        if (arraySize > this->getSizeInBytes())
             cout << "WARNING: wrong size of suffixarray.";
 
+        suffixArrayBytes = arraySize;
+        elementsCount = getSuffixArrayElementsCount(suffixArrayBytes);
+        
         suffixArray = (uchar*) PgSAHelpers::readArray(src, this->getSizeInBytes() * sizeof (uchar));
         src.get(); // '/n'
 
@@ -502,10 +539,15 @@ namespace PgSAIndex {
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, typename uint_pg_element, typename uint_skipped_element, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uchar SKIPPED_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>
-    const uint_max SparseSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, uint_pg_element, uint_skipped_element, SA_ELEMENT_SIZE, POS_START_OFFSET, SKIPPED_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::getSizeInBytesWithGuard(PseudoGenome* pseudoGenome) {
-        return sizeof (uchar) * (pseudoGenome->getLength() / pseudoGenome->getSymbolsPerElement() + 2) * SA_ELEMENT_SIZE;
+    uint_max SparseSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, uint_pg_element, uint_skipped_element, SA_ELEMENT_SIZE, POS_START_OFFSET, SKIPPED_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::getSuffixArraySizeInBytesWithGuard(uint_pg_len elementsCount) {
+        return sizeof (uchar) * (elementsCount + 2) * SA_ELEMENT_SIZE;
     }
 
+    template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, typename uint_pg_element, typename uint_skipped_element, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uchar SKIPPED_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>
+    uint_pg_len SparseSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, uint_pg_element, uint_skipped_element, SA_ELEMENT_SIZE, POS_START_OFFSET, SKIPPED_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::getSuffixArrayElementsCount(uint_max sizeInBytesWithGuard) {
+        return sizeInBytesWithGuard / sizeof(uchar) / SA_ELEMENT_SIZE - 2;
+    }
+    
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, typename uint_pg_element, typename uint_skipped_element, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uchar SKIPPED_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>
     const uint_read_len SparseSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, uint_pg_element, uint_skipped_element, SA_ELEMENT_SIZE, POS_START_OFFSET, SKIPPED_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::getPosStartOffsetByAddress(const sa_pos_addr saPosAddress) {
         return *((uint_read_len*) ((uchar*) saPosAddress + POS_START_OFFSET));
@@ -566,10 +608,10 @@ namespace PgSAIndex {
         uint_max size = sizeof (this) + this->getSizeInBytes() +
                 sizeof (this->lookupTable) + this->lookupTable.getLookupTableLengthWithGuard() * sizeof (uint_pg_len) +
                 sizeof (this->pseudoGenome) + this->pseudoGenome->getElementsCountWithGuard() * this->pseudoGenome->getBytesPerElement() +
-                sizeof (this->readsList) + (uint_max) this->readsList->getReadsCount() * this->readsList->getListElementSize();
+                sizeof (this->readsList) + (uint_max) this->readsList->getReadsCount() * (this->readsList->getListElementSize() + sizeof(uint_reads_cnt));
         desc = desc + ")\tTOTAL (Pg+RL+SA+LT) " + toMB(size, 2) + " MB\n" +
                 +"Pg: " + toMB(this->pseudoGenome->getElementsCountWithGuard() * this->pseudoGenome->getBytesPerElement(), 2) + " MB\t"
-                + "RL: " + toMB((uint_max) this->readsList->getReadsCount() * this->readsList->getListElementSize(), 2) + " MB\t"
+                + "RL: " + toMB((uint_max) this->readsList->getReadsCount() * (this->readsList->getListElementSize() + sizeof(uint_reads_cnt)), 2) + " MB\t"
                 + "SA: " + toMB(this->getSizeInBytes(), 2) + " MB\t"
                 + "LT: " + toMB(this->lookupTable.getLookupTableLengthWithGuard() * sizeof (uint_pg_len), 2) + " MB\n";
         desc = desc + toString(this->readsList->getReadsCount()) + " ";
