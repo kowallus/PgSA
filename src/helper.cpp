@@ -1,5 +1,7 @@
 #include "helper.h"
 
+#include <byteswap.h>
+
 // TIME
 
 clock_t checkpoint;
