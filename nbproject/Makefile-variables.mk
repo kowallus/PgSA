@@ -46,6 +46,22 @@ CND_ARTIFACT_PATH_Debug-PgSAgen-Win=dist/Debug-PgSAgen-Win/Cygwin_4.x-Windows/Pg
 CND_PACKAGE_DIR_Debug-PgSAgen-Win=dist/Debug-PgSAgen-Win/Cygwin_4.x-Windows/package
 CND_PACKAGE_NAME_Debug-PgSAgen-Win=pgsa.tar
 CND_PACKAGE_PATH_Debug-PgSAgen-Win=dist/Debug-PgSAgen-Win/Cygwin_4.x-Windows/package/pgsa.tar
+# Release-PgSAgen-Linux configuration
+CND_PLATFORM_Release-PgSAgen-Linux=GNU-Linux-x86
+CND_ARTIFACT_DIR_Release-PgSAgen-Linux=dist/Release-PgSAgen-Linux/GNU-Linux-x86
+CND_ARTIFACT_NAME_Release-PgSAgen-Linux=PgSAgen
+CND_ARTIFACT_PATH_Release-PgSAgen-Linux=dist/Release-PgSAgen-Linux/GNU-Linux-x86/PgSAgen
+CND_PACKAGE_DIR_Release-PgSAgen-Linux=dist/Release-PgSAgen-Linux/GNU-Linux-x86/package
+CND_PACKAGE_NAME_Release-PgSAgen-Linux=pgsa.tar
+CND_PACKAGE_PATH_Release-PgSAgen-Linux=dist/Release-PgSAgen-Linux/GNU-Linux-x86/package/pgsa.tar
+# Release-PgSAtest-Linux configuration
+CND_PLATFORM_Release-PgSAtest-Linux=GNU-Linux-x86
+CND_ARTIFACT_DIR_Release-PgSAtest-Linux=dist/Release-PgSAtest-Linux/GNU-Linux-x86
+CND_ARTIFACT_NAME_Release-PgSAtest-Linux=PgSATest
+CND_ARTIFACT_PATH_Release-PgSAtest-Linux=dist/Release-PgSAtest-Linux/GNU-Linux-x86/PgSATest
+CND_PACKAGE_DIR_Release-PgSAtest-Linux=dist/Release-PgSAtest-Linux/GNU-Linux-x86/package
+CND_PACKAGE_NAME_Release-PgSAtest-Linux=pgsa.tar
+CND_PACKAGE_PATH_Release-PgSAtest-Linux=dist/Release-PgSAtest-Linux/GNU-Linux-x86/package/pgsa.tar
 #
 # include compiler specific variables
 #
