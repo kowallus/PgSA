@@ -39,11 +39,11 @@ CountQueriesCacheBase* generateCache(PseudoGenomeBase* pgb) {
     return cqcb;
 };
 
-SuffixArrayBase* generateSA(PseudoGenomeBase* pgb, int rate) {
+SuffixArrayBase* generateSA(PseudoGenomeBase* pgb, int rate, int fixed_min_k) {
     SuffixArrayBase* sab;
 
     if (rate == 1) 
-        sab = SuffixArrayGenerator::generateDefaultSuffixArray(pgb);
+        sab = SuffixArrayGenerator::generateDefaultSuffixArray(pgb, fixed_min_k);
     else if (rate > 1)
         sab = SuffixArrayGenerator::generateSparseSuffixArray(pgb, rate);    
     else {
@@ -59,10 +59,11 @@ int main(int argc, char *argv[])
 
     int opt; // current option
     int compressionRate = 1; 
+    int fixed_min_k = 1;
     bool pFlag = false;
     bool cFlag = false;
 
-    while ((opt = getopt(argc, argv, "r:pc?")) != -1) {
+    while ((opt = getopt(argc, argv, "r:k:pc?")) != -1) {
         switch (opt) {
         case 'p':
             pFlag = true;
@@ -73,11 +74,14 @@ int main(int argc, char *argv[])
         case 'r':
             compressionRate = atoi(optarg);
             break;
+        case 'k':
+            fixed_min_k = atoi(optarg);
+            break;
         case '?':
         default: /* '?' */
-            fprintf(stderr, "Usage: %s [-r rate] [-c] [-p] readssrcfile [pairsrcfile] indexprefix\n\n",
+            fprintf(stderr, "Usage: %s [-r rate] [-k fixed_k] [-c] [-p] readssrcfile [pairsrcfile] indexprefix\n\n",
                     argv[0]);
-            fprintf(stderr, "-r compression rate [1 - 6]\n-c generate cache file\n-p only Pg, no SA\n\n");
+            fprintf(stderr, "-r compression rate [1 - 6]\n-k fixed kmer length \n-c generate cache file\n-p only Pg, no SA\n\n");
             fprintf(stderr, "NOTE:\nCurrently repetitive read flags are set only for r = 1.\nTo enable repetitive read flags for r > 1\nplease use PgSA index file with r = 1 as readssrcfile.\n");
             exit(EXIT_FAILURE);
         }
@@ -114,7 +118,7 @@ int main(int argc, char *argv[])
     } 
     
     if (!pFlag && !cFlag) {
-        SuffixArrayBase* sab = generateSA(pgb, compressionRate);
+        SuffixArrayBase* sab = generateSA(pgb, compressionRate, fixed_min_k);
         SuffixArrayPersistence::writePgSA(sab, idxPrefix);
         delete(sab);
     }

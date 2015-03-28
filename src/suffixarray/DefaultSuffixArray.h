@@ -45,6 +45,8 @@ namespace PgSAIndex {
             const uint_read_len lookupTableKeyPrefixLength = 11;
             SuffixArrayLookupTable lookupTable;
             
+            uchar fixed_min_k;
+            
             // HELPER METHODS
             
             const RPGOffset<uint_read_len, uint_reads_cnt> getPositionByAddress(const sa_pos_addr& saPosAddress);
@@ -62,6 +64,7 @@ namespace PgSAIndex {
             static const uint_read_len getPosStartOffsetByAddress(const sa_pos_addr saPosAddress);
 
             static void swapElementsByAddress(const sa_pos_addr saPosAddressFst, const sa_pos_addr saPosAddressSnd);
+            static void copyElementsByAddress(const sa_pos_addr saPosAddressDest, const sa_pos_addr saPosAddressSrc);
             
             // auxiliary data for sorting
             static uint_read_len maxReadLength;
@@ -108,11 +111,12 @@ namespace PgSAIndex {
             
             void kmerRangeBSearch(const char* kmerPtr, const uint_read_len& kmerLength, SARange<uint_pg_len>& range);
             
-            uint_max getSuffixArraySizeInBytesWithGuard(PseudoGenome* pseudoGenome);
+            uint_max getSuffixArraySizeInBytesWithGuard(uint_pg_len elementsCount);
+            uint_pg_len getSuffixArrayElementsCount(uint_max sizeInBytesWithGuard);
             
         public:
             
-            DefaultSuffixArray(PseudoGenome* pseudoGenome);
+            DefaultSuffixArray(PseudoGenome* pseudoGenome, uchar fixed_k = 1);
 
             DefaultSuffixArray(PseudoGenome* pseudoGenome, std::istream& src);
 

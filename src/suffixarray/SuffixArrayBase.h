@@ -14,8 +14,9 @@ namespace PgSAIndex {
     {
         protected:
             PseudoGenomeBase* const pgBase;
-            const uint_max suffixArrayBytes;
-            const uint_max elementsCount;
+            // FIXME: should be const
+            uint_max suffixArrayBytes;
+            uint_max elementsCount;
             
             SuffixArrayBase(uint_max elementsCount, uint_max suffixArrayBytes, PseudoGenomeBase* pg)
             :   pgBase(pg),

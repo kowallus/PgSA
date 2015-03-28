@@ -32,8 +32,8 @@ namespace PgSAIndex {
                 return generateSuffixArray(pgb, PGSATYPE_DEFAULT);
             }
             
-            static SuffixArrayBase* generateDefaultSuffixArray(PseudoGenomeBase* pgb) {
-                return generateSuffixArray(pgb, PGSATYPE_DEFAULT);
+            static SuffixArrayBase* generateDefaultSuffixArray(PseudoGenomeBase* pgb, int fixed_min_k = 1) {
+                return generateSuffixArray(pgb, PGSATYPE_DEFAULT, fixed_min_k);
             }
             
             static SuffixArrayBase* generateSparseSuffixArray(PseudoGenomeBase* pgb, uchar symbolsInterval) {
@@ -59,22 +59,22 @@ namespace PgSAIndex {
             }
 
         private:
-            static SuffixArrayBase* generateSuffixArray(PseudoGenomeBase* pgb, string saTypeID) {
+            static SuffixArrayBase* generateSuffixArray(PseudoGenomeBase* pgb, string saTypeID, int fixed_min_k = 1) {
                 if (pgb->isReadLengthMin()) {
                     if (pgb->isReadsCountStd()) {
                         if (pgb->isPGLengthStd()) {
-                            return generateSuffixArrayTemplate<uint_read_len_min, uint_reads_cnt_std, uint_pg_len_std>(pgb, saTypeID);
+                            return generateSuffixArrayTemplate<uint_read_len_min, uint_reads_cnt_std, uint_pg_len_std>(pgb, saTypeID, fixed_min_k);
                         }
                         if (pgb->isPGLengthMax())
-                            return generateSuffixArrayTemplate<uint_read_len_min, uint_reads_cnt_std, uint_pg_len_max>(pgb, saTypeID);
+                            return generateSuffixArrayTemplate<uint_read_len_min, uint_reads_cnt_std, uint_pg_len_max>(pgb, saTypeID, fixed_min_k);
                     }
                 }
                 if (pgb->isReadLengthStd()) {
                     if (pgb->isReadsCountStd()) {
                         if (pgb->isPGLengthStd())
-                            return generateSuffixArrayTemplate<uint_read_len_std, uint_reads_cnt_std, uint_pg_len_std>(pgb, saTypeID);
+                            return generateSuffixArrayTemplate<uint_read_len_std, uint_reads_cnt_std, uint_pg_len_std>(pgb, saTypeID, fixed_min_k);
                         if (pgb->isPGLengthMax())
-                            return generateSuffixArrayTemplate<uint_read_len_std, uint_reads_cnt_std, uint_pg_len_max>(pgb, saTypeID);
+                            return generateSuffixArrayTemplate<uint_read_len_std, uint_reads_cnt_std, uint_pg_len_max>(pgb, saTypeID, fixed_min_k);
                     }
                 }
 
@@ -83,9 +83,9 @@ namespace PgSAIndex {
             }
 
             template < typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len >
-            static SuffixArrayBase* generateSuffixArrayTemplate(PseudoGenomeBase* pgb, string saTypeID) {               
+            static SuffixArrayBase* generateSuffixArrayTemplate(PseudoGenomeBase* pgb, string saTypeID, int fixed_min_k = 1) {               
                 if (saTypeID == PGSATYPE_DEFAULT)
-                    return generateDefaultSuffixArrayTemplate<uint_read_len, uint_reads_cnt, uint_pg_len>(pgb);
+                    return generateDefaultSuffixArrayTemplate<uint_read_len, uint_reads_cnt, uint_pg_len>(pgb, fixed_min_k);
                 
                 if (saTypeID == PGSATYPE_SPARSE) {
                     PackedPseudoGenomeBase* ppgb = static_cast<PackedPseudoGenomeBase*>(pgb);
@@ -102,11 +102,11 @@ namespace PgSAIndex {
             }
             
             template < typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len >
-            static SuffixArrayBase* generateDefaultSuffixArrayTemplate(PseudoGenomeBase* pgb) {
+            static SuffixArrayBase* generateDefaultSuffixArrayTemplate(PseudoGenomeBase* pgb, int fixed_min_k = 1) {
                 if (pgb->isReadLengthConstant()) {
                     typedef DefaultPseudoGenomeOfConstantLengthReadsType<uint_read_len, uint_reads_cnt, uint_pg_len> PseudoGenomeClass;
                     PseudoGenomeClass* pg = PseudoGenomeClass::castBase(pgb);
-                    return DefaultSuffixArrayFactory<uint_read_len, uint_reads_cnt, uint_pg_len>::getSuffixArrayOfConstantLenghtReads(pg);
+                    return DefaultSuffixArrayFactory<uint_read_len, uint_reads_cnt, uint_pg_len>::getSuffixArrayOfConstantLenghtReads(pg, fixed_min_k);
                 }
 
                 cout << "ERROR: unsupported variable length reads in " << PGSATYPE_DEFAULT;

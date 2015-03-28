@@ -6,29 +6,31 @@
 namespace PgSAIndex {
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>
-    DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::DefaultSuffixArray(PseudoGenome* pseudoGenome)
+    DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::DefaultSuffixArray(PseudoGenome* pseudoGenome, uchar fixed_min_k)
     : // up to 2 additional bytes to avoid overflowing during casting to uint_reads_cnt
-    SuffixArrayBase(pseudoGenome->getLength(), getSuffixArraySizeInBytesWithGuard(pseudoGenome), pseudoGenome),
+    SuffixArrayBase(pseudoGenome->getLength(), getSuffixArraySizeInBytesWithGuard(pseudoGenome->getLength()), pseudoGenome),
     OccurrencesIterator(
     *ReadsListIteratorFactoryTemplate<ReadsListClass>::getReadsListIterator(* ((ReadsListClass*) pseudoGenome->getReadsList()))),
     pseudoGenome(pseudoGenome),
     readsList(pseudoGenome->getReadsList()),
     suffixArray(0),
-    lookupTable(lookupTableKeyPrefixLength, pseudoGenome->getReadsSetProperties()) {
+    lookupTable(lookupTableKeyPrefixLength, pseudoGenome->getReadsSetProperties()),
+    fixed_min_k(fixed_min_k) {
         
         cout << "SA creation start.\n";
 
         pgStatic = this->pseudoGenome;
         maxReadLength = this->pseudoGenome->maxReadLength();
   
-        this->lookupTable.generateFromPg(this->pseudoGenome, 1, 0);
-        
 //        if ((sizeof(uint_pg_len) == sizeof(int)) && (pseudoGenome->getLengthWithGuard() < INT_MAX / sizeof(int)))
             generateSaisPgSA();
 //        else
 //            generatePgSA();
-        
-//        this->lookupTable.generateFromSA(this, this->getElementsCount());
+
+        if (fixed_min_k == 1)
+            this->lookupTable.generateFromPg(this->pseudoGenome, 1, 0);
+        else
+            this->lookupTable.generateFromSA(this, this->getElementsCount());
         //                cout << "memcheck 4.....\n";
         //                cin.ignore(1);
         buildReadsWithDuplicatesFilter();
@@ -38,7 +40,7 @@ namespace PgSAIndex {
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>
     DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::DefaultSuffixArray(PseudoGenome* pseudoGenome, std::istream& src)
-    : SuffixArrayBase(pseudoGenome->getLength(), getSuffixArraySizeInBytesWithGuard(pseudoGenome), pseudoGenome),
+    : SuffixArrayBase(pseudoGenome->getLength(), getSuffixArraySizeInBytesWithGuard(pseudoGenome->getLength()), pseudoGenome),
     OccurrencesIterator(
     *ReadsListIteratorFactoryTemplate<ReadsListClass>::getReadsListIterator(* ((ReadsListClass*) pseudoGenome->getReadsList()))),
     pseudoGenome(pseudoGenome),
@@ -48,9 +50,12 @@ namespace PgSAIndex {
         src >> arraySize;
         src.get(); // '/n'
 
-        if (arraySize != this->getSizeInBytes())
+        if (arraySize > this->getSizeInBytes())
             cout << "WARNING: wrong size of suffixarray.";
 
+        suffixArrayBytes = arraySize;
+        elementsCount = getSuffixArrayElementsCount(suffixArrayBytes);
+        
         suffixArray = (uchar*) PgSAHelpers::readArray(src, this->getSizeInBytes() * sizeof (uchar));
         src.get(); // '/n'
 
@@ -158,7 +163,9 @@ namespace PgSAIndex {
         
         const uchar* curSAPos = suffixArray;
         uint_pg_len pgPos;
-        for (uint_pg_len i = 0; i < this->elementsCount; i++) {
+        uint_pg_len i = 0;
+       
+        while (!saPartsOrder.empty()) {
             int j = saPartsOrder.front();
             pgPos = currentSaPartPos[j];
             
@@ -169,13 +176,19 @@ namespace PgSAIndex {
                 *((uint_reads_cnt*) curSAPos) = readsListIndex;
                 *((uint_read_len*) (curSAPos + POS_START_OFFSET)) = pgPos - readsList->getReadPosition(readsListIndex);
             } else
-                swapElementsByAddress((sa_pos_addr*) curSAPos, saPosIdx2Address(pgPos));
+                copyElementsByAddress((sa_pos_addr*) curSAPos, saPosIdx2Address(pgPos));
 
-            curSAPos += SA_ELEMENT_SIZE;
+            if (*(curSAPos + POS_START_OFFSET) <= maxReadLength - fixed_min_k) {
+                curSAPos += SA_ELEMENT_SIZE;
+                i++;
+            }
             
             saPartsOrder.pop_front();
             updateSAPositionQueue(j);
         }
+        
+        elementsCount = i;
+        suffixArrayBytes = getSuffixArraySizeInBytesWithGuard(elementsCount);
         
         for (int i = 0; i < noOfParts; i++) {
             saPartSrc[i]->close();
@@ -408,10 +421,10 @@ namespace PgSAIndex {
         uint_max size = sizeof (this) + this->getSizeInBytes() +
                 sizeof (this->lookupTable) + this->lookupTable.getLookupTableLengthWithGuard() * sizeof (uint_pg_len) +
                 sizeof (this->pseudoGenome) + this->pseudoGenome->getLengthWithGuard() * sizeof (char_pg) +
-                sizeof (this->readsList) + (uint_max) this->readsList->getReadsCount() * this->readsList->getListElementSize();
+                sizeof (this->readsList) + (uint_max) this->readsList->getReadsCount() * (this->readsList->getListElementSize() + sizeof(uint_reads_cnt));
         desc = desc + "Standard SA\t TOTAL (Pg+RL+SA+LT) " + toMB(size, 2) + " MB\n"
                 + "Pg: " + toMB(this->pseudoGenome->getLengthWithGuard() * sizeof (char_pg), 2) + " MB\t"
-                + "RL: " + toMB((uint_max) this->readsList->getReadsCount() * this->readsList->getListElementSize(), 2) + " MB\t"
+                + "RL: " + toMB((uint_max) this->readsList->getReadsCount() * (this->readsList->getListElementSize() + sizeof(uint_reads_cnt)), 2) + " MB\t"
                 + "SA: " + toMB(this->getSizeInBytes(), 2) + " MB\t"
                 + "LT: " + toMB(this->lookupTable.getLookupTableLengthWithGuard() * sizeof (uint_pg_len), 2) + " MB\n";
         desc = desc + toString(this->readsList->getReadsCount()) + " ";
@@ -495,8 +508,13 @@ namespace PgSAIndex {
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>
-    uint_max DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::getSuffixArraySizeInBytesWithGuard(PseudoGenome* pseudoGenome) {
-        return sizeof (uchar) * ((pseudoGenome->getLength()) + 2) * SA_ELEMENT_SIZE;
+    uint_max DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::getSuffixArraySizeInBytesWithGuard(uint_pg_len elementsCount) {
+        return sizeof(uchar) * ((elementsCount) + 2) * SA_ELEMENT_SIZE;
+    }
+
+    template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>
+    uint_pg_len DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::getSuffixArrayElementsCount(uint_max sizeInBytesWithGuard) {
+        return sizeInBytesWithGuard / sizeof(uchar) / SA_ELEMENT_SIZE - 2;
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>
@@ -527,6 +545,11 @@ namespace PgSAIndex {
             *(((uchar*) saPosAddressFst)+i) = *(((uchar*) saPosAddressSnd)+i);
             *(((uchar*) saPosAddressSnd)+i) = tmp;
         }
+    }
+
+    template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>
+    inline void DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::copyElementsByAddress(const sa_pos_addr saPosAddressDest, const sa_pos_addr saPosAddressSrc) {
+        std::copy((uchar*) saPosAddressSrc, (uchar*) saPosAddressSrc + SA_ELEMENT_SIZE, (uchar*) saPosAddressDest);
     }
 
     template class DefaultSuffixArray<uint_read_len_min, uint_reads_cnt_std, uint_pg_len_std, 4, 3, 0x00FFFFFF, typename ListOfConstantLengthReadsTypeTemplate<uint_read_len_min, uint_reads_cnt_std, uint_pg_len_std>::Type>;

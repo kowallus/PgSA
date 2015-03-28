@@ -55,11 +55,11 @@ namespace PgSAIndex {
     class DefaultSuffixArrayFactory {
         public:
 
-            static SuffixArrayBase* getSuffixArrayOfConstantLenghtReads(DefaultPseudoGenomeOfConstantLengthReadsType<uint_read_len, uint_reads_cnt, uint_pg_len>* pg) {   
+            static SuffixArrayBase* getSuffixArrayOfConstantLenghtReads(DefaultPseudoGenomeOfConstantLengthReadsType<uint_read_len, uint_reads_cnt, uint_pg_len>* pg, int fixed_min_k = 1) {   
                 if (bytesPerValue(pg->readsCount()) <= BytesPerReadIndex<uint_reads_cnt>::minimum)
-                    return new typename DefaultSuffixArrayOfConstantLengthTypeTemplate<uint_read_len, uint_reads_cnt, uint_pg_len, BytesPerReadIndex<uint_reads_cnt>::minimum>::Type(pg);
+                    return new typename DefaultSuffixArrayOfConstantLengthTypeTemplate<uint_read_len, uint_reads_cnt, uint_pg_len, BytesPerReadIndex<uint_reads_cnt>::minimum>::Type(pg, fixed_min_k);
                 if (bytesPerValue(pg->readsCount()) == BytesPerReadIndex<uint_reads_cnt>::standard)
-                    return new typename DefaultSuffixArrayOfConstantLengthTypeTemplate<uint_read_len, uint_reads_cnt, uint_pg_len, BytesPerReadIndex<uint_reads_cnt>::standard>::Type(pg);
+                    return new typename DefaultSuffixArrayOfConstantLengthTypeTemplate<uint_read_len, uint_reads_cnt, uint_pg_len, BytesPerReadIndex<uint_reads_cnt>::standard>::Type(pg, fixed_min_k);
                 cout << "WARNING: SA factory fail!";
                 return 0;
             }
