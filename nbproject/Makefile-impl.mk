@@ -27,11 +27,11 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 PROJECTNAME=PgSA
 
 # Active Configuration
-DEFAULTCONF=Debug
+DEFAULTCONF=Release-Win
 CONF=${DEFAULTCONF}
 
 # All Configurations
-ALLCONFS=Debug Release Release-PgSAgen Release-PgSAtest Debug-PgSAtest Debug-PgSAgen 
+ALLCONFS=Release-Win Release-PgSAgen-Win Release-PgSAtest-Win Debug-PgSAtest-Win Debug-PgSAgen-Win 
 
 
 # build

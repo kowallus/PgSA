@@ -14,27 +14,23 @@
             </sourceRootList>
             <confList>
                 <confElem>
-                    <name>Debug</name>
+                    <name>Release-Win</name>
                     <type>2</type>
                 </confElem>
                 <confElem>
-                    <name>Release</name>
-                    <type>2</type>
-                </confElem>
-                <confElem>
-                    <name>Release-PgSAgen</name>
+                    <name>Release-PgSAgen-Win</name>
                     <type>1</type>
                 </confElem>
                 <confElem>
-                    <name>Release-PgSAtest</name>
+                    <name>Release-PgSAtest-Win</name>
                     <type>1</type>
                 </confElem>
                 <confElem>
-                    <name>Debug-PgSAtest</name>
+                    <name>Debug-PgSAtest-Win</name>
                     <type>1</type>
                 </confElem>
                 <confElem>
-                    <name>Debug-PgSAgen</name>
+                    <name>Debug-PgSAgen-Win</name>
                     <type>1</type>
                 </confElem>
             </confList>
