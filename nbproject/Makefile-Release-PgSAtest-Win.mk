@@ -544,7 +544,7 @@ ${OBJECTDIR}/src/test/testdata_nomain.o: ${OBJECTDIR}/src/test/testdata.o src/te
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
 	${RM} -r ${CND_BUILDDIR}/${CND_CONF}
-	${RM} ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/PgSATest.exe
+	${RM} ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/PgSAtest.exe
 
 # Subprojects
 .clean-subprojects:
