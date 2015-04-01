@@ -41,6 +41,10 @@
                     <name>Release-PgSAtest-Linux</name>
                     <type>1</type>
                 </confElem>
+                <confElem>
+                    <name>Debug-PgSAtest-Linux</name>
+                    <type>1</type>
+                </confElem>
             </confList>
             <formatting>
                 <project-formatting-style>false</project-formatting-style>
