@@ -184,11 +184,11 @@ void runTestSuite(short interval) {
     
     PgSAIndexStandard* pgsa1;
     if (interval == 0)
-        pgsa1 = PgSAIndexFactory::getPgSAIndexStandard(idxFile, cacheFile, true, true, false);
+        pgsa1 = PgSAIndexFactory::getPgSAIndexStandard(idxFile, cacheFile, false);
     else if (interval == -1)
-        pgsa1 = PgSAIndexFactory::getPgSAIndexStandard(idxFile, cacheFile, false, false, false);
+        pgsa1 = PgSAIndexFactory::getPgSAIndexStandard(idxFile, cacheFile, false);
     else    
-        pgsa1 = PgSAIndexFactory::getPgSAIndexStandard(idxFile, cacheFile, true, false, false);
+        pgsa1 = PgSAIndexFactory::getPgSAIndexStandard(idxFile, cacheFile, false);
 
 /*    uint_max half = pgsa1->readsCountVirtual() / 2;    
     uint_max i = 0;

@@ -97,7 +97,7 @@ namespace PgSAIndex {
             i++;
         }
 
-        lookup[j++] = readsCount;
+        lookup[j] = readsCount;
     }
         
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, unsigned char LIST_ELEMENT_SIZE, uchar FLAGS_OFFSET>

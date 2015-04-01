@@ -82,7 +82,6 @@ int main(int argc, char *argv[])
             fprintf(stderr, "Usage: %s [-r rate] [-k fixed_k] [-c] [-p] readssrcfile [pairsrcfile] indexprefix\n\n",
                     argv[0]);
             fprintf(stderr, "-r compression rate [1 - 6]\n-k fixed kmer length \n-c generate cache file\n-p only Pg, no SA\n\n");
-            fprintf(stderr, "NOTE:\nCurrently repetitive read flags are set only for r = 1.\nTo enable repetitive read flags for r > 1\nplease use PgSA index file with r = 1 as readssrcfile.\n");
             exit(EXIT_FAILURE);
         }
     }

@@ -127,7 +127,7 @@ namespace PgSAIndex {
         public:
             static PgSAIndexStandard* getPgSAIndexStandard(string pgsaFile, string cacheFile, bool reverseComplements);
             
-            static PgSAIndexStandard* getPgSAIndexStandard(string pgsaFile, bool boosted, bool reverseComplements) {
+            static PgSAIndexStandard* getPgSAIndexStandard(string pgsaFile, bool reverseComplements) {
                 return getPgSAIndexAPITemplate<uint_reads_cnt_std, unsigned int >(pgsaFile, "", reverseComplements);
             }
     };
