@@ -23,7 +23,7 @@ AS=as
 # Macros
 CND_PLATFORM=GNU-Linux-x86
 CND_DLIB_EXT=so
-CND_CONF=Release-PgSAtest-Linux
+CND_CONF=pgsagen
 CND_DISTDIR=dist
 CND_BUILDDIR=build
 
@@ -35,9 +35,8 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
-	${OBJECTDIR}/src/PgSAtest.o \
+	${OBJECTDIR}/src/PgSAgen.o \
 	${OBJECTDIR}/src/helper.o \
-	${OBJECTDIR}/src/index/PgSAIndexFactory.o \
 	${OBJECTDIR}/src/index/cache/persistence/CountQueriesCachePersistence.o \
 	${OBJECTDIR}/src/pgsaconfig.o \
 	${OBJECTDIR}/src/pseudogenome/DefaultPseudoGenome.o \
@@ -68,7 +67,7 @@ TESTFILES= \
 	${TESTDIR}/TestFiles/f3
 
 # C Compiler Flags
-CFLAGS=-fomit-frame-pointer -Wall
+CFLAGS=-m64 -fomit-frame-pointer
 
 # CC Compiler Flags
 CCFLAGS=
@@ -85,26 +84,21 @@ LDLIBSOPTIONS=
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
-	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/PgSAtest
+	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/PgSAgen
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/PgSAtest: ${OBJECTFILES}
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/PgSAgen: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/PgSAtest ${OBJECTFILES} ${LDLIBSOPTIONS} -s
+	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/PgSAgen ${OBJECTFILES} ${LDLIBSOPTIONS} -s
 
-${OBJECTDIR}/src/PgSAtest.o: nbproject/Makefile-${CND_CONF}.mk src/PgSAtest.cpp 
+${OBJECTDIR}/src/PgSAgen.o: nbproject/Makefile-${CND_CONF}.mk src/PgSAgen.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -Wall -s -I. -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/PgSAtest.o src/PgSAtest.cpp
+	$(COMPILE.cc) -O3 -Wall -s -I. -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/PgSAgen.o src/PgSAgen.cpp
 
 ${OBJECTDIR}/src/helper.o: nbproject/Makefile-${CND_CONF}.mk src/helper.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
 	$(COMPILE.cc) -O3 -Wall -s -I. -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/helper.o src/helper.cpp
-
-${OBJECTDIR}/src/index/PgSAIndexFactory.o: nbproject/Makefile-${CND_CONF}.mk src/index/PgSAIndexFactory.cpp 
-	${MKDIR} -p ${OBJECTDIR}/src/index
-	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -Wall -s -I. -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/index/PgSAIndexFactory.o src/index/PgSAIndexFactory.cpp
 
 ${OBJECTDIR}/src/index/cache/persistence/CountQueriesCachePersistence.o: nbproject/Makefile-${CND_CONF}.mk src/index/cache/persistence/CountQueriesCachePersistence.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src/index/cache/persistence
@@ -179,7 +173,7 @@ ${OBJECTDIR}/src/readsset/iterator/ReadsSetIterator.o: nbproject/Makefile-${CND_
 ${OBJECTDIR}/src/sais/sais.o: nbproject/Makefile-${CND_CONF}.mk src/sais/sais.c 
 	${MKDIR} -p ${OBJECTDIR}/src/sais
 	${RM} "$@.d"
-	$(COMPILE.c) -I. -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/sais/sais.o src/sais/sais.c
+	$(COMPILE.c) -O3 -s -I. -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/sais/sais.o src/sais/sais.c
 
 ${OBJECTDIR}/src/suffixarray/DefaultSuffixArray.o: nbproject/Makefile-${CND_CONF}.mk src/suffixarray/DefaultSuffixArray.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src/suffixarray
@@ -232,17 +226,17 @@ ${TESTDIR}/src/tests/PgSASearchTest.o: src/tests/PgSASearchTest.cpp
 	$(COMPILE.cc) -O3 -Wall -s -I. -I. -std=c++11 -MMD -MP -MF "$@.d" -o ${TESTDIR}/src/tests/PgSASearchTest.o src/tests/PgSASearchTest.cpp
 
 
-${OBJECTDIR}/src/PgSAtest_nomain.o: ${OBJECTDIR}/src/PgSAtest.o src/PgSAtest.cpp 
+${OBJECTDIR}/src/PgSAgen_nomain.o: ${OBJECTDIR}/src/PgSAgen.o src/PgSAgen.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src
-	@NMOUTPUT=`${NM} ${OBJECTDIR}/src/PgSAtest.o`; \
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/src/PgSAgen.o`; \
 	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
 	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
 	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
 	then  \
 	    ${RM} "$@.d";\
-	    $(COMPILE.cc) -O3 -Wall -s -I. -std=c++11 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/PgSAtest_nomain.o src/PgSAtest.cpp;\
+	    $(COMPILE.cc) -O3 -Wall -s -I. -std=c++11 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/PgSAgen_nomain.o src/PgSAgen.cpp;\
 	else  \
-	    ${CP} ${OBJECTDIR}/src/PgSAtest.o ${OBJECTDIR}/src/PgSAtest_nomain.o;\
+	    ${CP} ${OBJECTDIR}/src/PgSAgen.o ${OBJECTDIR}/src/PgSAgen_nomain.o;\
 	fi
 
 ${OBJECTDIR}/src/helper_nomain.o: ${OBJECTDIR}/src/helper.o src/helper.cpp 
@@ -256,19 +250,6 @@ ${OBJECTDIR}/src/helper_nomain.o: ${OBJECTDIR}/src/helper.o src/helper.cpp
 	    $(COMPILE.cc) -O3 -Wall -s -I. -std=c++11 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/helper_nomain.o src/helper.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/src/helper.o ${OBJECTDIR}/src/helper_nomain.o;\
-	fi
-
-${OBJECTDIR}/src/index/PgSAIndexFactory_nomain.o: ${OBJECTDIR}/src/index/PgSAIndexFactory.o src/index/PgSAIndexFactory.cpp 
-	${MKDIR} -p ${OBJECTDIR}/src/index
-	@NMOUTPUT=`${NM} ${OBJECTDIR}/src/index/PgSAIndexFactory.o`; \
-	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
-	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
-	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
-	then  \
-	    ${RM} "$@.d";\
-	    $(COMPILE.cc) -O3 -Wall -s -I. -std=c++11 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/index/PgSAIndexFactory_nomain.o src/index/PgSAIndexFactory.cpp;\
-	else  \
-	    ${CP} ${OBJECTDIR}/src/index/PgSAIndexFactory.o ${OBJECTDIR}/src/index/PgSAIndexFactory_nomain.o;\
 	fi
 
 ${OBJECTDIR}/src/index/cache/persistence/CountQueriesCachePersistence_nomain.o: ${OBJECTDIR}/src/index/cache/persistence/CountQueriesCachePersistence.o src/index/cache/persistence/CountQueriesCachePersistence.cpp 
@@ -461,7 +442,7 @@ ${OBJECTDIR}/src/sais/sais_nomain.o: ${OBJECTDIR}/src/sais/sais.o src/sais/sais.
 	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
 	then  \
 	    ${RM} "$@.d";\
-	    $(COMPILE.c) -I. -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/sais/sais_nomain.o src/sais/sais.c;\
+	    $(COMPILE.c) -O3 -s -I. -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/sais/sais_nomain.o src/sais/sais.c;\
 	else  \
 	    ${CP} ${OBJECTDIR}/src/sais/sais.o ${OBJECTDIR}/src/sais/sais_nomain.o;\
 	fi
@@ -544,7 +525,7 @@ ${OBJECTDIR}/src/test/testdata_nomain.o: ${OBJECTDIR}/src/test/testdata.o src/te
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
 	${RM} -r ${CND_BUILDDIR}/${CND_CONF}
-	${RM} ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/PgSAtest
+	${RM} ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/PgSAgen
 
 # Subprojects
 .clean-subprojects:

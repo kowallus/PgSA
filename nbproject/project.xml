@@ -34,16 +34,20 @@
                     <type>1</type>
                 </confElem>
                 <confElem>
-                    <name>Release-PgSAgen-Linux</name>
+                    <name>pgsagen</name>
                     <type>1</type>
                 </confElem>
                 <confElem>
-                    <name>Release-PgSAtest-Linux</name>
+                    <name>pgsatest</name>
                     <type>1</type>
                 </confElem>
                 <confElem>
                     <name>Debug-PgSAtest-Linux</name>
                     <type>1</type>
+                </confElem>
+                <confElem>
+                    <name>pgsalib</name>
+                    <type>2</type>
                 </confElem>
             </confList>
             <formatting>

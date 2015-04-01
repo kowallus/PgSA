@@ -31,7 +31,7 @@ DEFAULTCONF=Release-Win
 CONF=${DEFAULTCONF}
 
 # All Configurations
-ALLCONFS=Release-Win Release-PgSAgen-Win Release-PgSAtest-Win Debug-PgSAtest-Win Debug-PgSAgen-Win Release-PgSAgen-Linux Release-PgSAtest-Linux Debug-PgSAtest-Linux 
+ALLCONFS=Release-Win Release-PgSAgen-Win Release-PgSAtest-Win Debug-PgSAtest-Win Debug-PgSAgen-Win pgsagen pgsatest Debug-PgSAtest-Linux pgsalib 
 
 
 # build
