@@ -100,7 +100,6 @@ namespace PgSAIndex {
                     lookupIdx -= popSymbol[symbolOrder[(unsigned char) pg->getSymbol(i)]];
                     lookupIdx = lookupIdx * symbolsCount + symbolOrder[(unsigned char) pg->getSymbol(i++ + this->keyPrefixLength)];
                 }
-                lookup[lookupIdx]++;
                 
                 uint_max j = 0;
                 uint_pg_len sum = 0;

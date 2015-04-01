@@ -111,7 +111,7 @@ namespace PgSAIndex {
             
             void kmerRangeBSearch(const char* kmerPtr, const uint_read_len& kmerLength, SARange<uint_pg_len>& range);
             
-            uint_max getSuffixArraySizeInBytesWithGuard(uint_pg_len elementsCount);
+            uint_max determineSuffixArraySizeInBytesWithGuard(uint_pg_len elementsCount);
             uint_pg_len getSuffixArrayElementsCount(uint_max sizeInBytesWithGuard);
             
         public:

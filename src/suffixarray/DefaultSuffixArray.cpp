@@ -8,7 +8,7 @@ namespace PgSAIndex {
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>
     DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::DefaultSuffixArray(PseudoGenome* pseudoGenome, uchar fixed_min_k)
     : // up to 2 additional bytes to avoid overflowing during casting to uint_reads_cnt
-    SuffixArrayBase(pseudoGenome->getLength(), getSuffixArraySizeInBytesWithGuard(pseudoGenome->getLength()), pseudoGenome),
+    SuffixArrayBase(pseudoGenome->getLength(), determineSuffixArraySizeInBytesWithGuard(pseudoGenome->getLength()), pseudoGenome),
     OccurrencesIterator(
     *ReadsListIteratorFactoryTemplate<ReadsListClass>::getReadsListIterator(* ((ReadsListClass*) pseudoGenome->getReadsList()))),
     pseudoGenome(pseudoGenome),
@@ -40,7 +40,7 @@ namespace PgSAIndex {
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>
     DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::DefaultSuffixArray(PseudoGenome* pseudoGenome, std::istream& src)
-    : SuffixArrayBase(pseudoGenome->getLength(), getSuffixArraySizeInBytesWithGuard(pseudoGenome->getLength()), pseudoGenome),
+    : SuffixArrayBase(pseudoGenome->getLength(), determineSuffixArraySizeInBytesWithGuard(pseudoGenome->getLength()), pseudoGenome),
     OccurrencesIterator(
     *ReadsListIteratorFactoryTemplate<ReadsListClass>::getReadsListIterator(* ((ReadsListClass*) pseudoGenome->getReadsList()))),
     pseudoGenome(pseudoGenome),
@@ -67,7 +67,7 @@ namespace PgSAIndex {
     void DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::prepareUnsortedSA() {
         suffixArray = new uchar[this->getSizeInBytes()];
         
-        //TODO: check if setting 0 is necessary.... 
+        //TODO: remove sa guard (check if setting 0 is necessary....)
         suffixArray[this->getSizeInBytes() - 2] = 0;
         suffixArray[this->getSizeInBytes() - 1] = 0;
 
@@ -188,7 +188,7 @@ namespace PgSAIndex {
         }
         
         elementsCount = i;
-        suffixArrayBytes = getSuffixArraySizeInBytesWithGuard(elementsCount);
+        suffixArrayBytes = determineSuffixArraySizeInBytesWithGuard(elementsCount);
         
         for (int i = 0; i < noOfParts; i++) {
             saPartSrc[i]->close();
@@ -508,7 +508,7 @@ namespace PgSAIndex {
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>
-    uint_max DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::getSuffixArraySizeInBytesWithGuard(uint_pg_len elementsCount) {
+    uint_max DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::determineSuffixArraySizeInBytesWithGuard(uint_pg_len elementsCount) {
         return sizeof(uchar) * ((elementsCount) + 2) * SA_ELEMENT_SIZE;
     }
 
