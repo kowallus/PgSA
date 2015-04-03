@@ -52,68 +52,69 @@ namespace PgSAIndex {
     }
     
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, class ReadsListClass>
-    ReadsListInterface<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>* DefaultPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>::getReadsList() 
+    inline ReadsListInterface<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>* DefaultPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>::getReadsList() 
     {
         return readsList; 
     }
+    
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, class ReadsListClass>
     uint_pg_len DefaultPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>::getLengthWithGuard() {
         return this->length + this->properties->maxReadLength;
     }
     
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, class ReadsListClass>
-    char DefaultPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>::getSymbol(uint_pg_len pos) {
+    inline char DefaultPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>::getSymbol(uint_pg_len pos) {
         return sequence[pos];
     }
     
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, class ReadsListClass>
-    const char_pg* DefaultPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>::getSuffix(const uint_pg_len pos) {
+    inline const char_pg* DefaultPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>::getSuffix(const uint_pg_len pos) {
         return sequence + pos;
     }
     
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, class ReadsListClass>
-    const char_pg* DefaultPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>::getSuffix(const uint_reads_cnt readsListIdx, const uint_read_len offset) {
+    inline const char_pg* DefaultPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>::getSuffix(const uint_reads_cnt readsListIdx, const uint_read_len offset) {
         return getSuffix(this->readsList->getReadPosition(readsListIdx) + offset);
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, class ReadsListClass>
-    const char_pg* DefaultPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>::getSuffixPtrByPosition(const uint_reads_cnt originalIdx, const uint_read_len pos) {
+    inline const char_pg* DefaultPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>::getSuffixPtrByPosition(const uint_reads_cnt originalIdx, const uint_read_len pos) {
         return sequence + this->readsList->getReadPosition(this->readsList->getReadsListIndexOfOriginalIndex(originalIdx)) + pos;
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, class ReadsListClass>
-    uint_read_len DefaultPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>::maxReadLength() {
+    inline uint_read_len DefaultPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>::maxReadLength() {
         return this->properties->maxReadLength;
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, class ReadsListClass>
-    uint_reads_cnt DefaultPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>::readsCount() {
+    inline uint_reads_cnt DefaultPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>::readsCount() {
         return this->properties->readsCount;
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, class ReadsListClass>
-    bool DefaultPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>::isReadLengthConstant() {
+    inline bool DefaultPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>::isReadLengthConstant() {
         return this->properties->constantReadLength;
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, class ReadsListClass>
-    const string DefaultPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>::getRead(const uint_reads_cnt originalIdx) {
+    inline const string DefaultPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>::getRead(const uint_reads_cnt originalIdx) {
         uint_pg_len pos = this->readsList->getReadPosition(this->readsList->getReadsListIndexOfOriginalIndex(originalIdx));
         return string(sequence + pos, readLength(originalIdx));
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, class ReadsListClass>
-    uint_read_len DefaultPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>::readLength(const uint_reads_cnt originalIdx) {
+    inline uint_read_len DefaultPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>::readLength(const uint_reads_cnt originalIdx) {
         return this->readsList->getReadLength(this->readsList->getReadsListIndexOfOriginalIndex(originalIdx));
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, class ReadsListClass>
-    const char_pg DefaultPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>::getSymbolImpl(const uint_pg_len posIdx) {
+    inline const char_pg DefaultPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>::getSymbolImpl(const uint_pg_len posIdx) {
         return *(sequence + posIdx);
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, class ReadsListClass>
-    const uint_pg_len DefaultPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>::getLengthImpl() {
+    inline const uint_pg_len DefaultPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>::getLengthImpl() {
         return this->getPseudoGenomeLength();
     }
 

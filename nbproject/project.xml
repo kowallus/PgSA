@@ -14,40 +14,28 @@
             </sourceRootList>
             <confList>
                 <confElem>
-                    <name>Release-Win</name>
+                    <name>Debug</name>
                     <type>2</type>
                 </confElem>
                 <confElem>
-                    <name>Release-PgSAgen-Win</name>
-                    <type>1</type>
-                </confElem>
-                <confElem>
-                    <name>Release-PgSAtest-Win</name>
-                    <type>1</type>
-                </confElem>
-                <confElem>
-                    <name>Debug-PgSAtest-Win</name>
-                    <type>1</type>
-                </confElem>
-                <confElem>
-                    <name>Debug-PgSAgen-Win</name>
-                    <type>1</type>
-                </confElem>
-                <confElem>
-                    <name>pgsagen</name>
-                    <type>1</type>
-                </confElem>
-                <confElem>
-                    <name>pgsatest</name>
-                    <type>1</type>
-                </confElem>
-                <confElem>
-                    <name>Debug-PgSAtest-Linux</name>
-                    <type>1</type>
-                </confElem>
-                <confElem>
-                    <name>pgsalib</name>
+                    <name>Release</name>
                     <type>2</type>
+                </confElem>
+                <confElem>
+                    <name>Release-PgSAgen</name>
+                    <type>1</type>
+                </confElem>
+                <confElem>
+                    <name>Release-PgSAtest</name>
+                    <type>1</type>
+                </confElem>
+                <confElem>
+                    <name>Debug-PgSAtest</name>
+                    <type>1</type>
+                </confElem>
+                <confElem>
+                    <name>Debug-PgSAgen</name>
+                    <type>1</type>
                 </confElem>
             </confList>
             <formatting>

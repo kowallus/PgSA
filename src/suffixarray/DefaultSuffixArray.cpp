@@ -213,7 +213,7 @@ namespace PgSAIndex {
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>
-    int DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::pgSuffixesCompare(const void* a, const void* b) {
+    inline int DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::pgSuffixesCompare(const void* a, const void* b) {
         const char_pg* readA = getSuffixStatic((sa_pos_addr) a);
         const char_pg* readB = getSuffixStatic((sa_pos_addr) b);
 
@@ -221,7 +221,7 @@ namespace PgSAIndex {
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>
-    const char_pg* DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::getSuffixStatic(const sa_pos_addr& saPosAddress) {
+    inline const char_pg* DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::getSuffixStatic(const sa_pos_addr& saPosAddress) {
         return pgStatic->getSuffix(getReadsListIndexByAddress(saPosAddress), getPosStartOffsetByAddress(saPosAddress));
     }
     
@@ -299,7 +299,7 @@ namespace PgSAIndex {
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>
-    typename DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::int_kmers_comp DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::kmerSAComp(const char* kmerPtr, const uint_read_len& kmerLength, const uint_pg_len& suffixIdx, const uint_read_len& lcp) {
+    inline typename DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::int_kmers_comp DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::kmerSAComp(const char* kmerPtr, const uint_read_len& kmerLength, const uint_pg_len& suffixIdx, const uint_read_len& lcp) {
         kmerPtr += lcp;
         const char* suffixPtr = getSuffixByAddress(saPosIdx2Address(suffixIdx)) + lcp;
 
@@ -328,7 +328,7 @@ namespace PgSAIndex {
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>
-    void DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::kmerRangeBSearch(const char* kmerPtr, const uint_read_len& kmerLength, SARange<uint_pg_len>& range) {
+    inline void DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::kmerRangeBSearch(const char* kmerPtr, const uint_read_len& kmerLength, SARange<uint_pg_len>& range) {
 
         uint_pg_len mIdx;
         int_kmers_comp cmpRes;
@@ -438,13 +438,13 @@ namespace PgSAIndex {
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>
-    void DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::findKmerRangeImpl(const char_pg* kmer, const uint_read_len& kmerLength, SARange<uint_pg_len>& range) {
+    inline void DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::findKmerRangeImpl(const char_pg* kmer, const uint_read_len& kmerLength, SARange<uint_pg_len>& range) {
         if (!lookupTable.findSARange(kmer, kmerLength, range))
             kmerRangeBSearch(kmer, kmerLength, range);
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>
-    void DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::findOccurrencesOfImpl(const char_pg* kmer, const uint_read_len kmerLength) {
+    inline void DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::findOccurrencesOfImpl(const char_pg* kmer, const uint_read_len kmerLength) {
         this->findKmerRange(kmer, kmerLength, range);
         this->readsIterator.initIteration(kmerLength);
 
@@ -453,20 +453,20 @@ namespace PgSAIndex {
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>
-    typename DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::OccurrencesIterator& DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::getKmerOccurrencesIteratorImpl(const string& kmer) {
+    inline typename DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::OccurrencesIterator& DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::getKmerOccurrencesIteratorImpl(const string& kmer) {
         this->findOccurrencesOf(kmer.data(), kmer.length());
         return *this;
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>
-    typename DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::OccurrencesIterator& DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::getKmerOccurrencesIteratorImpl(const uint_reads_cnt originalIdx, const uint_read_len pos, const uint_read_len kmerLength) {
+    inline typename DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::OccurrencesIterator& DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::getKmerOccurrencesIteratorImpl(const uint_reads_cnt originalIdx, const uint_read_len pos, const uint_read_len kmerLength) {
         const char_pg* kmer = this->pseudoGenome->getSuffixPtrByPosition(originalIdx, pos);
         this->findOccurrencesOf(kmer, kmerLength);
         return *this;
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>
-    bool DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::moveNextImpl() {
+    inline bool DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::moveNextImpl() {
         if (this->readsIterator.moveNext())
             return true;
 
@@ -480,12 +480,12 @@ namespace PgSAIndex {
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>
-    const RPGOffset<uint_read_len, uint_reads_cnt> DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::getPositionImpl(const uint_pg_len posIdx) {
+    inline const RPGOffset<uint_read_len, uint_reads_cnt> DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::getPositionImpl(const uint_pg_len posIdx) {
         return getPositionByAddress(saPosIdx2Address(posIdx));
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>
-    const RPGOffset<uint_read_len, uint_reads_cnt> DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::getPositionByAddress(const sa_pos_addr& saPosAddress) {
+    inline const RPGOffset<uint_read_len, uint_reads_cnt> DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::getPositionByAddress(const sa_pos_addr& saPosAddress) {
         return
         {
             getReadsListIndexByAddress(saPosAddress), getPosStartOffsetByAddress(saPosAddress)
@@ -493,17 +493,17 @@ namespace PgSAIndex {
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>
-    const uint_read_len DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::getPosStartOffsetByAddress(const sa_pos_addr saPosAddress) {
+    inline const uint_read_len DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::getPosStartOffsetByAddress(const sa_pos_addr saPosAddress) {
         return *((uint_read_len*) ((uchar*) saPosAddress + POS_START_OFFSET));
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>
-    const uint_reads_cnt DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::getReadsListIndexByAddress(const sa_pos_addr saPosAddress) {
+    inline const uint_reads_cnt DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::getReadsListIndexByAddress(const sa_pos_addr saPosAddress) {
         return (*((uint_reads_cnt*) (saPosAddress))) & READSLIST_INDEX_MASK;
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>
-    ReadsSetInterface<uint_read_len, uint_reads_cnt>* DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::getReadsSetImpl() {
+    inline ReadsSetInterface<uint_read_len, uint_reads_cnt>* DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::getReadsSetImpl() {
         return this->pseudoGenome;
     }
 
@@ -518,12 +518,12 @@ namespace PgSAIndex {
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>
-    const char_pg* DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::getSuffixByAddress(const sa_pos_addr& saPosAddress) {
+    inline const char_pg* DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::getSuffixByAddress(const sa_pos_addr& saPosAddress) {
         return this->pseudoGenome->getSuffix(getReadsListIndexByAddress(saPosAddress), getPosStartOffsetByAddress(saPosAddress));
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>
-    const string DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::getSuffixImpl(const uint_pg_len posIdx, const uint_pg_len length) {
+    inline const string DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::getSuffixImpl(const uint_pg_len posIdx, const uint_pg_len length) {
         return string(getSuffixByAddress(saPosIdx2Address(posIdx)), length);
     }
 
@@ -533,7 +533,7 @@ namespace PgSAIndex {
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>
-    const sa_pos_addr DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::saPosIdx2Address(const uint_pg_len posIdx) {
+    inline const sa_pos_addr DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::saPosIdx2Address(const uint_pg_len posIdx) {
         return (sa_pos_addr) (suffixArray + ((uint_max) posIdx) * SA_ELEMENT_SIZE);
     }
 

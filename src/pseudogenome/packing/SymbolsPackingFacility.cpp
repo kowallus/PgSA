@@ -133,7 +133,7 @@ namespace PgSAIndex {
     }
 
     template<typename uint_element>
-    const string SymbolsPackingFacility<uint_element>::reverseSequence(const uint_element* sequence, const uint_max pos, const uint_max length) {
+    inline const string SymbolsPackingFacility<uint_element>::reverseSequence(const uint_element* sequence, const uint_max pos, const uint_max length) {
         string res;
         uint_max i = divideBySmallInteger(pos, symbolsPerElement);
         uint_max reminder = moduloBySmallInteger(pos, this->symbolsPerElement, i);
@@ -145,7 +145,7 @@ namespace PgSAIndex {
     }
 
     template<typename uint_element>
-    void SymbolsPackingFacility<uint_element>::reverseSequence(const uint_element* sequence, const uint_max pos, const uint_max length, char_pg* destPtr) {
+    inline void SymbolsPackingFacility<uint_element>::reverseSequence(const uint_element* sequence, const uint_max pos, const uint_max length, char_pg* destPtr) {
 
         uint_max i = divideBySmallInteger(pos, symbolsPerElement);
         uint_max reminder = moduloBySmallInteger(pos, this->symbolsPerElement, i);
@@ -163,12 +163,12 @@ namespace PgSAIndex {
    }
 
     template<typename uint_element>
-    char_pg SymbolsPackingFacility<uint_element>::reverseValue(uint_element value, uchar position) {
+    inline char_pg SymbolsPackingFacility<uint_element>::reverseValue(uint_element value, uchar position) {
         return reverse[value][position];
     }
 
     template<typename uint_element>
-    string SymbolsPackingFacility<uint_element>::reverseValue(uint_element value) {
+    inline string SymbolsPackingFacility<uint_element>::reverseValue(uint_element value) {
         string res;
         res.resize(symbolsPerElement);
         for (uchar j = 0; j < symbolsPerElement; j++)
@@ -176,9 +176,8 @@ namespace PgSAIndex {
         return res;
     }
 
-    //FIXME: may exceed length during comparison
     template<typename uint_element>
-    int SymbolsPackingFacility<uint_element>::compareSequences(uint_element* lSeq, uint_element* rSeq, const uint_max length) {
+    inline int SymbolsPackingFacility<uint_element>::compareSequences(uint_element* lSeq, uint_element* rSeq, const uint_max length) {
         uint_max i = length;
         while (i >= symbolsPerElement) {
             if (*lSeq > *rSeq)
@@ -201,7 +200,7 @@ namespace PgSAIndex {
     }
 
     template<typename uint_element>
-    int SymbolsPackingFacility<uint_element>::compareSequences(uint_element* lSeq, uint_element* rSeq, uint_max pos, uint_max length) {
+    inline int SymbolsPackingFacility<uint_element>::compareSequences(uint_element* lSeq, uint_element* rSeq, uint_max pos, uint_max length) {
         uint_max i = divideBySmallInteger(pos, symbolsPerElement);
         uint_max reminder = moduloBySmallInteger(pos, this->symbolsPerElement, i);
 
@@ -220,7 +219,7 @@ namespace PgSAIndex {
     }
 
     template<typename uint_element>
-    int SymbolsPackingFacility<uint_element>::compareSuffixWithPrefix(uint_element* sufSeq, uint_element* preSeq, uint_max sufPos, uint_max length) {
+    inline int SymbolsPackingFacility<uint_element>::compareSuffixWithPrefix(uint_element* sufSeq, uint_element* preSeq, uint_max sufPos, uint_max length) {
         uint_max i = divideBySmallInteger(sufPos, symbolsPerElement);
         uint_max reminder = moduloBySmallInteger(sufPos, this->symbolsPerElement, i);
         

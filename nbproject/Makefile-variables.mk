@@ -46,22 +46,38 @@ CND_ARTIFACT_PATH_Debug-PgSAgen-Win=dist/Debug-PgSAgen-Win/Cygwin_4.x-Windows/Pg
 CND_PACKAGE_DIR_Debug-PgSAgen-Win=dist/Debug-PgSAgen-Win/Cygwin_4.x-Windows/package
 CND_PACKAGE_NAME_Debug-PgSAgen-Win=pgsa.tar
 CND_PACKAGE_PATH_Debug-PgSAgen-Win=dist/Debug-PgSAgen-Win/Cygwin_4.x-Windows/package/pgsa.tar
-# Release-PgSAgen-Linux configuration
-CND_PLATFORM_Release-PgSAgen-Linux=Cygwin_4.x-Windows
-CND_ARTIFACT_DIR_Release-PgSAgen-Linux=dist/Release-PgSAgen-Linux/Cygwin_4.x-Windows
-CND_ARTIFACT_NAME_Release-PgSAgen-Linux=PgSAgen
-CND_ARTIFACT_PATH_Release-PgSAgen-Linux=dist/Release-PgSAgen-Linux/Cygwin_4.x-Windows/PgSAgen
-CND_PACKAGE_DIR_Release-PgSAgen-Linux=dist/Release-PgSAgen-Linux/Cygwin_4.x-Windows/package
-CND_PACKAGE_NAME_Release-PgSAgen-Linux=pgsa.tar
-CND_PACKAGE_PATH_Release-PgSAgen-Linux=dist/Release-PgSAgen-Linux/Cygwin_4.x-Windows/package/pgsa.tar
-# Release-PgSAtest-Linux configuration
-CND_PLATFORM_Release-PgSAtest-Linux=Cygwin_4.x-Windows
-CND_ARTIFACT_DIR_Release-PgSAtest-Linux=dist/Release-PgSAtest-Linux/Cygwin_4.x-Windows
-CND_ARTIFACT_NAME_Release-PgSAtest-Linux=PgSAtest
-CND_ARTIFACT_PATH_Release-PgSAtest-Linux=dist/Release-PgSAtest-Linux/Cygwin_4.x-Windows/PgSAtest
-CND_PACKAGE_DIR_Release-PgSAtest-Linux=dist/Release-PgSAtest-Linux/Cygwin_4.x-Windows/package
-CND_PACKAGE_NAME_Release-PgSAtest-Linux=pgsa.tar
-CND_PACKAGE_PATH_Release-PgSAtest-Linux=dist/Release-PgSAtest-Linux/Cygwin_4.x-Windows/package/pgsa.tar
+# pgsagen configuration
+CND_PLATFORM_pgsagen=Cygwin_4.x-Windows
+CND_ARTIFACT_DIR_pgsagen=dist/pgsagen/Cygwin_4.x-Windows
+CND_ARTIFACT_NAME_pgsagen=PgSAgen
+CND_ARTIFACT_PATH_pgsagen=dist/pgsagen/Cygwin_4.x-Windows/PgSAgen
+CND_PACKAGE_DIR_pgsagen=dist/pgsagen/Cygwin_4.x-Windows/package
+CND_PACKAGE_NAME_pgsagen=pgsa.tar
+CND_PACKAGE_PATH_pgsagen=dist/pgsagen/Cygwin_4.x-Windows/package/pgsa.tar
+# pgsatest configuration
+CND_PLATFORM_pgsatest=Cygwin_4.x-Windows
+CND_ARTIFACT_DIR_pgsatest=dist/pgsatest/Cygwin_4.x-Windows
+CND_ARTIFACT_NAME_pgsatest=PgSAtest
+CND_ARTIFACT_PATH_pgsatest=dist/pgsatest/Cygwin_4.x-Windows/PgSAtest
+CND_PACKAGE_DIR_pgsatest=dist/pgsatest/Cygwin_4.x-Windows/package
+CND_PACKAGE_NAME_pgsatest=pgsa.tar
+CND_PACKAGE_PATH_pgsatest=dist/pgsatest/Cygwin_4.x-Windows/package/pgsa.tar
+# Debug-PgSAtest-Linux configuration
+CND_PLATFORM_Debug-PgSAtest-Linux=Cygwin_4.x-Windows
+CND_ARTIFACT_DIR_Debug-PgSAtest-Linux=dist/Debug-PgSAtest-Linux/Cygwin_4.x-Windows
+CND_ARTIFACT_NAME_Debug-PgSAtest-Linux=PgSAtest
+CND_ARTIFACT_PATH_Debug-PgSAtest-Linux=dist/Debug-PgSAtest-Linux/Cygwin_4.x-Windows/PgSAtest
+CND_PACKAGE_DIR_Debug-PgSAtest-Linux=dist/Debug-PgSAtest-Linux/Cygwin_4.x-Windows/package
+CND_PACKAGE_NAME_Debug-PgSAtest-Linux=pgsa.tar
+CND_PACKAGE_PATH_Debug-PgSAtest-Linux=dist/Debug-PgSAtest-Linux/Cygwin_4.x-Windows/package/pgsa.tar
+# pgsalib configuration
+CND_PLATFORM_pgsalib=Cygwin_4.x-Windows
+CND_ARTIFACT_DIR_pgsalib=dist/pgsalib/Cygwin_4.x-Windows
+CND_ARTIFACT_NAME_pgsalib=libPgSA.dll
+CND_ARTIFACT_PATH_pgsalib=dist/pgsalib/Cygwin_4.x-Windows/libPgSA.dll
+CND_PACKAGE_DIR_pgsalib=dist/pgsalib/Cygwin_4.x-Windows/package
+CND_PACKAGE_NAME_pgsalib=libPgSA.dll.tar
+CND_PACKAGE_PATH_pgsalib=dist/pgsalib/Cygwin_4.x-Windows/package/libPgSA.dll.tar
 #
 # include compiler specific variables
 #

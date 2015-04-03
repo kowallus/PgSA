@@ -129,7 +129,7 @@ namespace PgSAIndex {
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, unsigned char LIST_ELEMENT_SIZE, uchar FLAGS_OFFSET>
-    uint_reads_cnt ListOfConstantLengthReads<uint_read_len, uint_reads_cnt, uint_pg_len, LIST_ELEMENT_SIZE, FLAGS_OFFSET>::clearAllOccurFlagsAndCountSingleOccurrencesImpl() {
+    inline uint_reads_cnt ListOfConstantLengthReads<uint_read_len, uint_reads_cnt, uint_pg_len, LIST_ELEMENT_SIZE, FLAGS_OFFSET>::clearAllOccurFlagsAndCountSingleOccurrencesImpl() {
         uint_reads_cnt count = 0;
         for (typename vector<uchar*>::iterator it = occurFlagsReadsList.begin(); it != occurFlagsReadsList.end(); ++it) {
             if (hasOccurOnceFlagByAddress(*it))
@@ -143,7 +143,7 @@ namespace PgSAIndex {
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, unsigned char LIST_ELEMENT_SIZE, uchar FLAGS_OFFSET>
-    void ListOfConstantLengthReads<uint_read_len, uint_reads_cnt, uint_pg_len, LIST_ELEMENT_SIZE, FLAGS_OFFSET>::clearAllOccurFlagsAndPushSingleOccurrencesFlattenImpl(vector<uint_flatten_occurrence_max>& flattenOccurrences) {
+    inline void ListOfConstantLengthReads<uint_read_len, uint_reads_cnt, uint_pg_len, LIST_ELEMENT_SIZE, FLAGS_OFFSET>::clearAllOccurFlagsAndPushSingleOccurrencesFlattenImpl(vector<uint_flatten_occurrence_max>& flattenOccurrences) {
         for (typename vector<pair < uchar*, uint_read_len>>::iterator it = occurFlagsOccurrencesList.begin(); it != occurFlagsOccurrencesList.end(); ++it) {
             if (this->hasOccurOnceFlagByAddress((*it).first))
                 flattenOccurrences.push_back(((uint_flatten_occurrence_max) this->getReadOriginalIndexByAddress((*it).first)) * this->getMaxReadLength() + (*it).second);
@@ -154,7 +154,7 @@ namespace PgSAIndex {
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, unsigned char LIST_ELEMENT_SIZE, uchar FLAGS_OFFSET>
-    uint_reads_cnt ListOfConstantLengthReads<uint_read_len, uint_reads_cnt, uint_pg_len, LIST_ELEMENT_SIZE, FLAGS_OFFSET>::clearAllOccurFlagsImpl() {
+    inline uint_reads_cnt ListOfConstantLengthReads<uint_read_len, uint_reads_cnt, uint_pg_len, LIST_ELEMENT_SIZE, FLAGS_OFFSET>::clearAllOccurFlagsImpl() {
         uint_reads_cnt readsWithOccurFlagCount = occurFlagsReadsList.size();
         for (typename vector<uchar*>::iterator it = occurFlagsReadsList.begin(); it != occurFlagsReadsList.end(); ++it)
             clearOccurFlagsByAddress(*it);
@@ -165,12 +165,12 @@ namespace PgSAIndex {
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, unsigned char LIST_ELEMENT_SIZE, uchar FLAGS_OFFSET>
-    void ListOfConstantLengthReads<uint_read_len, uint_reads_cnt, uint_pg_len, LIST_ELEMENT_SIZE, FLAGS_OFFSET>::clearOccurFlagsByAddress(uchar* address) {
+    inline void ListOfConstantLengthReads<uint_read_len, uint_reads_cnt, uint_pg_len, LIST_ELEMENT_SIZE, FLAGS_OFFSET>::clearOccurFlagsByAddress(uchar* address) {
         flagsVariableByAddress(address) &= ~(OCCURFLAGS_MASK);
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, unsigned char LIST_ELEMENT_SIZE, uchar FLAGS_OFFSET>
-    void ListOfConstantLengthReads<uint_read_len, uint_reads_cnt, uint_pg_len, LIST_ELEMENT_SIZE, FLAGS_OFFSET>::clearOccurFlagsImpl(uint_reads_cnt idx) {
+    inline void ListOfConstantLengthReads<uint_read_len, uint_reads_cnt, uint_pg_len, LIST_ELEMENT_SIZE, FLAGS_OFFSET>::clearOccurFlagsImpl(uint_reads_cnt idx) {
         clearOccurFlagsByAddress(idx2Address(idx));
     }
     
