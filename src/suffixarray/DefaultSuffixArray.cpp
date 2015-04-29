@@ -33,9 +33,6 @@ namespace PgSAIndex {
             this->lookupTable.generateFromSA(this, this->getElementsCount());
         //                cout << "memcheck 4.....\n";
         //                cin.ignore(1);
-        buildReadsWithDuplicatesFilter();
-        //                cout << "memcheck 5.....\n";
-        //                cin.ignore(1);
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>
@@ -225,65 +222,6 @@ namespace PgSAIndex {
         return pgStatic->getSuffix(getReadsListIndexByAddress(saPosAddress), getPosStartOffsetByAddress(saPosAddress));
     }
     
-    
-    template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>
-    void DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::buildReadsWithDuplicatesFilter() {
-        clock_checkpoint();
-
-        readsList->setDuplicateFilterKmerLength(this->lookupTable.getKeyPrefixLength());
-        if (readsList->getDuplicateFilterKmerLength() != this->lookupTable.getKeyPrefixLength()) {
-            cout << "Unsupported duplicate filter size " << readsList->getDuplicateFilterKmerLength() << " expected " << this->lookupTable.getKeyPrefixLength() << "!\n";
-            exit(-1);
-        }
-
-        uint_max filterCount = 0;
-        uint_max lutSize = lookupTable.getLookupTableLengthWithGuard();
-
-        for (uint_max j = 0; j < lutSize - 1; j++)
-            filterCount += markReadsWithDuplicates(j);
-
-        cout << "Found " << filterCount << " reads containing duplicate " << (int) readsList->getDuplicateFilterKmerLength()
-                << "-mers in " << clock_millis() << " msec!\n";
-    }
-
-    template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>
-    uint_max DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::markReadsWithDuplicates(uint_max lutIdx) {
-
-        readsIdxs.clear();
-        uint_pg_len start = lookupTable.getRawValue(lutIdx);
-        uint_pg_len stop = lookupTable.getRawValue(lutIdx + 1);
-        const uint_read_len guardOffset = readsList->getMaxReadLength() - readsList->getDuplicateFilterKmerLength();
-
-        for (uint_pg_len i = start; i < stop; i++) {
-            const sa_pos_addr saPosAddress = this->saPosIdx2Address(i);
-            uint_reads_cnt j = this->getReadsListIndexByAddress(saPosAddress);
-            
-            int_max guard = (int_max) this->getPosStartOffsetByAddress(saPosAddress) + (int_max) readsList->getReadPosition(j) - (int_max) guardOffset;
-            while ((int_max) readsList->getReadPosition(j) >= guard) {
-                if (!readsList->hasDuplicateFilterFlag(j)) {
-                    if (!readsList->hasOccurFlag(j))
-                        readsIdxs.push_back(j);
-                    readsList->setOccurOnceFlag(j);
-                }
-                if (j == 0) break;
-                j--;
-            }
-        }
-
-        uint_reads_cnt j = 0;
-        uint_reads_cnt readsCount = readsIdxs.size();
-        for (uint_reads_cnt i = 0; i < readsCount; i++) {
-            if (!readsList->hasOccurOnceFlag(readsIdxs[i]) && !readsList->hasDuplicateFilterFlag(readsIdxs[i])) {
-//                cout << readsIdxs[i] << "\t" << readsList->getReadOriginalIndex(readsIdxs[i]) << "\t" << (int) lutIdx << "\n";
-                readsList->setDuplicateFilterFlag(readsIdxs[i]);
-                j++;               
-            }
-            readsList->clearOccurFlags(readsIdxs[i]);
-        }
-
-        return j;
-    }
-
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>
     void DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::write(ostream& dest) {
         dest << this->getSizeInBytes() << "\n";
@@ -439,7 +377,7 @@ namespace PgSAIndex {
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>
     inline void DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::findKmerRangeImpl(const char_pg* kmer, const uint_read_len& kmerLength, SARange<uint_pg_len>& range) {
-        if (!lookupTable.findSARange(kmer, kmerLength, range))
+        if (!lookupTable.findSARange(kmer, kmerLength, range))        
             kmerRangeBSearch(kmer, kmerLength, range);
     }
 

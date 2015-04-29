@@ -181,7 +181,66 @@ namespace PgSAIndex {
         for (uint_pg_len i = pos; i < this->getLengthWithGuard(); i++)
             this->sequence[i] = this->properties->symbolsList[this->properties->symbolsCount - 1];
     }
-    
+
+    template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, class GeneratedReadsListClass>
+    void GeneratedPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, GeneratedReadsListClass>::buildReadsWithDuplicatesFilter() {
+        clock_checkpoint();
+
+        uint_max filterCount = 0;
+
+        genReadsList->setDuplicateFilterKmerLength(this->duplicateFilterKmerLength);
+        
+        uint_pg_len* lookup = new uint_pg_len[getTableLength()]();
+        
+        uint_max lookupIdx = 0;
+        for (uint_read_len i = 0; i < this->duplicateFilterKmerLength; i++)
+            lookupIdx = lookupIdx * this->properties->symbolsCount + this->properties->symbolOrder[(unsigned char) this->getSymbol(i)];
+
+        uint_max popSymbol[UCHAR_MAX] = {0};
+        for(uchar j = 1; j < this->properties->symbolsCount; j++) {
+            popSymbol[j] = j;
+            for(uchar k = 1; k < this->duplicateFilterKmerLength; k++)
+                popSymbol[j] *= this->properties->symbolsCount;
+        }
+
+        uint_reads_cnt readsListIndex = 0;
+        
+        uint_pg_len i = 0;
+        while (i < this->length) {
+            while ((int_max) genReadsList->getReadPosition(readsListIndex) < (int_max) i + this->duplicateFilterKmerLength - this->maxReadLength())
+                readsListIndex++;            
+            
+            while (lookup[lookupIdx] >= genReadsList->getReadPosition(readsListIndex) + 1) {
+                genReadsList->setDuplicateFilterFlag(readsListIndex);
+                filterCount++;
+                readsListIndex++;
+            }
+                
+            lookup[lookupIdx] = i + 1;
+            lookupIdx -= popSymbol[this->properties->symbolOrder[(unsigned char) this->getSymbol(i)]];
+            lookupIdx = lookupIdx * this->properties->symbolsCount + this->properties->symbolOrder[(unsigned char) this->getSymbol(i++ + this->duplicateFilterKmerLength)];
+        }
+
+        delete[] lookup;
+        
+        cout << "Found " << filterCount << " reads containing duplicate " << (int) genReadsList->getDuplicateFilterKmerLength()
+                << "-mers in " << clock_millis() << " msec!\n";
+    }
+
+    template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, class GeneratedReadsListClass>
+    uint_max GeneratedPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, GeneratedReadsListClass>::getTableLength() {
+        return powuint(this->properties->symbolsCount, this->duplicateFilterKmerLength) + 1;
+    }
+
+    template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, class GeneratedReadsListClass>
+    uint_max GeneratedPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, GeneratedReadsListClass>::pgSuffixToTableIdx(const char_pg* suffix) {
+        uint_max idx = 0;
+        for (uint_read_len i = 0; i < this->duplicateFilterKmerLength; i++)
+            idx = idx * this->properties->symbolsCount + this->properties->symbolOrder[(unsigned char) *suffix++];
+
+        return idx;
+    }
+
     template class DefaultPseudoGenome<uint_read_len_min, uint_reads_cnt_std, uint_pg_len_std, typename ListOfConstantLengthReadsTypeTemplate<uint_read_len_min, uint_reads_cnt_std, uint_pg_len_std>::Type>;
     template class DefaultPseudoGenome<uint_read_len_min, uint_reads_cnt_std, uint_pg_len_max, typename ListOfConstantLengthReadsTypeTemplate<uint_read_len_min, uint_reads_cnt_std, uint_pg_len_max>::Type>;
     template class DefaultPseudoGenome<uint_read_len_std, uint_reads_cnt_std, uint_pg_len_std, typename ListOfConstantLengthReadsTypeTemplate<uint_read_len_std, uint_reads_cnt_std, uint_pg_len_std>::Type>;

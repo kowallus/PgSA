@@ -33,7 +33,6 @@ namespace PgSAIndex {
             this->lookupTable.generateFromPg(this->pseudoGenome, pseudoGenome->getSymbolsPerElement(), skippedSymbolsCount);
         else 
             this->lookupTable.generateFromSA(this, this->getElementsCount());
-        buildReadsWithDuplicatesFilter();
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, typename uint_pg_element, typename uint_skipped_element, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uchar SKIPPED_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>
@@ -258,74 +257,6 @@ namespace PgSAIndex {
         src.get(); // '/n'
 
         this->lookupTable.read(src);
-    }
-
-    template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, typename uint_pg_element, typename uint_skipped_element, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uchar SKIPPED_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>
-    void SparseSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, uint_pg_element, uint_skipped_element, SA_ELEMENT_SIZE, POS_START_OFFSET, SKIPPED_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::buildReadsWithDuplicatesFilter() {
-        clock_checkpoint();
-
-        readsList->setDuplicateFilterKmerLength(this->lookupTable.getKeyPrefixLength());
-        if (readsList->getDuplicateFilterKmerLength() != this->lookupTable.getKeyPrefixLength()) {
-            cout << "Unsupported duplicate filter size " << readsList->getDuplicateFilterKmerLength() << " expected " << this->lookupTable.getKeyPrefixLength() << "!\n";
-            exit(-1);
-        }
-        uint_max filterCount = 0;
-
-        ReadsSetProperties* properties = this->pseudoGenome->getReadsSetProperties();
-
-        string kmer(this->lookupTable.getKeyPrefixLength(), properties->symbolsList[0]);
-
-        while (true) {
-            filterCount += markReadsWithDuplicates(kmer);
-
-            uchar i = this->lookupTable.getKeyPrefixLength();
-            uchar order;
-            do {
-                order = properties->symbolOrder[(unsigned char) kmer[--i]] + 1;
-                if (order == properties->symbolsCount)
-                    order = 0;
-                kmer[i] = properties->symbolsList[order];
-            } while (order == 0 && i > 0);
-            if (i == 0 && order == 0)
-                break;
-        }
-
-        cout << "Found " << filterCount << " reads containing duplicate " << (int) readsList->getDuplicateFilterKmerLength()
-                << "-mers in " << clock_millis() << " msec!\n";
-    }
-
-    template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, typename uint_pg_element, typename uint_skipped_element, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uchar SKIPPED_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>
-    uint_max SparseSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, uint_pg_element, uint_skipped_element, SA_ELEMENT_SIZE, POS_START_OFFSET, SKIPPED_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::markReadsWithDuplicates(string kmer) {
-
-        vector<uint_reads_cnt> readsIdxs;
-
-        const uint_read_len guardOffset = readsList->getMaxReadLength() - readsList->getDuplicateFilterKmerLength();
-        OccurrencesIterator& oit = this->getKmerOccurrencesIterator(kmer);
-
-        while (oit.moveNext()) {
-            uint_reads_cnt j = oit.getReadIndex();
-
-            if (readsList->hasDuplicateFilterFlag(j))
-                continue;
-            if (guardOffset >= oit.getOccurrenceOffset()) {
-                if (!readsList->hasOccurFlag(j))
-                    readsIdxs.push_back(j);
-                readsList->setOccurOnceFlag(j);
-            }
-        }
-
-        uint_reads_cnt j = 0;
-        uint_reads_cnt readsCount = readsIdxs.size();
-        for (uint_reads_cnt i = 0; i < readsCount; i++) {
-            if (!readsList->hasOccurOnceFlag(readsIdxs[i]) && !readsList->hasDuplicateFilterFlag(readsIdxs[i])) {
-                //                        cout << readsIdxs[i] << "\t" << readsList->getReadOriginalIndex(readsIdxs[i]) << "\t" << kmer << "\n";                     
-                readsList->setDuplicateFilterFlag(readsIdxs[i]);
-                j++;
-            }
-            readsList->clearOccurFlags(readsIdxs[i]);
-        }
-
-        return j;
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, typename uint_pg_element, typename uint_skipped_element, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uchar SKIPPED_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>

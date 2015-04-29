@@ -80,6 +80,12 @@ namespace PgSAIndex {
             uint_pg_len pos = 0;
             GeneratedReadsListInterface<uint_read_len, uint_reads_cnt, uint_pg_len, GeneratedReadsListClass>* genReadsList = 0;
 
+            const uint_read_len duplicateFilterKmerLength = 11;
+            
+            inline uint_max pgSuffixToTableIdx(const char_pg* suffix);
+            
+            uint_max getTableLength();;
+            
         public:
 
             GeneratedPseudoGenome(uint_pg_len sequenceLength, ReadsSetProperties* properties);
@@ -89,6 +95,8 @@ namespace PgSAIndex {
             void append(const string& read, uint_read_len length, uint_read_len overlap, uint_reads_cnt orgIdx);
 
             void validate();
+            
+            void buildReadsWithDuplicatesFilter();
     };
 
     template <typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len>
