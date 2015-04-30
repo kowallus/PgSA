@@ -80,8 +80,6 @@ namespace PgSAIndex {
             
             void prepareUnsortedSA();
             
-            void generatePgSA();
-            
             void generateSaisPgSA();
             vector<std::ifstream*> saPartSrc;
             int maxPartSize = 0;

@@ -29,10 +29,7 @@ namespace PgSAIndex {
         else
             generatePgSA();
 
-        if (fixed_min_k == 1)
-            this->lookupTable.generateFromPg(this->pseudoGenome, pseudoGenome->getSymbolsPerElement(), skippedSymbolsCount);
-        else 
-            this->lookupTable.generateFromSA(this, this->getElementsCount());
+        this->lookupTable.generateFromPg(this->pseudoGenome, this->readsList, pseudoGenome->getSymbolsPerElement(), skippedSymbolsCount, fixed_min_k);
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, typename uint_pg_element, typename uint_skipped_element, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uchar SKIPPED_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>

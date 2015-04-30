@@ -22,17 +22,9 @@ namespace PgSAIndex {
         pgStatic = this->pseudoGenome;
         maxReadLength = this->pseudoGenome->maxReadLength();
   
-//        if ((sizeof(uint_pg_len) == sizeof(int)) && (pseudoGenome->getLengthWithGuard() < INT_MAX / sizeof(int)))
-            generateSaisPgSA();
-//        else
-//            generatePgSA();
+        generateSaisPgSA();
 
-        if (fixed_min_k == 1)
-            this->lookupTable.generateFromPg(this->pseudoGenome, 1, 0);
-        else
-            this->lookupTable.generateFromSA(this, this->getElementsCount());
-        //                cout << "memcheck 4.....\n";
-        //                cin.ignore(1);
+        this->lookupTable.generateFromPg(this->pseudoGenome, this->readsList, 1, 0, fixed_min_k);
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>
@@ -67,9 +59,6 @@ namespace PgSAIndex {
         //TODO: remove sa guard (check if setting 0 is necessary....)
         suffixArray[this->getSizeInBytes() - 2] = 0;
         suffixArray[this->getSizeInBytes() - 1] = 0;
-
-        //               cout << "memcheck 3.....\n";
-        //                cin.ignore(1);
         
         const uchar* curSAPos = suffixArray;
 
@@ -197,18 +186,7 @@ namespace PgSAIndex {
         
         cout << "SA generation time " << clock_millis() << " msec!\n";
     }
-    
-    template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>
-    void DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::generatePgSA() {
-        clock_checkpoint();
-
-        prepareUnsortedSA();
-        
-        qsort(suffixArray, this->elementsCount, sizeof (uchar) * SA_ELEMENT_SIZE, this->pgSuffixesCompare);
-
-        cout << "SA generation time " << clock_millis() << " msec!\n";
-    }
-
+  
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, uchar SA_ELEMENT_SIZE, uchar POS_START_OFFSET, uint_reads_cnt READSLIST_INDEX_MASK, class ReadsListClass>
     inline int DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::pgSuffixesCompare(const void* a, const void* b) {
         const char_pg* readA = getSuffixStatic((sa_pos_addr) a);

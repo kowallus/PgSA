@@ -74,8 +74,8 @@ namespace PgSAIndex {
                 lookup = (uint_pg_len*) PgSAHelpers::readArray(src, this->getLookupTableLengthWithGuard() * sizeof(uint_pg_len));
             }
 
-            template<typename uint_reads_cnt, class PseudoGenomeClass>
-            void generateFromPg(PseudoGenomeInterface<uint_read_len, uint_reads_cnt, uint_pg_len, PseudoGenomeClass>* pg, uchar symbolsPerSAElement, uchar skippedSymbolsCount) {
+            template<typename uint_reads_cnt, class PseudoGenomeClass, class ReadsListClass>
+            void generateFromPg(PseudoGenomeInterface<uint_read_len, uint_reads_cnt, uint_pg_len, PseudoGenomeClass>* pg, ReadsListInterface<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>* readsList, uchar symbolsPerSAElement, uchar skippedSymbolsCount, uint_read_len fixed_min_k) {
                 clock_checkpoint();
                 
                 cout << this->getLookupTableLengthWithGuard() << " elements in SA lookup\n";
@@ -93,10 +93,20 @@ namespace PgSAIndex {
                         popSymbol[j] *= symbolsCount;
                 }
                 
+                uint_reads_cnt readsListIndex = 0;
+                
                 uint_pg_len i = 0;                
                 while (i < pg->getLength()) {
-                    if (moduloBySmallInteger(i, symbolsPerSAElement) == skippedSymbolsCount)
-                        lookup[lookupIdx]++;
+                    if (moduloBySmallInteger(i, symbolsPerSAElement) == skippedSymbolsCount) {
+                        if (fixed_min_k > 1) {
+                            while (readsList->getReadPosition(readsListIndex + 1) <= i)
+                                readsListIndex++;
+                            if (i - readsList->getReadPosition(readsListIndex) <= (uint_max) readsList->getMaxReadLength() - fixed_min_k + skippedSymbolsCount)
+                                lookup[lookupIdx]++;
+                        }
+                        else 
+                            lookup[lookupIdx]++;
+                    }
                     lookupIdx -= popSymbol[symbolOrder[(unsigned char) pg->getSymbol(i)]];
                     lookupIdx = lookupIdx * symbolsCount + symbolOrder[(unsigned char) pg->getSymbol(i++ + this->keyPrefixLength)];
                 }
@@ -111,61 +121,7 @@ namespace PgSAIndex {
                 
                 cout << "SA LUT generation time " << clock_millis() << " msec!\n";
             }
-            
-            template<typename uint_reads_cnt, class SuffixArrayClass>
-            void generateFromSA(SuffixArrayInterface<uint_read_len, uint_reads_cnt, uint_pg_len, SuffixArrayClass>* pgsa, uint_pg_len saElementsCount) {
-                clock_checkpoint();
-                
-                cout << this->getLookupTableLengthWithGuard() << " elements in SA lookup\n";
-                
-                lookup = new uint_pg_len[getLookupTableLengthWithGuard()];
-                
-                uint_max j = 0;
-                
-                uint_pg_len i = 0;
-                bool bigStep = true;
-                int step = saElementsCount / getLookupTableLengthWithGuard() * 5 / 3;
-                if (step == 0)
-                    step = 1;
-                while (i < saElementsCount) {
-                    
-                    if (bigStep) {
-                        if (i + step >= saElementsCount)
-                            bigStep = false;
-                        else {
-                            const string suffix = pgsa->getSuffix(i + step, this->keyPrefixLength);
-                            uint_max lutIdx = pgSuffixToLookupTableIdx(suffix.data());
-                            
-                            if (j <= lutIdx)
-                                bigStep = false;
-                            else
-                                i += step;
-                        }
-                    }
-                    
-                    if (!bigStep) {
-                        const string suffix = pgsa->getSuffix(i, this->keyPrefixLength);
-                        uint_max lutIdx = pgSuffixToLookupTableIdx(suffix.data());
 
-                        if (j <= lutIdx) {
-                            bigStep = true;
-                            while (j <= lutIdx) {
-//                                if (lookup[j] != i)
-//                                    cout << j << ": " << lookup[j] << " vs " << i << "\n";
-                                lookup[j++] = i;
-                            }
-                        }
-                        i++;
-                    }
-                    
-                }
-                
-                while(j < getLookupTableLengthWithGuard())
-                    lookup[j++] = saElementsCount;
-                
-                cout << "SA LUT generation time " << clock_millis() << " msec!\n";
-            }
-            
             void write(ostream& dest) {
                 dest << SALUT_TYPE_DEFAULT << "\n";
 
