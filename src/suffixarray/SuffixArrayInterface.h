@@ -28,7 +28,7 @@ namespace PgSAIndex {
             typedef OccurrencesIteratorInterface<uint_read_len, uint_reads_cnt, typename SuffixArrayTraits<SuffixArrayClass>::ReadsListIteratorClass, typename SuffixArrayTraits<SuffixArrayClass>::OccurrencesIteratorClass> OccurrencesIterator;
             
             inline OccurrencesIterator& getKmerOccurrencesIterator(const string& kmer) { return static_cast<SuffixArrayClass*>(this)->getKmerOccurrencesIteratorImpl(kmer); };
-            inline OccurrencesIterator& getKmerOccurrencesIterator(const uint_reads_cnt originalIdx, const uint_read_len pos, const uint_read_len kmerLength) { return static_cast<SuffixArrayClass*>(this)->getKmerOccurrencesIteratorImpl(originalIdx, pos, kmerLength); };
+            inline string getKmer(const uint_reads_cnt originalIdx, const uint_read_len pos, const uint_read_len kmerLength) { return static_cast<SuffixArrayClass*>(this)->getKmerImpl(originalIdx, pos, kmerLength); };
             
             inline void findKmerRange(const char* kmer, const uint_read_len& kmerLength, SARange<uint_pg_len>& range) { static_cast<SuffixArrayClass*>(this)->findKmerRangeImpl(kmer, kmerLength, range); };
 

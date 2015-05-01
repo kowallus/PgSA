@@ -138,7 +138,7 @@ namespace PgSAIndex {
             
             char_pg kmerByPos[USHRT_MAX];
             
-            OccurrencesIterator& getKmerOccurrencesIteratorImpl(const uint_reads_cnt originalIdx, const uint_read_len pos, const uint_read_len kmerLength);
+            string getKmerImpl(const uint_reads_cnt originalIdx, const uint_read_len pos, const uint_read_len kmerLength);
             
             void findKmerRangeImpl(const char* kmer, const uint_read_len& kmerLength, SARange<uint_pg_len>& range);
             

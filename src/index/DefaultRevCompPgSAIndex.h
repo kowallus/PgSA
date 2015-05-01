@@ -25,7 +25,6 @@ namespace PgSAIndex {
 
             typedef DefaultPgSAIndex<api_uint_reads_cnt, api_uint_read_len, uint_read_len, uint_reads_cnt, uint_pg_len, SuffixArrayClass> DefaultPgSAImpl;
 
-
             DefaultPgSAImpl* impl;
 
         public:
@@ -48,12 +47,15 @@ namespace PgSAIndex {
             void reportReads(const string& kmer, vector<api_uint_reads_cnt>& readsIdxs) { 
                 impl->reportReadsImpl(kmer, readsIdxs);
                 string revComp = reverseComplement(kmer);
-                if (revComp != kmer)
-                    impl->reportReadsImpl(revComp, readsIdxs);
+                if (revComp != kmer) {
+                    vector<api_uint_reads_cnt> readsCompIdxs;
+                    impl->reportReadsImpl(revComp, readsCompIdxs);
+                    readsIdxs.insert(readsIdxs.end(), readsCompIdxs.begin(), readsCompIdxs.end());
+                }
             };
             
             void reportReads(api_uint_reads_cnt orgIdx, api_uint_read_len pos, api_uint_read_len k, vector<api_uint_reads_cnt>& readsIdxs) {
-//                throw std::runtime_error("not implemented");
+                reportReads(impl->getKmerByPosition(orgIdx, pos, k), readsIdxs);
             }
 
             // Q2 - In how many reads does kmer occur?
@@ -66,8 +68,7 @@ namespace PgSAIndex {
             };
 
             api_uint_reads_cnt countReads(api_uint_reads_cnt orgIdx, api_uint_read_len pos, api_uint_read_len k) {
-//                throw std::runtime_error("not implemented");
-                return 0;
+                return countReads(impl->getKmerByPosition(orgIdx, pos, k));
             }
             
             // Q3 - What are the occurrence positions of kmer?
@@ -80,8 +81,11 @@ namespace PgSAIndex {
             void reportOccurrences(const string& kmer, vector<pair<api_uint_reads_cnt, api_uint_read_len>>& kmersPos) { 
                 impl->reportOccurrencesImpl(kmer, kmersPos);
                 string revComp = reverseComplement(kmer);
-                if (revComp != kmer)
-                    impl->reportOccurrencesImpl(revComp, kmersPos);
+                if (revComp != kmer) {
+                    vector<pair<api_uint_reads_cnt, api_uint_read_len>> kmersCompPos;
+                    impl->reportOccurrencesImpl(revComp, kmersCompPos);
+                    kmersPos.insert(kmersPos.end(), kmersCompPos.begin(), kmersCompPos.end());
+                }
             };
 
             vector<uint_flatten_occurrence_max> reportOccurrencesFlatten(const string& kmer) { 
@@ -94,12 +98,15 @@ namespace PgSAIndex {
             void reportOccurrencesFlatten(const string& kmer, vector<uint_flatten_occurrence_max>& kmersPos) { 
                 impl->reportOccurrencesFlattenImpl(kmer, kmersPos);
                 string revComp = reverseComplement(kmer);
-                if (revComp != kmer)
-                    impl->reportOccurrencesFlattenImpl(revComp, kmersPos);
+                if (revComp != kmer) {
+                    vector<uint_flatten_occurrence_max> kmersCompPos;
+                    impl->reportOccurrencesFlattenImpl(revComp, kmersCompPos);
+                    kmersPos.insert(kmersPos.end(), kmersCompPos.begin(), kmersCompPos.end());
+                }
             };
 
             void reportOccurrences(api_uint_reads_cnt orgIdx, api_uint_read_len pos, api_uint_read_len k, vector<pair<api_uint_reads_cnt, api_uint_read_len>>& kmersPos) {
-                throw(errno);
+                reportOccurrences(impl->getKmerByPosition(orgIdx, pos, k), kmersPos);
             }
             
             // Q4 - What is the number of occurrences of kmer?
@@ -112,8 +119,7 @@ namespace PgSAIndex {
             };
 
             uint_max countOccurrences(api_uint_reads_cnt orgIdx, api_uint_read_len pos, api_uint_read_len k) {
-                throw(errno);
-                return 0;
+                return countOccurrences(impl->getKmerByPosition(orgIdx, pos, k));
             }
             
             // Q5 - In which reads does kmer occur only once?
@@ -126,12 +132,15 @@ namespace PgSAIndex {
             void reportReadsWithSingleOccurrence(const string& kmer, vector<api_uint_reads_cnt>& readsIdxs) { 
                 impl->reportReadsWithSingleOccurrenceImpl(kmer, readsIdxs);
                 string revComp = reverseComplement(kmer);
-                if (revComp != kmer)
-                    impl->reportReadsWithSingleOccurrenceImpl(revComp, readsIdxs);
+                if (revComp != kmer) {
+                    vector<api_uint_reads_cnt> readsCompIdxs;
+                    impl->reportReadsWithSingleOccurrenceImpl(revComp, readsCompIdxs);
+                    readsIdxs.insert(readsIdxs.end(), readsCompIdxs.begin(), readsCompIdxs.end());
+                }
             };
 
             void reportReadsWithSingleOccurrence(api_uint_reads_cnt orgIdx, api_uint_read_len pos, api_uint_read_len k, vector<api_uint_reads_cnt>& readsIdxs) {
-                throw(errno);
+                reportReadsWithSingleOccurrence(impl->getKmerByPosition(orgIdx, pos, k), readsIdxs);
             }
             
             // Q6 - In how many reads does kmer occur only once?
@@ -144,8 +153,7 @@ namespace PgSAIndex {
             };
             
             api_uint_reads_cnt countSingleOccurrences(api_uint_reads_cnt orgIdx, api_uint_read_len pos, api_uint_read_len k) {
-                throw(errno);
-                return 0;
+                return countSingleOccurrences(impl->getKmerByPosition(orgIdx, pos, k));
             }
 
             // Q7 - What are the occurrence positions of kmer in the reads where it occurs only once?
@@ -158,8 +166,11 @@ namespace PgSAIndex {
             void reportSingleOccurrences(const string& kmer, vector<pair<api_uint_reads_cnt, api_uint_read_len>>& kmersPos) { 
                 impl->reportSingleOccurrencesImpl(kmer, kmersPos);
                 string revComp = reverseComplement(kmer);
-                if (revComp != kmer)
-                    impl->reportSingleOccurrencesImpl(revComp, kmersPos);
+                if (revComp != kmer) {
+                    vector<pair<api_uint_reads_cnt, api_uint_read_len>> kmersCompPos;
+                    impl->reportSingleOccurrencesImpl(revComp, kmersCompPos);
+                    kmersPos.insert(kmersPos.end(), kmersCompPos.begin(), kmersCompPos.end());
+                }
             };
 
             vector<uint_flatten_occurrence_max> reportSingleOccurrencesFlatten(const string& kmer) { 
@@ -171,12 +182,15 @@ namespace PgSAIndex {
             void reportSingleOccurrencesFlatten(const string& kmer, vector<uint_flatten_occurrence_max>& kmersPos) { 
                 impl->reportSingleOccurrencesFlattenImpl(kmer, kmersPos);
                 string revComp = reverseComplement(kmer);
-                if (revComp != kmer)
-                    impl->reportSingleOccurrencesFlattenImpl(revComp, kmersPos);
+                if (revComp != kmer) {
+                    vector<uint_flatten_occurrence_max> kmersCompPos;
+                    impl->reportSingleOccurrencesFlattenImpl(revComp, kmersCompPos);
+                    kmersPos.insert(kmersPos.end(), kmersCompPos.begin(), kmersCompPos.end());
+                }
             };
 
             void reportSingleOccurrences(api_uint_reads_cnt orgIdx, api_uint_read_len pos, api_uint_read_len k, vector<pair<api_uint_reads_cnt, api_uint_read_len>>& kmersPos) {
-                throw(errno);
+                reportSingleOccurrences(impl->getKmerByPosition(orgIdx, pos, k), kmersPos);
             }
             
             const string getDescription() { return impl->getDescription(); };

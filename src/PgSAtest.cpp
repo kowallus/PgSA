@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
         default: /* '?' */
             fprintf(stderr, "Usage: %s [-k length] [-r no of repeats] [-n no of testkmers] [-c cachefile] [-p] [-s] [-f] indexfile\n\n",
                     argv[0]);
-            fprintf(stderr, "-p query by position\n-s scramble reads (for uncorrecly concatenated pair-ended data)\n-f -filter TTTTTT.....TTTT reads (for compatibility with CGk tests)\n-b boost memory usage for speed (experimental)\n-v use non-default implementation variant (experimental)\n\n");
+            fprintf(stderr, "-p query by position\n-s scramble reads (for uncorrecly concatenated pair-ended data)\n-f -filter TTTTTT.....TTTT reads (for compatibility with CGk tests)\n\n");
             exit(EXIT_FAILURE);
         }
     }

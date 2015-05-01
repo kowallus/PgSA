@@ -76,18 +76,7 @@ namespace PgSAIndex {
             };
 
             inline void reportReadsImpl(api_uint_reads_cnt orgIdx, api_uint_read_len pos, api_uint_read_len k, vector<api_uint_reads_cnt>& readsIdxs) {
-                readsIdxs.clear();
-                OccurrencesIterator& oit = sa.getKmerOccurrencesIterator(orgIdx, pos, k);
-                while(oit.moveNext()) {
-                    if (oit.hasDuplicateFilterFlag()) {
-                        if (!oit.hasOccurFlag()){
-                            oit.setOccurFlag();
-                            readsIdxs.push_back(oit.getReadOriginalIndex());
-                        }
-                    } else 
-                        readsIdxs.push_back(oit.getReadOriginalIndex());
-                }
-                oit.clearAllOccurFlags();
+                reportReadsImpl(getKmerByPosition(orgIdx, pos, k), readsIdxs);
             };
             
             // Q2 - In how many reads does kmer occur?
@@ -111,22 +100,7 @@ namespace PgSAIndex {
             };
 
             inline api_uint_reads_cnt countReadsImpl(api_uint_reads_cnt orgIdx, api_uint_read_len pos, api_uint_read_len k) {
-/*                if (countQueriesCache != 0) {
-                    api_uint_reads_cnt res = countQueriesCache->countReads(kmer);
-                    if (res != unknownCacheCount.readsCount)
-                        return res;
-                }
- */               
-                api_uint_reads_cnt readsCount = 0;
-                OccurrencesIterator& oit = sa.getKmerOccurrencesIterator(orgIdx, pos, k);
-                while(oit.moveNext()) {
-                    if (oit.hasDuplicateFilterFlag()) {
-                        if (!oit.hasOccurFlag())
-                            oit.setOccurFlag();
-                    } else
-                        readsCount++;
-                }
-                return readsCount + oit.clearAllOccurFlags();
+                return countReadsImpl(getKmerByPosition(orgIdx, pos, k));
             };
 
             // Q3 - What are the occurrence positions of kmer?
@@ -156,10 +130,7 @@ namespace PgSAIndex {
             };
             
             inline void reportOccurrencesImpl(api_uint_reads_cnt orgIdx, api_uint_read_len pos, api_uint_read_len k, vector<pair<api_uint_reads_cnt, api_uint_read_len>>& kmersPos) {
-                kmersPos.clear();
-                OccurrencesIterator& oit = sa.getKmerOccurrencesIterator(orgIdx, pos, k);
-                while(oit.moveNext())
-                    kmersPos.push_back({ oit.getReadOriginalIndex(), oit.getOccurrenceOffset() });
+                reportOccurrencesImpl(getKmerByPosition(orgIdx, pos, k), kmersPos);
             };
 
             // Q4 - What is the number of occurrences of kmer?
@@ -179,18 +150,7 @@ namespace PgSAIndex {
             };
             
             inline uint_max countOccurrencesImpl(api_uint_reads_cnt orgIdx, api_uint_read_len pos, api_uint_read_len k) {
-/*                if (countQueriesCache != 0) {
-                    uint_max res = countQueriesCache->countOccurrences(kmer);
-                    if (res != unknownCacheCount.occurrencesCount)
-                        return res;
-                }
-  */              
-                uint_max count = 0;
-                OccurrencesIterator& oit = sa.getKmerOccurrencesIterator(orgIdx, pos, k);
-                while(oit.moveNext())
-                    count++;
-                
-                return count;
+                return countOccurrencesImpl(getKmerByPosition(orgIdx, pos, k));
             };
             
             // Q5 - In which reads does kmer occur only once?
@@ -214,16 +174,7 @@ namespace PgSAIndex {
             };
             
             void reportReadsWithSingleOccurrenceImpl(api_uint_reads_cnt orgIdx, api_uint_read_len pos, api_uint_read_len k, vector<api_uint_reads_cnt>& readsIdxs) { 
-                readsIdxs.clear();
-                OccurrencesIterator& oit = sa.getKmerOccurrencesIterator(orgIdx, pos, k);
-                while(oit.moveNext()) {
-                    if (oit.hasDuplicateFilterFlag())
-                        oit.setOccurOnceFlagAndPushRead();
-                    else 
-                        readsIdxs.push_back(oit.getReadOriginalIndex());
-                }
-                
-                oit.template clearAllOccurFlagsAndPushReadsWithSingleOccurrence<api_uint_reads_cnt>(readsIdxs);
+                return reportReadsWithSingleOccurrenceImpl(getKmerByPosition(orgIdx, pos, k), readsIdxs);
             };
             
             // Q6 - In how many reads does kmer occur only once?
@@ -246,21 +197,7 @@ namespace PgSAIndex {
             };
             
             api_uint_reads_cnt countSingleOccurrencesImpl(api_uint_reads_cnt orgIdx, api_uint_read_len pos, api_uint_read_len k) { 
-/*                if (countQueriesCache != 0) {
-                    api_uint_reads_cnt res = countQueriesCache->countSingleOccurrences(kmer);
-                    if (res != unknownCacheCount.singleOccurrencesCount)
-                        return res;
-                }
-              */  
-                api_uint_reads_cnt readsCount = 0;
-                OccurrencesIterator& oit = sa.getKmerOccurrencesIterator(orgIdx, pos, k);
-                while(oit.moveNext()) {
-                    if (oit.hasDuplicateFilterFlag())
-                        oit.setOccurOnceFlagAndPushRead();
-                    else
-                        readsCount++;
-                }
-                return readsCount + oit.clearAllOccurFlagsAndCountSingleOccurrences();
+                return countSingleOccurrencesImpl(getKmerByPosition(orgIdx, pos, k));
             };
             
             // Q7 - What are the occurrence positions of kmer in the reads where it occurs only once?
@@ -301,24 +238,19 @@ namespace PgSAIndex {
             };
             
             void reportSingleOccurrencesImpl(api_uint_reads_cnt orgIdx, api_uint_read_len pos, api_uint_read_len k, vector<pair<api_uint_reads_cnt, api_uint_read_len>>& kmersPos) { 
-                kmersPos.clear();
-                OccurrencesIterator& oit = sa.getKmerOccurrencesIterator(orgIdx, pos, k);
-                while(oit.moveNext())
-                    if (oit.hasDuplicateFilterFlag())
-                        oit.setOccurOnceFlagAndPushOccurrence();
-                    else 
-                        kmersPos.push_back({ oit.getReadOriginalIndex(), oit.getOccurrenceOffset() });
-                
-                oit.template clearAllOccurFlagsAndPushSingleOccurrences<api_uint_reads_cnt, api_uint_read_len>(kmersPos);
+                return reportSingleOccurrencesImpl(getKmerByPosition(orgIdx, pos, k), kmersPos);
             };
            
-            
             const string getDescription() {
                 string desc = name + "\n" + sa.getDescription();
                 if (countQueriesCache != 0)
                     desc = desc + countQueriesCache->getDescription();
                 
                 return desc;
+            }
+            
+            inline string getKmerByPosition(api_uint_reads_cnt orgIdx, api_uint_read_len pos, api_uint_read_len k) {
+                return sa.getKmer(orgIdx, pos, k);
             }
             
             bool isReadLengthConstantVirtual() {
