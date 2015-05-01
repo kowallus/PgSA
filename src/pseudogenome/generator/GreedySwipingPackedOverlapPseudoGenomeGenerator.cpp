@@ -191,10 +191,10 @@ namespace PgSAIndex {
             }
             
             ssiSymbolEndLeft[curSymOrder] = sortedSuffixLeft.size();
-            sortedReadsIdxs = sortedReadsLeft;
-            sortedSuffixIdxs = sortedSuffixLeft;
-            ssiSymbolIdx = ssiSymbolIdxLeft;
-            ssiSymbolEnd = ssiSymbolEndLeft;
+            sortedReadsIdxs.swap(sortedReadsLeft);
+            sortedSuffixIdxs.swap(sortedSuffixLeft);
+            ssiSymbolIdx.swap(ssiSymbolIdxLeft);
+            ssiSymbolEnd.swap(ssiSymbolEndLeft);
         
             cout << this->readsLeft << " reads left after " << (uint_read_len_max) (packedReadsSet->maxReadLength() - i) << " overlap\n";
         }

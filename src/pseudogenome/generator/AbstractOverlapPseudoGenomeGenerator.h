@@ -16,7 +16,6 @@ namespace PgSAIndex {
         protected:
 
             // auxiliary structures
-            uint_reads_cnt* prevRead = 0;
             uint_reads_cnt* nextRead = 0;
             uint_read_len* overlap = 0;
             uint_reads_cnt* headRead = 0;

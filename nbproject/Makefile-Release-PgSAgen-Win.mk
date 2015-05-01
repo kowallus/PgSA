@@ -67,7 +67,7 @@ TESTFILES= \
 	${TESTDIR}/TestFiles/f3
 
 # C Compiler Flags
-CFLAGS=-m64 -fomit-frame-pointer
+CFLAGS=-fomit-frame-pointer
 
 # CC Compiler Flags
 CCFLAGS=

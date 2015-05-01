@@ -66,7 +66,7 @@ namespace PgSAReadsSet {
             void printout() {
                 std::cout << "reads count: " << readsCount << "\n";
                 std::cout << "all reads length: " << allReadsLength << "\n";
-                std::cout << "reads lenght is " << (constantReadLength?"constant":"variable") << "\n";
+                std::cout << "reads length is " << (constantReadLength?"constant":"variable") << "\n";
                 std::cout << "maxReadLength: " << maxReadLength << "\n";
                 std::cout << "symbolsCount: " << (int) symbolsCount << "\n";
                 std::cout << "symbols: ";

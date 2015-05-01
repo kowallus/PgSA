@@ -556,7 +556,6 @@
         <cTool>
           <developmentMode>6</developmentMode>
           <stripSymbols>true</stripSymbols>
-          <architecture>2</architecture>
           <incDir>
             <pElem>.</pElem>
           </incDir>
