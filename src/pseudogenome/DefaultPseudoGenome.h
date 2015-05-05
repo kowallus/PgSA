@@ -96,7 +96,7 @@ namespace PgSAIndex {
 
             void validate();
             
-            void buildReadsWithDuplicatesFilter();
+            void buildRepetitiveReadsFilter();
     };
 
     template <typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len>

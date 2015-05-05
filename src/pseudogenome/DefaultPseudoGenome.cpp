@@ -183,7 +183,7 @@ namespace PgSAIndex {
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, class GeneratedReadsListClass>
-    void GeneratedPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, GeneratedReadsListClass>::buildReadsWithDuplicatesFilter() {
+    void GeneratedPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, GeneratedReadsListClass>::buildRepetitiveReadsFilter() {
         clock_checkpoint();
 
         uint_max filterCount = 0;

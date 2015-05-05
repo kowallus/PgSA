@@ -21,6 +21,7 @@ PseudoGenomeBase* preparePg(string srcFile, string pairFile) {
         pgb = pggb->generatePseudoGenomeBase();        
         delete(pggb); 
         delete(pggf);
+        pgb->buildRepetitiveReadsFilter();
     }
     
     if (pgb == 0) {

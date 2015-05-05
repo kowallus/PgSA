@@ -35,6 +35,8 @@ namespace PgSAIndex {
             virtual string getTypeID() = 0;
             virtual void write(std::ostream& dest) = 0;
 
+            virtual void buildRepetitiveReadsFilter() { throw(errno); };
+            
             virtual CountQueriesCacheBase* getCountQueriesCacheBase() { return 0; };
             
             const static string PSEUDOGENOME_FILE_SUFFIX;

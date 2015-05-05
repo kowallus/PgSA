@@ -17,6 +17,7 @@ namespace PgSAIndex {
                 // FIXME: handle destruction of pgb...
                 PseudoGenomeBase* pgb = pggb->generatePseudoGenomeBase();
                 delete(pggb); // frees lots of memory :)...
+                pgb->buildRepetitiveReadsFilter();
                 
                 return generateSuffixArray(pgb, PGSATYPE_DEFAULT);
             }
@@ -28,6 +29,7 @@ namespace PgSAIndex {
                 // FIXME: handle destruction of pgb... now it is done by a packedPg
                 PseudoGenomeBase* pgb = pggb->generatePseudoGenomeBase();
                 delete(pggb); // frees lots of memory :)...
+                pgb->buildRepetitiveReadsFilter();
                 
                 return generateSuffixArray(pgb, PGSATYPE_DEFAULT);
             }
@@ -41,7 +43,6 @@ namespace PgSAIndex {
                 PseudoGenomeGeneratorBase* pggb = new PackedPseudoGenomeGenerator(pgb, symbolsInterval);
                 
                 PseudoGenomeBase* ppgb = pggb->generatePseudoGenomeBase();
-                
                 delete(pggb);
                 
                 return generateSuffixArray(ppgb, PGSATYPE_SPARSE, fixed_min_k);
