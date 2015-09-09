@@ -105,9 +105,9 @@ namespace PgSAIndex {
     void DefaultSuffixArray<uint_read_len, uint_reads_cnt, uint_pg_len, SA_ELEMENT_SIZE, POS_START_OFFSET, READSLIST_INDEX_MASK, ReadsListClass>::generateSaisPgSA() {
         clock_checkpoint();
         
-        int maxPartBruttoSize = INT_MAX / (sizeof(int));
+        uint_max maxPartBruttoSize = INT_MAX / (sizeof(int));
         
-        if ((uint_max) maxPartBruttoSize * 6 > this->pseudoGenome->getLengthWithGuard() * (uint_max) SA_ELEMENT_SIZE)
+        if (maxPartBruttoSize * 6 > this->pseudoGenome->getLengthWithGuard() * (uint_max) SA_ELEMENT_SIZE)
             maxPartBruttoSize = this->pseudoGenome->getLengthWithGuard() * (uint_max) SA_ELEMENT_SIZE / 6;
         
         maxPartSize = maxPartBruttoSize - maxReadLength;
@@ -117,11 +117,11 @@ namespace PgSAIndex {
         
         while (noOfParts * (uint_pg_len) maxPartSize < this->pseudoGenome->getLengthWithGuard()) {
             
-            int partSize = this->pseudoGenome->getLengthWithGuard() - noOfParts * maxPartSize;
+            uint_pg_len partSize = this->pseudoGenome->getLengthWithGuard() - noOfParts * (uint_pg_len) maxPartSize;
             if (partSize > maxPartBruttoSize)
                 partSize = maxPartBruttoSize;
                 
-            if(sais((const unsigned char*) this->pseudoGenome->getSuffix(noOfParts * maxPartSize), saisSA, (int) partSize) != 0) {
+            if(sais((const unsigned char*) this->pseudoGenome->getSuffix(noOfParts * (uint_pg_len) maxPartSize), saisSA, (int) partSize) != 0) {
                 fprintf(stderr, "Cannot allocate memory.\n");
                 exit(EXIT_FAILURE);
             }

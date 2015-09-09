@@ -6,19 +6,23 @@ namespace PgSAReadsSet {
     DefaultReadsSet::DefaultReadsSet(ReadsSourceIterator* readsIterator) {
 
         bool symbolOccured[UCHAR_MAX] = {0};
-
+        uint_read_len_max minReadLength = 0;
+        
         while (readsIterator->moveNext()) {
 
             properties->readsCount++;
 
             // analize read length
             uint_read_len_max length = readsIterator->getReadLength();
-            if (properties->maxReadLength == 0)
+            if (properties->maxReadLength == 0) {
                 properties->maxReadLength = length;
-            else if (properties->maxReadLength != length) {
+                minReadLength = length;
+            } else if (properties->maxReadLength != length) {
                 properties->constantReadLength = false;
                 if (properties->maxReadLength < length)
                     properties->maxReadLength = length;
+                if (minReadLength > length)
+                    minReadLength = length;
             }
 
             properties->allReadsLength += length;
@@ -26,7 +30,7 @@ namespace PgSAReadsSet {
             //analize symbols
             string read(readsIterator->getRead());
 
-            for (uint_read_len_max i = 0; i < length; i++) {
+            for (uint_read_len_max i = 0; i < properties->maxReadLength; i++) {
                 read[i] = toupper(read[i]);
                 if (!symbolOccured[(unsigned char) read[i]]) {
                     symbolOccured[(unsigned char) read[i]] = true;

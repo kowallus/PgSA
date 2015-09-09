@@ -6,23 +6,27 @@ namespace PgSAReadsSet {
     PackedReadsSet::PackedReadsSet(ReadsSourceIterator* readsIterator) {
 
         bool symbolOccured[UCHAR_MAX] = {0};
-
+        uint_read_len_max minReadLength = 0;
+        
         while (readsIterator->moveNext()) {
 
             properties->readsCount++;
 
             // analize read length
             uint_read_len_max length = readsIterator->getReadLength();
-            if (properties->maxReadLength == 0)
+            if (properties->maxReadLength == 0) {
                 properties->maxReadLength = length;
-            else if (properties->maxReadLength != length) {
+                minReadLength = length;
+            } else if (properties->maxReadLength != length) {
                 properties->constantReadLength = false;
                 if (properties->maxReadLength < length)
                     properties->maxReadLength = length;
+                if (minReadLength > length)
+                    minReadLength = length;
             }
 
             properties->allReadsLength += length;
-
+            
             //analize symbols
             string read(readsIterator->getRead());
             
@@ -37,6 +41,17 @@ namespace PgSAReadsSet {
             lengths.push_back((uint_read_len_max) read.length());
         }
 
+        // TODO: support variable length reads
+        if (!properties->constantReadLength) {
+            cout << "Unsupported: variable length reads :(" << endl;
+            cout << "Trimming reads to " << minReadLength << " symbols." << endl;
+            properties->constantReadLength = true;
+            properties->maxReadLength = minReadLength;
+            properties->allReadsLength = minReadLength * properties->readsCount;
+            for(uint_reads_cnt_max i = 0; i < properties->readsCount; i++)
+                lengths[i] = minReadLength;
+        }
+        
         // order symbols
 
         for (uint_symbols_cnt i = 0, j = 0; i < properties->symbolsCount; j++)
@@ -56,7 +71,7 @@ namespace PgSAReadsSet {
         
         readsIterator->rewind();
         while (readsIterator->moveNext()) {
-            sPacker->packSequence(readsIterator->getRead().data(), readsIterator->getReadLength(), packedReadsPtr);
+            sPacker->packSequence(readsIterator->getRead().data(), readsIterator->getReadLength()>properties->maxReadLength?properties->maxReadLength:readsIterator->getReadLength(), packedReadsPtr);
             packedReadsPtr += packedLength;
         }
         

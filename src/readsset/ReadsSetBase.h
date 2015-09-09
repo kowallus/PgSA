@@ -106,7 +106,7 @@ namespace PgSAReadsSet {
             bool isReadLengthConstant() { return properties->constantReadLength; };
 
             bool isReadLengthMin() { return PgSAReadsSet::isReadLengthMin(properties->maxReadLength); };
-            bool isReadLengthStd() { return PgSAReadsSet::isReadLengthMin(properties->maxReadLength); };
+            bool isReadLengthStd() { return PgSAReadsSet::isReadLengthStd(properties->maxReadLength); };
 
             bool isReadsCountStd() { return PgSAReadsSet::isReadsCountStd(properties->readsCount); };
             bool isReadsCountMax() { return PgSAReadsSet::isReadsCountMax(properties->readsCount); };

@@ -100,7 +100,7 @@ namespace PgSAReadsSet {
             if (!std::getline(*src, line))
                 return false;
         } while (line.find('>') == 0);
-
+            
         for (length = 0; length < line.length(); length++)
             if (!isalpha(line[length]))
                 break;
@@ -110,9 +110,12 @@ namespace PgSAReadsSet {
 
     template<typename uint_read_len>
     void FASTAReadsSourceIterator<uint_read_len>::rewind() {
-        source->seekg(0, source->beg);
-        if (pairSource) 
-            pairSource->seekg(0, pairSource->beg);
+        source->clear();
+        source->seekg(0);
+        if (pairSource) { 
+            pairSource->clear();
+            pairSource->seekg(0);
+        }
     }
 
     template<typename uint_read_len>
@@ -164,6 +167,12 @@ namespace PgSAReadsSet {
         std::getline(*src, someinfo);
         std::getline(*src, someinfo);
 
+        
+/////////FOR TESTING PURPOSES ONLY!///////////////////
+//        if (line.length() < 298)                  //
+//            return moveNext();                    //
+//////////////////////////////////////////////////////
+        
         for (length = 0; length < line.length(); length++)
             if (!isalpha(line[length]))
                 break;
@@ -173,9 +182,12 @@ namespace PgSAReadsSet {
 
     template<typename uint_read_len>
     void FASTQReadsSourceIterator<uint_read_len>::rewind() {
-        source->seekg(0, source->beg);
-        if (pairSource) 
-            pairSource->seekg(0, pairSource->beg);
+        source->clear();
+        source->seekg(0);
+        if (pairSource) { 
+            pairSource->clear();
+            pairSource->seekg(0);
+        }
     }
     
     template<typename uint_read_len>

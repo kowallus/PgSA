@@ -94,7 +94,7 @@ namespace PgSAIndex {
             bool isReadLengthConstant() { return constantReadLength; };
 
             bool isReadLengthMin() { return PgSAReadsSet::isReadLengthMin(maxReadLength); };
-            bool isReadLengthStd() { return PgSAReadsSet::isReadLengthMin(maxReadLength); };
+            bool isReadLengthStd() { return PgSAReadsSet::isReadLengthStd(maxReadLength); };
 
             bool isReadsCountStd() { return PgSAReadsSet::isReadsCountStd(readsCount); };
             bool isReadsCountMax() { return PgSAReadsSet::isReadsCountMax(readsCount); };
