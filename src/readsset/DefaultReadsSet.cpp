@@ -30,7 +30,7 @@ namespace PgSAReadsSet {
             //analize symbols
             string read(readsIterator->getRead());
 
-            for (uint_read_len_max i = 0; i < properties->maxReadLength; i++) {
+            for (uint_read_len_max i = 0; i < length; i++) {
                 read[i] = toupper(read[i]);
                 if (!symbolOccured[(unsigned char) read[i]]) {
                     symbolOccured[(unsigned char) read[i]] = true;
