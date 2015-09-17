@@ -118,7 +118,7 @@ namespace PgSAIndex {
         while (noOfParts * (uint_pg_len) maxPartSize < this->pseudoGenome->getLengthWithGuard()) {
             
             uint_pg_len partSize = this->pseudoGenome->getLengthWithGuard() - noOfParts * (uint_pg_len) maxPartSize;
-            if (partSize > maxPartBruttoSize)
+            if (partSize > (uint_pg_len) maxPartBruttoSize)
                 partSize = maxPartBruttoSize;
                 
             if(sais((const unsigned char*) this->pseudoGenome->getSuffix(noOfParts * (uint_pg_len) maxPartSize), saisSA, (int) partSize) != 0) {

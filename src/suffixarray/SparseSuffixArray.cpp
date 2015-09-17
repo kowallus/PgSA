@@ -99,11 +99,11 @@ namespace PgSAIndex {
 
         while (noOfParts * (uint_pg_len) maxPartSize < pgElementsCountWithGuard) {
 
-            int partSize = pgElementsCountWithGuard - noOfParts * maxPartSize;
-            if (partSize > maxPartBruttoSize)
+            uint_pg_len partSize = pgElementsCountWithGuard - noOfParts * (uint_pg_len) maxPartSize;
+            if (partSize > (uint_pg_len) maxPartBruttoSize)
                 partSize = maxPartBruttoSize;
 
-            if (sais((const unsigned char*) this->pseudoGenome->getRawSuffix(1 + noOfParts * maxPartSize), saisSA, (int) partSize) != 0) {
+            if (sais((const unsigned char*) this->pseudoGenome->getRawSuffix(1 + noOfParts * (uint_pg_len) maxPartSize), saisSA, (int) partSize) != 0) {
                 fprintf(stderr, "Cannot allocate memory.\n");
                 exit(EXIT_FAILURE);
             }
