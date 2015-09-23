@@ -165,7 +165,7 @@ namespace PgSAIndex {
         for (int i = 0; i < noOfParts; i++) {
             saPartSrc[i]->close();
             delete(saPartSrc[i]);
-            remove(("saisSA" + toString(noOfParts) + ".tmp").c_str());
+            remove(("saisSA" + toString(i) + ".tmp").c_str());
         }
 
         saPartSrc.clear();
