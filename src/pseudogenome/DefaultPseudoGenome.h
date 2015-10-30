@@ -30,9 +30,11 @@ namespace PgSAIndex {
             
             static DefaultPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>* castBase(PseudoGenomeBase* base);
 
-            string getTypeID();;
+            string getTypeID();
 
             void write(std::ostream& dest);
+            
+            bool validateUsing(DefaultReadsSet* readsSet);
             
             ReadsListInterface<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>* getReadsList();
             void unmanageReadsList() {

@@ -48,7 +48,7 @@ namespace PgSAIndex {
             ///////////////////////////
             // GENERATION VARIABLES
             
-            uint_reads_cnt curRawIdx;
+            uint_max curRawIdx;
             uint_pg_len maxPos;
             bool isSortRequired;
 

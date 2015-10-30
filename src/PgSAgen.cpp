@@ -32,6 +32,23 @@ PseudoGenomeBase* preparePg(string srcFile, string pairFile) {
     return pgb;
 }
 
+bool verifyPg(string srcFile, string pairFile, string pgFile) {
+    PseudoGenomeBase* pgb = 0;
+    
+    if (access( pgFile.c_str(), F_OK ) != -1 && PseudoGenomePersistence::isValidPseudoGenome(pgFile))
+        pgb = PseudoGenomePersistence::readPseudoGenome(pgFile);
+    else {
+        fprintf(stderr, (pgFile + " is not a valid pseudogenome file.\n").c_str());
+        return false;
+    } 
+    
+    DefaultReadsSet* readsSet = DefaultReadsSet::readReadsSet(srcFile, pairFile);
+    bool isValid = pgb->validateUsing(readsSet);
+    delete readsSet;
+    
+    return isValid;
+}
+
 CountQueriesCacheBase* generateCache(PseudoGenomeBase* pgb) {
     CountQueriesCacheBase* cqcb = 0;
 
@@ -63,14 +80,18 @@ int main(int argc, char *argv[])
     int fixed_min_k = 1;
     bool pFlag = false;
     bool cFlag = false;
+    bool vFlag = false;
 
-    while ((opt = getopt(argc, argv, "r:k:pc?")) != -1) {
+    while ((opt = getopt(argc, argv, "r:k:pcv?")) != -1) {
         switch (opt) {
         case 'p':
             pFlag = true;
             break;
         case 'c':
             cFlag = true;
+            break;
+        case 'v':
+            vFlag = true;
             break;
         case 'r':
             compressionRate = atoi(optarg);
@@ -80,9 +101,9 @@ int main(int argc, char *argv[])
             break;
         case '?':
         default: /* '?' */
-            fprintf(stderr, "Usage: %s [-r rate] [-k fixed_k] [-c] [-p] readssrcfile [pairsrcfile] indexprefix\n\n",
+            fprintf(stderr, "Usage: %s [-r rate] [-k fixed_k] [-c] [-p] [-v] readssrcfile [pairsrcfile] indexprefix\n\n",
                     argv[0]);
-            fprintf(stderr, "-r compression rate [1 - 6]\n-k fixed kmer length \n-c generate cache file\n-p only Pg, no SA\n\n");
+            fprintf(stderr, "-r compression rate [1 - 6]\n-k fixed kmer length \n-c generate cache file\n-p only Pg, no SA\n-v validate (use after generation) \n\n");
             exit(EXIT_FAILURE);
         }
     }
@@ -99,6 +120,21 @@ int main(int argc, char *argv[])
     if (optind == argc - 2)
         pairFile = argv[optind++];
     string idxPrefix(argv[optind++]);
+    
+    if (vFlag) {
+        fprintf(stderr, "Veryfication started...\n");
+        if (pFlag) {
+            if (verifyPg(srcFile, pairFile, idxPrefix + ".pgen")) {
+                fprintf(stderr, "Pseudogenome is correct.\n");
+                exit(EXIT_SUCCESS);
+            }
+            fprintf(stderr, "Pseudogenome validation failed.\n");
+            exit(EXIT_FAILURE);
+        }
+        
+        fprintf(stderr, "Error: Option not implemented.\n");
+        exit(EXIT_FAILURE);
+    }
     
     PseudoGenomeBase* pgb = preparePg(srcFile, pairFile);
     

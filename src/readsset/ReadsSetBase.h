@@ -48,6 +48,16 @@ namespace PgSAReadsSet {
                 std::copy(std::begin(properties->symbolsList), std::end(properties->symbolsList), std::begin(symbolsList));
                 std::copy(std::begin(properties->symbolOrder), std::end(properties->symbolOrder), std::begin(symbolOrder));
             }
+            
+            bool compareWith(ReadsSetProperties* properties) {
+                return (readsCount == properties->readsCount &&
+                        allReadsLength == properties->allReadsLength &&
+                        constantReadLength == properties->constantReadLength &&
+                        maxReadLength == properties->maxReadLength &&
+                        symbolsCount == properties->symbolsCount &&
+                        std::equal(std::begin(properties->symbolsList), std::end(properties->symbolsList), std::begin(symbolsList)) &&
+                        std::equal(std::begin(properties->symbolOrder), std::end(properties->symbolOrder), std::begin(symbolOrder)));
+            }
 
             void write(std::ostream& dest) {
                 dest << readsCount << "\n"

@@ -2,6 +2,7 @@
 #define PSEUDOGENOMEBASE_H_INCLUDED
 
 #include "../readsset/ReadsSetBase.h"
+#include "../readsset/DefaultReadsSet.h"
 #include "../index/cache/CountQueriesCacheBase.h"
 
 using namespace PgSAReadsSet;
@@ -35,6 +36,11 @@ namespace PgSAIndex {
             virtual string getTypeID() = 0;
             virtual void write(std::ostream& dest) = 0;
 
+            virtual bool validateUsing(DefaultReadsSet* readsSet) {
+                fprintf(stderr, "Error: validation is not implemented.\n");
+                return false;
+            }
+            
             virtual void buildRepetitiveReadsFilter() { throw(errno); };
             
             virtual CountQueriesCacheBase* getCountQueriesCacheBase() { return 0; };

@@ -142,7 +142,26 @@ namespace PgSAIndex {
     uint_read_len DefaultPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>::maxReadLengthVirtual() {
         return maxReadLength();
     }
-    
+
+    template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, class ReadsListClass>
+    bool DefaultPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, ReadsListClass>::validateUsing(DefaultReadsSet* readsSet) {
+        if (readsSet->getReadsSetProperties()->compareWith(this->getReadsSetProperties())) 
+        {
+            for (uint_reads_cnt i = 0; i < this->readsCount(); i++)
+                if (readsSet->getRead(i).compare(this->getRead(i)) != 0) {
+                    fprintf(stderr, (toString(i) + "-th read is incorrect (below original vs pg).\n\n").c_str());
+                    fprintf(stderr, (readsSet->getRead(i) + "\n").c_str());
+                    fprintf(stderr, (this->getRead(i) + "\n").c_str());
+                    return false;
+                }
+            return true;
+        }
+        fprintf(stderr, "Reads sets are different (below original vs pg).\n\n");
+        readsSet->printout();
+        this->getReadsSetProperties()->printout();
+        return false;
+    }
+
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, class GeneratedReadsListClass>
     GeneratedPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, GeneratedReadsListClass>::GeneratedPseudoGenome(uint_pg_len sequenceLength, ReadsSetProperties* properties)
     : DefaultPseudoGenome<uint_read_len, uint_reads_cnt, uint_pg_len, GeneratedReadsListClass >(sequenceLength, properties) {

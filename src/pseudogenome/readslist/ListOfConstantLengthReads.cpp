@@ -24,7 +24,7 @@ namespace PgSAIndex {
         src >> srchelper;
         duplicateFilterK = srchelper;
         src.get(); //"\n";
-        this->pgReadsList = (uchar*) PgSAHelpers::readArray(src, sizeof (uchar) * (readsCount + 1) * LIST_ELEMENT_SIZE);
+        this->pgReadsList = (uchar*) PgSAHelpers::readArray(src, sizeof (uchar) * (readsCount + 1) * (uint_max) LIST_ELEMENT_SIZE);
 
         this->isSortRequired = false;
         generateReverseIndex();
@@ -51,7 +51,7 @@ namespace PgSAIndex {
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, unsigned char LIST_ELEMENT_SIZE, uchar FLAGS_OFFSET>
     void ListOfConstantLengthReads<uint_read_len, uint_reads_cnt, uint_pg_len, LIST_ELEMENT_SIZE, FLAGS_OFFSET>::validateImpl() {
-        if (curRawIdx != readsCount * LIST_ELEMENT_SIZE)
+        if (curRawIdx != readsCount * (uint_max) LIST_ELEMENT_SIZE)
             cout << "WARNING: Reads list generation failed: " << curRawIdx / LIST_ELEMENT_SIZE << " elements instead of " << readsCount << "\n";
 
         if (isSortRequired) {
@@ -70,7 +70,7 @@ namespace PgSAIndex {
         dest << readsCount << "\n";
         dest << pseudoGenomeLength << "\n";
         dest << (int) duplicateFilterK << "\n";
-        PgSAHelpers::writeArray(dest, this->pgReadsList, sizeof (uchar) * (readsCount + 1) * LIST_ELEMENT_SIZE);
+        PgSAHelpers::writeArray(dest, this->pgReadsList, sizeof (uchar) * (readsCount + 1) * (uint_max) LIST_ELEMENT_SIZE);
     }
 
     template<typename uint_read_len, typename uint_reads_cnt, typename uint_pg_len, unsigned char LIST_ELEMENT_SIZE, uchar FLAGS_OFFSET>
@@ -85,7 +85,7 @@ namespace PgSAIndex {
         while (pseudoGenomeLength >> lookupStepShift++ > readsCount);
         
         lookup.resize((pseudoGenomeLength >> lookupStepShift) + 2);
-        
+//        cout << ((pseudoGenomeLength >> lookupStepShift) + 2) << " " << lookup.max_size() << "\n";
         uint_pg_len j = 0;
         uint_reads_cnt i = 0;
         while (i < readsCount) {
@@ -113,7 +113,7 @@ namespace PgSAIndex {
         
         uint_reads_cnt mIdx;
         
-        int cmpRes = 0;
+        long long int cmpRes = 0;
         
         while (lIdx < rIdx) {
             mIdx = (lIdx + rIdx) / 2;
