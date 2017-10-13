@@ -2,6 +2,7 @@
 #include "DefaultSuffixArrayFactory.h"
 
 #include "../sais/sais.h"
+#include "../byteswap.h"
 
 namespace PgSAIndex {
 

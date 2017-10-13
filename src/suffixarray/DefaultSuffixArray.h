@@ -7,7 +7,6 @@
 #include "../pseudogenome/DefaultPseudoGenome.h"
 #include "iterator/OccurrencesIteratorInterface.h"
 
-#include <byteswap.h>
 #include <list>
 
 using namespace PgSAHelpers;

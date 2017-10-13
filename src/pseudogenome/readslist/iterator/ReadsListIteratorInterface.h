@@ -10,6 +10,7 @@
 
 #include "../../../pgsaconfig.h"
 #include "../../../helper.h"
+#include <vector>
 
 using namespace std;
 

@@ -4,6 +4,8 @@
 #include "../pgsaconfig.h"
 #include "../readsset/ReadsSetInterface.h"
 
+#include <vector>
+
 using namespace PgSAReadsSet;
 
 namespace PgSAIndex {
