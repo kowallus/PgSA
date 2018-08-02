@@ -161,8 +161,10 @@ namespace PgSAIndex {
                             preIt = curPreIt;
                         else {
                             uint_reads_cnt preIdx = *preIt;
-                            while (preIt > curPreIt)
-                                *(preIt--) = *preIt;
+                            while (preIt > curPreIt) {
+                                *preIt = *(preIt - 1);
+                                preIt--;
+                            }
                             *preIt = preIdx;
                         }
                             
