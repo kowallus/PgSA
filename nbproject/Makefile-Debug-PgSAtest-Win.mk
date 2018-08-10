@@ -21,7 +21,7 @@ FC=gfortran
 AS=as
 
 # Macros
-CND_PLATFORM=Cygwin_4.x-Windows
+CND_PLATFORM=MinGW_1-Windows
 CND_DLIB_EXT=dll
 CND_CONF=Debug-PgSAtest-Win
 CND_DISTDIR=dist
@@ -67,6 +67,11 @@ TESTFILES= \
 	${TESTDIR}/TestFiles/f1 \
 	${TESTDIR}/TestFiles/f3
 
+# Test Object Files
+TESTOBJECTFILES= \
+	${TESTDIR}/src/tests/PgSASearchTest.o \
+	${TESTDIR}/src/tests/PgSAgen-fasta-human.o
+
 # C Compiler Flags
 CFLAGS=-fomit-frame-pointer -Wall
 
@@ -91,117 +96,117 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/PgSAtest.exe: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/PgSAtest ${OBJECTFILES} ${LDLIBSOPTIONS}
 
-${OBJECTDIR}/src/PgSAtest.o: nbproject/Makefile-${CND_CONF}.mk src/PgSAtest.cpp 
+${OBJECTDIR}/src/PgSAtest.o: src/PgSAtest.cpp nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Wall -I. -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/PgSAtest.o src/PgSAtest.cpp
 
-${OBJECTDIR}/src/helper.o: nbproject/Makefile-${CND_CONF}.mk src/helper.cpp 
+${OBJECTDIR}/src/helper.o: src/helper.cpp nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Wall -I. -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/helper.o src/helper.cpp
 
-${OBJECTDIR}/src/index/PgSAIndexFactory.o: nbproject/Makefile-${CND_CONF}.mk src/index/PgSAIndexFactory.cpp 
+${OBJECTDIR}/src/index/PgSAIndexFactory.o: src/index/PgSAIndexFactory.cpp nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} -p ${OBJECTDIR}/src/index
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Wall -I. -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/index/PgSAIndexFactory.o src/index/PgSAIndexFactory.cpp
 
-${OBJECTDIR}/src/index/cache/persistence/CountQueriesCachePersistence.o: nbproject/Makefile-${CND_CONF}.mk src/index/cache/persistence/CountQueriesCachePersistence.cpp 
+${OBJECTDIR}/src/index/cache/persistence/CountQueriesCachePersistence.o: src/index/cache/persistence/CountQueriesCachePersistence.cpp nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} -p ${OBJECTDIR}/src/index/cache/persistence
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Wall -I. -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/index/cache/persistence/CountQueriesCachePersistence.o src/index/cache/persistence/CountQueriesCachePersistence.cpp
 
-${OBJECTDIR}/src/pgsaconfig.o: nbproject/Makefile-${CND_CONF}.mk src/pgsaconfig.cpp 
+${OBJECTDIR}/src/pgsaconfig.o: src/pgsaconfig.cpp nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Wall -I. -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/pgsaconfig.o src/pgsaconfig.cpp
 
-${OBJECTDIR}/src/pseudogenome/DefaultPseudoGenome.o: nbproject/Makefile-${CND_CONF}.mk src/pseudogenome/DefaultPseudoGenome.cpp 
+${OBJECTDIR}/src/pseudogenome/DefaultPseudoGenome.o: src/pseudogenome/DefaultPseudoGenome.cpp nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} -p ${OBJECTDIR}/src/pseudogenome
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Wall -I. -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/pseudogenome/DefaultPseudoGenome.o src/pseudogenome/DefaultPseudoGenome.cpp
 
-${OBJECTDIR}/src/pseudogenome/PackedPseudoGenome.o: nbproject/Makefile-${CND_CONF}.mk src/pseudogenome/PackedPseudoGenome.cpp 
+${OBJECTDIR}/src/pseudogenome/PackedPseudoGenome.o: src/pseudogenome/PackedPseudoGenome.cpp nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} -p ${OBJECTDIR}/src/pseudogenome
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Wall -I. -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/pseudogenome/PackedPseudoGenome.o src/pseudogenome/PackedPseudoGenome.cpp
 
-${OBJECTDIR}/src/pseudogenome/generator/AbstractOverlapPseudoGenomeGenerator.o: nbproject/Makefile-${CND_CONF}.mk src/pseudogenome/generator/AbstractOverlapPseudoGenomeGenerator.cpp 
+${OBJECTDIR}/src/pseudogenome/generator/AbstractOverlapPseudoGenomeGenerator.o: src/pseudogenome/generator/AbstractOverlapPseudoGenomeGenerator.cpp nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} -p ${OBJECTDIR}/src/pseudogenome/generator
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Wall -I. -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/pseudogenome/generator/AbstractOverlapPseudoGenomeGenerator.o src/pseudogenome/generator/AbstractOverlapPseudoGenomeGenerator.cpp
 
-${OBJECTDIR}/src/pseudogenome/generator/GreedySwipingDefaultOverlapPseudoGenomeGenerator.o: nbproject/Makefile-${CND_CONF}.mk src/pseudogenome/generator/GreedySwipingDefaultOverlapPseudoGenomeGenerator.cpp 
+${OBJECTDIR}/src/pseudogenome/generator/GreedySwipingDefaultOverlapPseudoGenomeGenerator.o: src/pseudogenome/generator/GreedySwipingDefaultOverlapPseudoGenomeGenerator.cpp nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} -p ${OBJECTDIR}/src/pseudogenome/generator
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Wall -I. -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/pseudogenome/generator/GreedySwipingDefaultOverlapPseudoGenomeGenerator.o src/pseudogenome/generator/GreedySwipingDefaultOverlapPseudoGenomeGenerator.cpp
 
-${OBJECTDIR}/src/pseudogenome/generator/GreedySwipingPackedOverlapPseudoGenomeGenerator.o: nbproject/Makefile-${CND_CONF}.mk src/pseudogenome/generator/GreedySwipingPackedOverlapPseudoGenomeGenerator.cpp 
+${OBJECTDIR}/src/pseudogenome/generator/GreedySwipingPackedOverlapPseudoGenomeGenerator.o: src/pseudogenome/generator/GreedySwipingPackedOverlapPseudoGenomeGenerator.cpp nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} -p ${OBJECTDIR}/src/pseudogenome/generator
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Wall -I. -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/pseudogenome/generator/GreedySwipingPackedOverlapPseudoGenomeGenerator.o src/pseudogenome/generator/GreedySwipingPackedOverlapPseudoGenomeGenerator.cpp
 
-${OBJECTDIR}/src/pseudogenome/generator/GreedyVerticalOverlapPseudoGenomeGenerator.o: nbproject/Makefile-${CND_CONF}.mk src/pseudogenome/generator/GreedyVerticalOverlapPseudoGenomeGenerator.cpp 
+${OBJECTDIR}/src/pseudogenome/generator/GreedyVerticalOverlapPseudoGenomeGenerator.o: src/pseudogenome/generator/GreedyVerticalOverlapPseudoGenomeGenerator.cpp nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} -p ${OBJECTDIR}/src/pseudogenome/generator
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Wall -I. -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/pseudogenome/generator/GreedyVerticalOverlapPseudoGenomeGenerator.o src/pseudogenome/generator/GreedyVerticalOverlapPseudoGenomeGenerator.cpp
 
-${OBJECTDIR}/src/pseudogenome/packing/SymbolsPackingFacility.o: nbproject/Makefile-${CND_CONF}.mk src/pseudogenome/packing/SymbolsPackingFacility.cpp 
+${OBJECTDIR}/src/pseudogenome/packing/SymbolsPackingFacility.o: src/pseudogenome/packing/SymbolsPackingFacility.cpp nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} -p ${OBJECTDIR}/src/pseudogenome/packing
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Wall -I. -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/pseudogenome/packing/SymbolsPackingFacility.o src/pseudogenome/packing/SymbolsPackingFacility.cpp
 
-${OBJECTDIR}/src/pseudogenome/persistence/PseudoGenomePersistence.o: nbproject/Makefile-${CND_CONF}.mk src/pseudogenome/persistence/PseudoGenomePersistence.cpp 
+${OBJECTDIR}/src/pseudogenome/persistence/PseudoGenomePersistence.o: src/pseudogenome/persistence/PseudoGenomePersistence.cpp nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} -p ${OBJECTDIR}/src/pseudogenome/persistence
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Wall -I. -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/pseudogenome/persistence/PseudoGenomePersistence.o src/pseudogenome/persistence/PseudoGenomePersistence.cpp
 
-${OBJECTDIR}/src/pseudogenome/readslist/ListOfConstantLengthReads.o: nbproject/Makefile-${CND_CONF}.mk src/pseudogenome/readslist/ListOfConstantLengthReads.cpp 
+${OBJECTDIR}/src/pseudogenome/readslist/ListOfConstantLengthReads.o: src/pseudogenome/readslist/ListOfConstantLengthReads.cpp nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} -p ${OBJECTDIR}/src/pseudogenome/readslist
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Wall -I. -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/pseudogenome/readslist/ListOfConstantLengthReads.o src/pseudogenome/readslist/ListOfConstantLengthReads.cpp
 
-${OBJECTDIR}/src/readsset/DefaultReadsSet.o: nbproject/Makefile-${CND_CONF}.mk src/readsset/DefaultReadsSet.cpp 
+${OBJECTDIR}/src/readsset/DefaultReadsSet.o: src/readsset/DefaultReadsSet.cpp nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} -p ${OBJECTDIR}/src/readsset
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Wall -I. -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/readsset/DefaultReadsSet.o src/readsset/DefaultReadsSet.cpp
 
-${OBJECTDIR}/src/readsset/PackedReadsSet.o: nbproject/Makefile-${CND_CONF}.mk src/readsset/PackedReadsSet.cpp 
+${OBJECTDIR}/src/readsset/PackedReadsSet.o: src/readsset/PackedReadsSet.cpp nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} -p ${OBJECTDIR}/src/readsset
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Wall -I. -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/readsset/PackedReadsSet.o src/readsset/PackedReadsSet.cpp
 
-${OBJECTDIR}/src/readsset/iterator/ReadsSetIterator.o: nbproject/Makefile-${CND_CONF}.mk src/readsset/iterator/ReadsSetIterator.cpp 
+${OBJECTDIR}/src/readsset/iterator/ReadsSetIterator.o: src/readsset/iterator/ReadsSetIterator.cpp nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} -p ${OBJECTDIR}/src/readsset/iterator
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Wall -I. -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/readsset/iterator/ReadsSetIterator.o src/readsset/iterator/ReadsSetIterator.cpp
 
-${OBJECTDIR}/src/sais/sais.o: nbproject/Makefile-${CND_CONF}.mk src/sais/sais.c 
+${OBJECTDIR}/src/sais/sais.o: src/sais/sais.c nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} -p ${OBJECTDIR}/src/sais
 	${RM} "$@.d"
 	$(COMPILE.c) -g -I. -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/sais/sais.o src/sais/sais.c
 
-${OBJECTDIR}/src/suffixarray/DefaultSuffixArray.o: nbproject/Makefile-${CND_CONF}.mk src/suffixarray/DefaultSuffixArray.cpp 
+${OBJECTDIR}/src/suffixarray/DefaultSuffixArray.o: src/suffixarray/DefaultSuffixArray.cpp nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} -p ${OBJECTDIR}/src/suffixarray
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Wall -I. -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/suffixarray/DefaultSuffixArray.o src/suffixarray/DefaultSuffixArray.cpp
 
-${OBJECTDIR}/src/suffixarray/SparseSuffixArray.o: nbproject/Makefile-${CND_CONF}.mk src/suffixarray/SparseSuffixArray.cpp 
+${OBJECTDIR}/src/suffixarray/SparseSuffixArray.o: src/suffixarray/SparseSuffixArray.cpp nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} -p ${OBJECTDIR}/src/suffixarray
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Wall -I. -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/suffixarray/SparseSuffixArray.o src/suffixarray/SparseSuffixArray.cpp
 
-${OBJECTDIR}/src/suffixarray/persistence/SuffixArrayPersistence.o: nbproject/Makefile-${CND_CONF}.mk src/suffixarray/persistence/SuffixArrayPersistence.cpp 
+${OBJECTDIR}/src/suffixarray/persistence/SuffixArrayPersistence.o: src/suffixarray/persistence/SuffixArrayPersistence.cpp nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} -p ${OBJECTDIR}/src/suffixarray/persistence
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Wall -I. -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/suffixarray/persistence/SuffixArrayPersistence.o src/suffixarray/persistence/SuffixArrayPersistence.cpp
 
-${OBJECTDIR}/src/test/PgSAtests.o: nbproject/Makefile-${CND_CONF}.mk src/test/PgSAtests.cpp 
+${OBJECTDIR}/src/test/PgSAtests.o: src/test/PgSAtests.cpp nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} -p ${OBJECTDIR}/src/test
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Wall -I. -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/test/PgSAtests.o src/test/PgSAtests.cpp
 
-${OBJECTDIR}/src/test/testdata.o: nbproject/Makefile-${CND_CONF}.mk src/test/testdata.cpp 
+${OBJECTDIR}/src/test/testdata.o: src/test/testdata.cpp nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} -p ${OBJECTDIR}/src/test
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Wall -I. -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/test/testdata.o src/test/testdata.cpp
@@ -210,14 +215,16 @@ ${OBJECTDIR}/src/test/testdata.o: nbproject/Makefile-${CND_CONF}.mk src/test/tes
 .build-subprojects:
 
 # Build Test Targets
-.build-tests-conf: .build-conf ${TESTFILES}
+.build-tests-conf: .build-tests-subprojects .build-conf ${TESTFILES}
+.build-tests-subprojects:
+
 ${TESTDIR}/TestFiles/f1: ${TESTDIR}/src/tests/PgSAgen-fasta-human.o ${OBJECTFILES:%.o=%_nomain.o}
 	${MKDIR} -p ${TESTDIR}/TestFiles
-	${LINK.cc}   -o ${TESTDIR}/TestFiles/f1 $^ ${LDLIBSOPTIONS} 
+	${LINK.cc} -o ${TESTDIR}/TestFiles/f1 $^ ${LDLIBSOPTIONS}   
 
 ${TESTDIR}/TestFiles/f3: ${TESTDIR}/src/tests/PgSASearchTest.o ${OBJECTFILES:%.o=%_nomain.o}
 	${MKDIR} -p ${TESTDIR}/TestFiles
-	${LINK.cc}   -o ${TESTDIR}/TestFiles/f3 $^ ${LDLIBSOPTIONS} 
+	${LINK.cc} -o ${TESTDIR}/TestFiles/f3 $^ ${LDLIBSOPTIONS}   
 
 
 ${TESTDIR}/src/tests/PgSAgen-fasta-human.o: src/tests/PgSAgen-fasta-human.cpp 
@@ -544,7 +551,6 @@ ${OBJECTDIR}/src/test/testdata_nomain.o: ${OBJECTDIR}/src/test/testdata.o src/te
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
 	${RM} -r ${CND_BUILDDIR}/${CND_CONF}
-	${RM} ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/PgSAtest.exe
 
 # Subprojects
 .clean-subprojects:
